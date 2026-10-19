@@ -99,7 +99,7 @@ async function serveFile(res, path) {
 
 createServer(async (req, res) => {
   if (!authorized(req)) {
-    res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="mAI Hub", charset="UTF-8"' })
+    res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="Hub", charset="UTF-8"' })
     return res.end('Cal la contrasenya')
   }
   const url = new URL(req.url, 'http://local')
@@ -107,4 +107,4 @@ createServer(async (req, res) => {
     if (url.pathname === '/api/store.php') return await store(req, res, url)
     await serveFile(res, decodeURIComponent(url.pathname))
   } catch (e) { console.error(e); res.writeHead(500); res.end('Error') }
-}).listen(PORT, HOST, () => console.log(`mAI Hub → http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`))
+}).listen(PORT, HOST, () => console.log(`Hub → http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`))

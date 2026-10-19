@@ -1,12 +1,12 @@
 {
-  "name": "mai-hub",
+  "name": "hub",
   "version": "1.0.0",
-  "description": "mAI Fitness: pla de negoci, publicació, tasques, proves, receptari, prototips i documents, amb contrasenya.",
+  "description": "Tot el que llanço (mAI Fitness, Outfit of the Day, AI Slides to Figma): negoci, publicació, tasques, proves, prototips i documents, amb contrasenya.",
   "scripts": {
     "start": "node server.mjs",
     "password": "node scripts/password.mjs",
-    "docs": "node scripts/build-docs.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "build": "node scripts/build.mjs"
   },
   "type": "module",
   "devDependencies": {

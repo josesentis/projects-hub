@@ -1,0 +1,107 @@
+<h1>Proves pendents (per validar a mà)</h1>
+<p>Cada línia diu què provar i com. Marca-ho mentre ho fas. Tot el que és codi té tests i s&#39;ha mirat amb captures a 390×844 en fosc i clar; <strong>el que no es pot provar des d&#39;aquí és el que hi ha aquí</strong>: telèfon real, teclat real, xarxa dolenta, correus reals, pagaments i producció.</p>
+<h2>Abans de res (producció)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Netlify → Deploys: l&#39;últim és verd i <code>/api/version</code> diu el commit nou.</li>
+<li><input disabled="" type="checkbox"> Migració <code>0018_operations</code> aplicada (si el banner d&#39;admin diu que n&#39;hi ha pendents, no et fa falta: no n&#39;hi ha).</li>
+<li><input disabled="" type="checkbox"> <code>/api/health</code> surt <code>ok: true</code> (cal <code>CRON_SECRET</code>, VAPID, etc.: vegeu <code>ai/ENV.md</code>).</li>
+</ul>
+<h2>Telèfon real (el més important)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Avui: obrir, demanar el look, veure la foto. El teclat no tapa mai la caixa del xat; la pàgina no es mou.</li>
+<li><input disabled="" type="checkbox"> «Me&#39;l poso» amb un toc i desfer-ho amb un toc.</li>
+<li><input disabled="" type="checkbox"> «Canvia una peça»: tria peça → motiu → alternativa. Amb «Està a la bugada» la peça queda marcada a l&#39;Armari.</li>
+<li><input disabled="" type="checkbox"> «M&#39;he posat una altra cosa» escrivint «texans negres i la jaqueta verda»: troba les peces, tu les revises, es desa.</li>
+<li><input disabled="" type="checkbox"> Calendari → «Em vaig posar alguna cosa un altre dia»: només deixa els últims 14 dies.</li>
+<li><input disabled="" type="checkbox"> Mode avió: obrir Avui i l&#39;Armari des de zero (cal haver-hi entrat abans amb xarxa). Surt «Sense connexió: veus la teva última còpia». «Me&#39;l poso» sense xarxa es desa i s&#39;envia sol en tornar-la.</li>
+<li><input disabled="" type="checkbox"> Xarxa dolenta (només una barra): no es queda penjada més de ~12 s.</li>
+<li><input disabled="" type="checkbox"> Tancar la sessió esborra les còpies guardades (entrar amb un altre compte no ensenya res de l&#39;anterior).</li>
+<li><input disabled="" type="checkbox"> PWA instal·lada: avís de versió nova en desplegar.</li>
+</ul>
+<h2>Perfils d&#39;ús i plans</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Perfil → «Quant vols fer servir l&#39;app?»: «Només looks» amaga la conversa, les ocasions, «Me&#39;l poso» i «Estilista» de la barra. «Personalitzat» es manté personalitzat.</li>
+<li><input disabled="" type="checkbox"> Perfil → Pla: surt «Tot està obert mentre provem» (sense Stripe).</li>
+<li><input disabled="" type="checkbox"> Amb Stripe en mode de prova: crear un compte nou → prova de 14 dies → triar un pla → pagar amb una targeta de prova → «Gestiona la subscripció» obre el portal → cancel·lar → acaba al final del període.</li>
+<li><input disabled="" type="checkbox"> Webhook: Stripe CLI <code>stripe trigger invoice.payment_failed</code> → la subscripció passa a «past_due» i arriba el correu.</li>
+<li><input disabled="" type="checkbox"> Quan s&#39;acaben les fotos del mes, el look es queda en text i surt un missatge clar (no un error).</li>
+</ul>
+<h2>Correus (cal Resend amb domini verificat)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Alta → correu de verificació → en verificar, correu de benvinguda (un sol cop).</li>
+<li><input disabled="" type="checkbox"> Admin → Users → «Accés complet» sobre un usuari → li arriba el correu; en treure&#39;l, té una prova nova de 14 dies i li arriba el correu.</li>
+<li><input disabled="" type="checkbox"> Perfil → Notificacions: la graella desa; les files de «compte» no es poden apagar; «Novetats» per correu demana la casella.</li>
+<li><input disabled="" type="checkbox"> Dilluns: arriba el resum setmanal als admins.</li>
+</ul>
+<h2>Beta</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Admin → Beta: crear un codi, copiar l&#39;enllaç, registrar-se amb ell → surt al grup i amb el preu fundador.</li>
+<li><input disabled="" type="checkbox"> Un codi apagat o esgotat es rebutja amb un missatge clar.</li>
+<li><input disabled="" type="checkbox"> Perfil → «Explica&#39;ns com va»: feedback i NPS arriben a Admin → Beta.</li>
+<li><input disabled="" type="checkbox"> Admin → Health carrega i els números tenen sentit.</li>
+</ul>
+<h2>Legal</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Revisió d&#39;un advocat dels termes, la privacitat i el tractament de fotos de persones (RGPD art. 9). <strong>Abans de posar <code>LEGAL_GATE_ENABLED=true</code>.</strong></li>
+<li><input disabled="" type="checkbox"> Quan s&#39;activi, els usuaris existents veuen el full d&#39;acceptar els termes (no es pot tancar) i reben el correu.</li>
+</ul>
+<h2>Escriptori</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Avui a 1280 px+: barra «Què tens avui?» a tot l&#39;ample, el look a l&#39;esquerra, la setmana i les ocasions a la dreta.</li>
+<li><input disabled="" type="checkbox"> Armari, Inspiració, Calendari, Perfil i admin comencen al mateix lloc (títol i marge esquerre iguals).</li>
+</ul>
+<h2>Conversa amb l&#39;estilista i onboarding (producció, amb compte real)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Compte nou → onboarding conversacional: el gust que en surt és fidel al que has dit; es pot saltar i tornar-hi.</li>
+<li><input disabled="" type="checkbox"> Demanar un look per una ocasió («reunió amb un client»): tria només peces teves; si en falta una ho diu (apareix com a forat, no s&#39;inventa).</li>
+<li><input disabled="" type="checkbox"> «Una mica més d&#39;abric»: canvia només el que cal i et demana acceptar el canvi (no el fa sol).</li>
+<li><input disabled="" type="checkbox"> La conversa de l&#39;endemà no repeteix el que vas portar ahir.</li>
+<li><input disabled="" type="checkbox"> Tancar l&#39;app a mig torn i tornar: el torn acaba i apareix (torns en segon pla + <code>CRON_SECRET</code> posat).</li>
+<li><input disabled="" type="checkbox"> Títols de les converses (Haiku) i canvi de nom a mà.</li>
+<li><input disabled="" type="checkbox"> Auditoria de l&#39;armari des de l&#39;Estilista (model fort): propostes raonables, cap peça esborrada sense acceptar.</li>
+<li><input disabled="" type="checkbox"> Notificació del matí al telèfon (cal VAPID): arriba a l&#39;hora, sense generar res; en tocar-la s&#39;obre Avui.</li>
+<li><input disabled="" type="checkbox"> Senyals proactius: no n&#39;arriba més d&#39;un al dia ni quan has dit que no vols avisos.</li>
+</ul>
+<h2>Privacitat i dades (després de la migració 0019)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Amb <code>PHOTO_CONSENT_REQUIRED=true</code> (provar-ho en local/prova, no a producció d&#39;entrada): sense consentiment el look es renderitza amb persona genèrica; en acceptar-lo, amb la teva cara; en retirar-lo, torna a la genèrica.</li>
+<li><input disabled="" type="checkbox"> Perfil → Privacitat → «Descarrega les meves dades»: el fitxer té totes les teves dades i fotos (compara amb el que veus a l&#39;app).</li>
+<li><input disabled="" type="checkbox"> «Esborra el compte» amb un compte de prova: desapareix tot (Supabase: taules i Storage sense restes) i es pot tornar a registrar amb el mateix correu.</li>
+<li><input disabled="" type="checkbox"> Política de privacitat: llegir-la sencera (cares, Gemini, Stripe, Resend) i comprovar que diu el que fem de veritat.</li>
+</ul>
+<h2>Admin</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Admin → Users: editar un camp (nom, correu, rol) → desa; l&#39;auditoria registra el nom del camp, mai el valor.</li>
+<li><input disabled="" type="checkbox"> Admin → Analytics: cost per mes i per funció quadra amb les factures d&#39;Anthropic i Google del mes.</li>
+<li><input disabled="" type="checkbox"> Admin → Beta i Health: números coherents amb l&#39;ús real després d&#39;un dia de beta.</li>
+<li><input disabled="" type="checkbox"> Correu d&#39;alerta als admins quan una dada de salut passa el límit (forçar-ho amb un límit baix a prova).</li>
+</ul>
+<h2>Landing (després de pujar-la)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>/</code> en ca, es i en: textos correctes, sense claus sense traduir ni salts de línia estranys; el selector d&#39;idioma persisteix.</li>
+<li><input disabled="" type="checkbox"> Preus a la landing = preus del pla (<code>lib/billing/plans.ts</code>); interruptor mensual/anual canvia import i «n mesos gratis».</li>
+<li><input disabled="" type="checkbox"> «Avisa&#39;m» en un pla de pagament obre el modal, envia el correu i es tanca amb Escape.</li>
+<li><input disabled="" type="checkbox"> «Comença gratis» porta al registre; Nav i Footer porten a Preguntes (#faq); el correu de contacte és el bo.</li>
+<li><input disabled="" type="checkbox"> FAQ: les 8 respostes són certes avui (prova de 14 dies, fotos, privacitat, cancel·lar, etc.). Revisar-les quan canviï cap decisió.</li>
+<li><input disabled="" type="checkbox"> Mòbil real a 390 px i teclat: sense scroll horitzontal; targetes de conversa i plans llegibles; mode clar si la landing el permet.</li>
+<li><input disabled="" type="checkbox"> Comparteix l&#39;enllaç a WhatsApp/iMessage/X: la imatge i la descripció noves surten bé (<code>og-image</code>).</li>
+<li><input disabled="" type="checkbox"> Search Console: FAQ vàlida a «Resultats enriquits».</li>
+</ul>
+<h2>Armari, Inspiració i Calendari</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Pujar una peça: es detecta la categoria/color; sense <code>REMOVEBG_API_KEY</code> es veu bé igualment.</li>
+<li><input disabled="" type="checkbox"> Peça «a la bugada» o «ja no la tinc»: l&#39;estilista no la proposa.</li>
+<li><input disabled="" type="checkbox"> Inspiració: carpetes, arrossegar, favorit, importar Pinterest (la graella ho mostra).</li>
+<li><input disabled="" type="checkbox"> Calendari: un dia amb look mostra la foto; navegació de mes.</li>
+</ul>
+<h2>Tema, idiomes i accessibilitat</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Clar i fosc a totes les pantalles del telèfon: cap «actiu» amb fons i text del mateix color, cap ratlla tallada.</li>
+<li><input disabled="" type="checkbox"> ca / es / en a tota l&#39;app (excepte Admin, que és en anglès).</li>
+<li><input disabled="" type="checkbox"> VoiceOver/TalkBack: la barra inferior, el xat i els modals es poden fer servir; Escape tanca els modals a escriptori.</li>
+</ul>
+<h2>Després de cada desplegament</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>/api/version</code> = commit nou · <code>/api/health</code> <code>ok: true</code> · Netlify → Deploys verd (si falla, el vell continua viu).</li>
+<li><input disabled="" type="checkbox"> Service worker: a la PWA instal·lada surt l&#39;avís de versió nova i no es queda amb la pantalla vella.</li>
+</ul>

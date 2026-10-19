@@ -1,0 +1,184 @@
+[
+ {
+  "slug": "todo",
+  "title": "TODO: les teves tasques",
+  "group": "Negoci",
+  "source": "TODO.md",
+  "updated": "2026-10-07"
+ },
+ {
+  "slug": "negoci",
+  "title": "Negoci",
+  "group": "Negoci",
+  "source": "ai/NEGOCI.md",
+  "updated": "2026-10-16"
+ },
+ {
+  "slug": "competencia",
+  "title": "Competència",
+  "group": "Negoci",
+  "source": "ai/COMPETITION.md",
+  "updated": "2026-10-04"
+ },
+ {
+  "slug": "llancament",
+  "title": "Llançament",
+  "group": "Negoci",
+  "source": "ai/LAUNCH.md",
+  "updated": "2026-10-16"
+ },
+ {
+  "slug": "pressupost",
+  "title": "Pressupost de llançament",
+  "group": "Negoci",
+  "source": "ai/LAUNCH_BUDGET.md",
+  "updated": "2026-06-17"
+ },
+ {
+  "slug": "campanya",
+  "title": "Campanya de màrqueting",
+  "group": "Negoci",
+  "source": "ai/MARKETING_CAMPAIGN.md",
+  "updated": "2026-10-16"
+ },
+ {
+  "slug": "beta",
+  "title": "Beta",
+  "group": "Negoci",
+  "source": "ai/BETA.md",
+  "updated": "2026-10-07"
+ },
+ {
+  "slug": "roadmap",
+  "title": "Roadmap",
+  "group": "Producte",
+  "source": "ai/ROADMAP.md",
+  "updated": "2026-10-07"
+ },
+ {
+  "slug": "proves",
+  "title": "Proves pendents",
+  "group": "Producte",
+  "source": "ai/PROVES-PENDENTS.md",
+  "updated": "2026-10-07"
+ },
+ {
+  "slug": "estilista",
+  "title": "Pla de l'estilista",
+  "group": "Producte",
+  "source": "ai/PLAN-estilista.md",
+  "updated": "2026-10-07"
+ },
+ {
+  "slug": "referencies",
+  "title": "Referències visuals",
+  "group": "Producte",
+  "source": "ai/VISUAL_REFERENCES.md",
+  "updated": "2026-06-17"
+ },
+ {
+  "slug": "fases",
+  "title": "Fases",
+  "group": "Producte",
+  "source": "ai/phases/README.md",
+  "updated": "2026-06-17"
+ },
+ {
+  "slug": "fase-1",
+  "title": "Fase 1 · Landing",
+  "group": "Producte",
+  "source": "ai/phases/phase-1-landing/README.md",
+  "updated": "2026-06-05"
+ },
+ {
+  "slug": "fase-1-prompts",
+  "title": "Fase 1 · Prompts d'imatges",
+  "group": "Producte",
+  "source": "ai/phases/phase-1-landing/freepik_image_prompts.md",
+  "updated": "2026-06-05"
+ },
+ {
+  "slug": "fase-2",
+  "title": "Fase 2 · Motor d'outfits",
+  "group": "Producte",
+  "source": "ai/phases/phase-2-outfit-engine/README.md",
+  "updated": "2026-06-04"
+ },
+ {
+  "slug": "fase-3",
+  "title": "Fase 3 · Onboarding",
+  "group": "Producte",
+  "source": "ai/phases/phase-3-onboarding/README.md",
+  "updated": "2026-06-04"
+ },
+ {
+  "slug": "fase-4",
+  "title": "Fase 4 · Imatges",
+  "group": "Producte",
+  "source": "ai/phases/phase-4-imagery/README.md",
+  "updated": "2026-06-17"
+ },
+ {
+  "slug": "app",
+  "title": "Com funciona l’app (tècnic)",
+  "group": "Tècnic",
+  "source": "ai/AGENTS.md",
+  "updated": "2026-10-07"
+ },
+ {
+  "slug": "disseny",
+  "title": "Sistema de disseny",
+  "group": "Tècnic",
+  "source": "ai/DESIGN.md",
+  "updated": "2026-10-07"
+ },
+ {
+  "slug": "env",
+  "title": "Variables d'entorn",
+  "group": "Tècnic",
+  "source": "ai/ENV.md",
+  "updated": "2026-10-07"
+ },
+ {
+  "slug": "pipeline",
+  "title": "Pipeline d'imatges",
+  "group": "Tècnic",
+  "source": "ai/OUTFIT_IMAGE_PIPELINE.md",
+  "updated": "2026-10-04"
+ },
+ {
+  "slug": "pipeline-todo",
+  "title": "Pipeline d'imatges: pendents",
+  "group": "Tècnic",
+  "source": "ai/IMAGE_PIPELINE_TODO.md",
+  "updated": "2026-10-04"
+ },
+ {
+  "slug": "nano-banana",
+  "title": "Proves amb Nano Banana",
+  "group": "Tècnic",
+  "source": "ai/NANO_BANANA_TESTS.md",
+  "updated": "2026-10-07"
+ },
+ {
+  "slug": "armari",
+  "title": "Reconstrucció de l'armari",
+  "group": "Tècnic",
+  "source": "ai/WARDROBE_RECONSTRUCTION_NEXT.md",
+  "updated": "2026-10-04"
+ },
+ {
+  "slug": "traspas",
+  "title": "Traspàs del model conversacional",
+  "group": "Tècnic",
+  "source": "ai/TRASPAS-model-conversacional.md",
+  "updated": "2026-10-16"
+ },
+ {
+  "slug": "template",
+  "title": "Sincronització amb la plantilla",
+  "group": "Tècnic",
+  "source": "ai/TEMPLATE.md",
+  "updated": "2026-06-04"
+ }
+]

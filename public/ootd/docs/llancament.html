@@ -1,0 +1,648 @@
+<h1>Llançament: on enviar Outfit of the Day i quan</h1>
+<p>Document de treball per donar a conèixer l&#39;app. Escrit el 16/10/2026 a partir del que es va preparar a mAI Fitness (<code>../mAI_fitness/ai/LAUNCH.md</code>, 10–16/10/2026), adaptat a la moda. Les normes de cada comunitat canvien: <strong>llegeix-les abans de publicar</strong>, sobretot a Reddit; aquí no s&#39;han verificat una per una.</p>
+<p>Es complementa amb <code>ai/BETA.md</code> (com es fa la beta i què es mesura), <code>ai/NEGOCI.md</code> (plans i fases) i <code>ai/MARKETING_CAMPAIGN.md</code> (fil de X i missatges clau).</p>
+<h2>La idea en quatre línies</h2>
+<ol>
+<li>Hi ha canals que es poden fer servir cada setmana (xarxes, comunitats, amics) i canals d&#39;<strong>un sol tret</strong> (Product Hunt, Hacker News, premsa). Els d&#39;un sol tret <strong>no es gasten fins que l&#39;app retingui la gent</strong>.</li>
+<li>Ara l&#39;objectiu no és &quot;fer-se viral&quot;: és aconseguir <strong>40 testers bons</strong> (<code>ai/BETA.md</code>) i saber per què es queden o marxen.</li>
+<li>L&#39;entrada és <strong>lliure</strong>. Quan l&#39;enllaç surt en un blog, un mitjà o una comunitat, hi va un <strong>codi d&#39;invitació propi</strong> d&#39;aquell lloc (Admin → Beta, amb el nom del lloc a la nota): la columna &quot;Used&quot; diu quanta gent ha portat cada lloc.</li>
+<li>Tot el feedback que arribi per fora (WhatsApp, comentaris, DMs) s&#39;apunta. A mAI Fitness hi ha Admin → Beta → &quot;Add feedback&quot; per fer-ho; <strong>a OOTD encara no hi és</strong> (vegeu <code>ai/TRASPAS-model-conversacional.md</code> §13.15). Fins llavors, en un full a part.</li>
+</ol>
+<h2>Condicions per passar de fase</h2>
+<p>Es miren a Admin → Beta (grups, activació, D1/D7/D30, NPS):</p>
+<table>
+<thead>
+<tr>
+<th>Per obrir…</th>
+<th>Cal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Fase 2 (construir en públic, comunitats)</td>
+<td>Pujar l&#39;armari no fa fora la gent: <strong>activació ≥ 60 %</strong> (arriben al primer look) entre els primers testers</td>
+</tr>
+<tr>
+<td>Fase 3 (directoris, premsa local)</td>
+<td><strong>D7 ≥ 25 %</strong></td>
+</tr>
+<tr>
+<td>Fase 4 (Product Hunt, Hacker News, premsa de tecnologia)</td>
+<td><strong>D30 ≥ 15 %, NPS ≥ 30</strong> i pagaments (Stripe) en marxa</td>
+</tr>
+</tbody></table>
+<p>El risc propi d&#39;OOTD és el mateix que el de mAI Fitness amb la rutina: <strong>entrar l&#39;armari és pesat</strong>. Si el primer feedback ho diu, això va abans que qualsevol llançament gran.</p>
+<h2>Idiomes i mercats</h2>
+<p>L&#39;app està en català, castellà i anglès. L&#39;ordre és per on és més fàcil guanyar, no per on hi ha més gent:</p>
+<table>
+<thead>
+<tr>
+<th>Mercat</th>
+<th>A favor</th>
+<th>En contra</th>
+<th>Quan</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Català</strong></td>
+<td>Gairebé cap app de moda en català; premsa i xarxes catalanes agraeixen un producte fet aquí; la teva xarxa</td>
+<td>Mercat petit</td>
+<td>Fase 1</td>
+</tr>
+<tr>
+<td><strong>Castellà</strong></td>
+<td>La teva xarxa; preus en euros; comunitat de moda molt activa a Instagram i TikTok</td>
+<td>Competència mitjana</td>
+<td>Fases 1–2</td>
+</tr>
+<tr>
+<td><strong>Anglès (Europa)</strong></td>
+<td>Mercat enorme; Product Hunt, Hacker News, Reddit i X</td>
+<td>Molta competència (Yafa, Whering, Indyx, Acloset…)</td>
+<td>Fases 2–4</td>
+</tr>
+<tr>
+<td><strong>Anglès (EUA)</strong></td>
+<td>El mercat més gran</td>
+<td>Cobra en euros; competència forta</td>
+<td>Més endavant</td>
+</tr>
+</tbody></table>
+<h2>Decisions a prendre (proposta, copiant les de mAI Fitness)</h2>
+<ul>
+<li><strong>Primer, dues setmanes de proves</strong> amb amics i tu mateix. Res públic fins llavors.</li>
+<li><strong>Entrada lliure</strong>; codi només per als enllaços de blogs, mitjans i comunitats.</li>
+<li>Mentre <strong>Stripe no estigui configurat</strong>, els textos diuen &quot;gratis durant la beta&quot;, mai &quot;14 dies gratis&quot; ni preus.</li>
+<li><strong>Sense sortir a càmera</strong>: vídeos de pantalla amb titulars, com els teasers. (A diferència del fitness, en moda una cara i un armari reals ajuden molt; si algú del grup s&#39;hi presta, és el millor contingut possible.)</li>
+<li><strong>3–4 hores a la setmana.</strong> El calendari està fet amb aquest pressupost.</li>
+</ul>
+<h2>Domini</h2>
+<p>Al codi hi apareix <code>https://outfitoftheday.app</code>. <strong>Cal confirmar que està comprat i que apunta a Netlify</strong> abans de posar-lo enlloc. Si no ho està, comprovar-ho al registre de <code>.app</code> i comprar-lo abans de publicar res: és la peça més barata de tot el llançament i esperar té el risc que algú el registri.</p>
+<h2>Abans de publicar res</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Dues setmanes de proves amb amics (fase 1) i els errors greus arreglats. Les proves a mà pendents són a <code>ai/PROVES-PENDENTS.md</code>.</li>
+<li><input disabled="" type="checkbox"> Domini propi comprat i funcionant.</li>
+<li><input disabled="" type="checkbox"> <strong>Teasers</strong> (§ Teasers): <strong>no es fan fins que l&#39;app estigui provada</strong>. Si es graven abans, s&#39;han de tornar a fer.</li>
+<li><input disabled="" type="checkbox"> 4–5 captures de pantalla netes: Avui (el look amb la foto), la conversa amb l&#39;estilista, l&#39;armari, el calendari de looks portats, &quot;Me&#39;l poso&quot;.</li>
+<li><input disabled="" type="checkbox"> Comptes amb el nom de l&#39;app a Instagram, TikTok, Pinterest, X i LinkedIn (pàgina), encara que no es facin servir tots.</li>
+<li><input disabled="" type="checkbox"> Un correu de contacte que no sigui el personal.</li>
+<li><input disabled="" type="checkbox"> Una manera d&#39;apuntar el feedback que arriba per fora (Admin o un full).</li>
+</ul>
+<h2>Calendari (3–4 h per setmana)</h2>
+<p>Les setmanes compten des que comença la fase 1. Les dates es mouen si les condicions de cada fase no es compleixen.</p>
+<table>
+<thead>
+<tr>
+<th>Setmanes</th>
+<th>Fase</th>
+<th>Què es fa</th>
+<th>Hores</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1–2</td>
+<td>1 · Proves amb amics</td>
+<td>Fer-la servir tu cada dia; 5–10 amics, un a un (missatge de sota); apuntar tot el que diguin</td>
+<td>1 h demanar i recollir, la resta arreglar</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Preparar</td>
+<td>Les tasques de &quot;Preparar&quot; (§ Publicació dia a dia); <strong>gravar els teasers</strong></td>
+<td>3 h</td>
+</tr>
+<tr>
+<td>4–6</td>
+<td>2 · Construir en públic</td>
+<td>Les setmanes 1–3 de § Publicació dia a dia</td>
+<td>3–4 h</td>
+</tr>
+<tr>
+<td>7–8</td>
+<td>3 · Directoris</td>
+<td>Directoris i premsa catalana</td>
+<td>3 h</td>
+</tr>
+<tr>
+<td>Quan toqui</td>
+<td>4 · El dia gran</td>
+<td>Product Hunt, premsa de tecnologia i de moda, Show HN</td>
+<td>4 h aquella setmana, més respondre el dia mateix</td>
+</tr>
+</tbody></table>
+<h3>No trepitjar mAI Fitness</h3>
+<p>Les dues apps es presenten des del <strong>mateix perfil personal</strong> de LinkedIn i X. Si surten la mateixa setmana, la teva xarxa veu dues presentacions seguides i les dues rendeixen menys. Les dates de mAI Fitness (<code>../mAI_fitness/ai/LAUNCH.md</code>, 16/10/2026) són:</p>
+<ul>
+<li><strong>3–22 de novembre de 2026:</strong> presentació i construir en públic (X, LinkedIn, Instagram, TikTok, YouTube, Reddit, Indie Hackers);</li>
+<li><strong>24 de novembre – 3 de desembre:</strong> directoris i premsa catalana;</li>
+<li><strong>12–14 de gener de 2027:</strong> Product Hunt, Genbeta/Xataka i Show HN.</li>
+</ul>
+<p><strong>Regla:</strong> cap presentació d&#39;OOTD a LinkedIn o X a menys de <strong>dues setmanes</strong> d&#39;una de mAI Fitness, i mai dos Product Hunt al mateix mes (els teus seguidors de Product Hunt són els mateixos). Instagram, TikTok i Pinterest són comptes de cada app i no xoquen.</p>
+<p><strong>Quan fer la fase 4.</strong> mAI Fitness la posa al gener (propòsits d&#39;any nou). En moda, els moments naturals són els <strong>canvis de temporada</strong>: el canvi d&#39;armari de primavera (<strong>finals de febrer – març</strong>) i el de tardor (setembre). Proposta: fase 4 al <strong>març</strong>. Encaixa amb la regla d&#39;abans, dona temps a complir les condicions i a tenir Stripe en marxa. Evitar Black Friday i Nadal: el soroll de compres tapa una app que diu &quot;no cal comprar res&quot; (encara que, passades les rebaixes, &quot;treu partit del que t&#39;han regalat&quot; és un bon missatge per al gener).</p>
+<h2>Publicació dia a dia</h2>
+<p>A mAI Fitness, cada publicació té el dia i l&#39;hora de més interacció del seu lloc, el vídeo, el text amb l&#39;enllaç i el codi del canal, i una casella per marcar-la (pestanya &quot;Publicar&quot; del document de negoci de mAI Fitness). Aquí hi ha el mateix per a Outfit, en <strong>setmanes relatives</strong> (S1 = la primera setmana de la fase 2). Les hores són de Madrid. <strong>Les dates reals es posen quan se sàpiga quan acaben les proves</strong>, respectant § No trepitjar mAI Fitness.</p>
+<h3>La regla de cada lloc</h3>
+<p>Dades generals de Buffer (52 milions de publicacions, 2026) i SocialPilot (2026), les mateixes que fa servir mAI Fitness. Són un punt de partida: al cap de tres setmanes manen els teus números (les estadístiques de cada xarxa i la columna &quot;Used&quot; dels codis).</p>
+<table>
+<thead>
+<tr>
+<th>Lloc</th>
+<th>Quan</th>
+<th>Com</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LinkedIn</strong></td>
+<td>Dimecres 9:00 (després dijous i divendres)</td>
+<td>Des del perfil personal, amb el vídeo pujat directament. <strong>L&#39;enllaç va al primer comentari.</strong> Les dues primeres hores, respondre cada comentari amb una frase de veritat; no editar el post la primera hora. Català i castellà, <strong>amb una setmana de diferència</strong> perquè la xarxa no vegi el mateix post dos cops seguits.</td>
+</tr>
+<tr>
+<td><strong>X</strong></td>
+<td>Dimarts o dimecres. Català i castellà 9–11 h; anglès a les 15:00 (9 h a Nova York)</td>
+<td>En fils, el vídeo al primer missatge i <strong>l&#39;enllaç només a l&#39;últim</strong> (X ensenya menys els posts amb enllaços). Fixar el fil al perfil i respondre la primera hora.</td>
+</tr>
+<tr>
+<td><strong>Instagram</strong></td>
+<td>Dijous 19:00</td>
+<td>Reel amb una portada amb el titular, 3–5 etiquetes. L&#39;enllaç a la bio, i una <strong>història amb adhesiu d&#39;enllaç</strong> que porti al Reel. Els <strong>carrusels</strong> de captures es guarden i es comparteixen més que un segon Reel amb el mateix vídeo. <em>En moda, Instagram és el canal principal (no un de més, com a mAI Fitness): val la pena un post més a la setmana si hi ha material.</em></td>
+</tr>
+<tr>
+<td><strong>TikTok i YouTube Shorts</strong></td>
+<td>Diumenge 20:00 (les visualitzacions pugen de 18 a 23 h)</td>
+<td>Acabar el text amb una pregunta perquè la gent comenti; respondre preguntes concretes amb un altre vídeo curt. YouTube Shorts és el mateix vídeo cinc minuts després: la gent el troba buscant durant mesos. <em>Per a Outfit, el diumenge al vespre també és quan la gent pensa què es posarà la setmana: encaixa.</em></td>
+</tr>
+<tr>
+<td><strong>Pinterest</strong></td>
+<td>Sense dia fix (vida llarga)</td>
+<td>Pins verticals amb el look i les peces, enllaç a la landing. <em>Hipòtesi pròpia d&#39;Outfit, no ve de mAI Fitness: mirar-ne els números a la S3.</em></td>
+</tr>
+<tr>
+<td><strong>Reddit i Indie Hackers</strong></td>
+<td>Entre setmana, 14–16 h (r/SideProject, dilluns 14–15 h)</td>
+<td>Llegir les normes; demanar opinió, no anunciar; respondre tots els comentaris, també els durs. A Indie Hackers, <strong>xifres reals</strong> d&#39;Admin → Beta, encara que siguin petites.</td>
+</tr>
+<tr>
+<td><strong>Product Hunt</strong></td>
+<td>Dimarts, a les <strong>9:01</strong> (comença a les 00:01 de Califòrnia)</td>
+<td>Avisar 30–50 persones uns dies abans; <strong>no demanar vots</strong>, demanar que la provin i comentin; el primer comentari al moment i el dia responent.</td>
+</tr>
+<tr>
+<td><strong>Show HN</strong></td>
+<td>20:00 (migdia als EUA), un altre dia de la mateixa setmana</td>
+<td>Títol sobri sense adjectius; comentari tècnic i honest; reservar 3–4 hores.</td>
+</tr>
+</tbody></table>
+<p><strong>Ull amb el cost el dia gran:</strong> a Outfit, cada foto d&#39;un look costa ≈0,04 $ (Gemini), molt més que un missatge. Un pic de registres de Product Hunt o Hacker News pot disparar la factura: mirar Admin → Analytics aquell dia, i comprovar abans que els límits del pla gratuït i els pressupostos mensuals (<code>GEMINI_MONTHLY_BUDGET_USD</code>, <code>ANTHROPIC_MONTHLY_BUDGET_USD</code>) estan posats.</p>
+<h3>Preparar (la setmana abans de S1)</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Decidir el domini</strong> (§ Domini). Si canvia, canviar també l&#39;adreça del final dels teasers.</li>
+<li><input disabled="" type="checkbox"> <strong>Crear els comptes</strong> d&#39;Instagram, TikTok, YouTube i Pinterest <strong>com a compte d&#39;empresa o de creador</strong> (si no, l&#39;enllaç de la bio no es pot clicar). Mateix nom a tot arreu, la icona de l&#39;app com a foto i l&#39;enllaç a la bio.</li>
+<li><input disabled="" type="checkbox"> <strong>Un codi d&#39;invitació per canal</strong> (Admin → Beta → codis: el nom del canal a la nota i prou usos, per exemple 200): LinkedIn, X, Instagram, TikTok, YouTube, Pinterest, Reddit i Indie Hackers. Els de directoris, premsa, Product Hunt i Hacker News, més endavant.</li>
+<li><input disabled="" type="checkbox"> <strong>4–5 captures netes</strong> des del mòbil, amb un armari que quedi bé: Avui (el look amb la foto), &quot;Avui tens un pla diferent?&quot;, l&#39;estilista, l&#39;armari, el calendari de looks portats. Serveixen per al carrusel, els directoris i Product Hunt.</li>
+<li><input disabled="" type="checkbox"> Una captura per a la història de S3 (vegeu S3).</li>
+<li><input disabled="" type="checkbox"> Els teasers (§ Teasers), només si l&#39;app ja està provada.</li>
+</ul>
+<h3>S1 · La presentació</h3>
+<table>
+<thead>
+<tr>
+<th>Dia i hora</th>
+<th>Lloc</th>
+<th>Idioma</th>
+<th>Què</th>
+<th>Vídeo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dt 15:00</td>
+<td>X</td>
+<td>EN</td>
+<td>Fil de 5 missatges (§ Textos preparats)</td>
+<td>teaser EN vertical</td>
+</tr>
+<tr>
+<td>dc 9:00</td>
+<td>LinkedIn</td>
+<td>CA</td>
+<td>Presentació; l&#39;enllaç al primer comentari</td>
+<td>teaser CA vertical</td>
+</tr>
+<tr>
+<td>dc 10:30</td>
+<td>X</td>
+<td>CA</td>
+<td>Un sol post; si algú ha contestat el fil d&#39;ahir, respondre-li abans</td>
+<td>teaser CA vertical</td>
+</tr>
+<tr>
+<td>dj 19:00</td>
+<td>Instagram</td>
+<td>CA</td>
+<td>Reel + història amb adhesiu d&#39;enllaç</td>
+<td>teaser CA vertical</td>
+</tr>
+<tr>
+<td>dg 20:00</td>
+<td>TikTok</td>
+<td>ES</td>
+<td>Vídeo acabat amb una pregunta (&quot;Què li falta perquè la facis servir?&quot;)</td>
+<td>teaser ES vertical</td>
+</tr>
+<tr>
+<td>dg 20:15</td>
+<td>YouTube Shorts</td>
+<td>ES</td>
+<td>El mateix vídeo, títol amb <code>#shorts</code></td>
+<td>teaser ES vertical</td>
+</tr>
+</tbody></table>
+<h3>S2 · Castellà i comunitats</h3>
+<table>
+<thead>
+<tr>
+<th>Dia i hora</th>
+<th>Lloc</th>
+<th>Idioma</th>
+<th>Què</th>
+<th>Vídeo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dl 14:00</td>
+<td>r/SideProject</td>
+<td>EN</td>
+<td>Demanar opinió (§ Textos preparats)</td>
+<td>teaser EN horitzontal</td>
+</tr>
+<tr>
+<td>dt 10:00</td>
+<td>X</td>
+<td>ES</td>
+<td>Un sol post</td>
+<td>teaser ES vertical</td>
+</tr>
+<tr>
+<td>dc 9:00</td>
+<td>LinkedIn</td>
+<td>ES</td>
+<td>Presentació, una setmana després de la catalana</td>
+<td>teaser ES vertical</td>
+</tr>
+<tr>
+<td>dj 19:00</td>
+<td>Instagram</td>
+<td>ES</td>
+<td><strong>Carrusel</strong> de 5 captures; a la primera, un titular gran (&quot;El look de hoy, con tu ropa&quot;)</td>
+<td>captures</td>
+</tr>
+<tr>
+<td>dg 20:00</td>
+<td>TikTok</td>
+<td>CA</td>
+<td>Vídeo en català</td>
+<td>teaser CA vertical</td>
+</tr>
+<tr>
+<td>(qualsevol dia)</td>
+<td>Pinterest</td>
+<td>ES/EN</td>
+<td>3–5 pins amb looks</td>
+<td>captures</td>
+</tr>
+</tbody></table>
+<h3>S3 · Construir en públic: una història petita i real</h3>
+<p>Una història concreta funciona millor que una llista de funcions. A mAI Fitness és &quot;la meva app em va dir que havia fet 3 de 4 sessions, no era veritat, i ho he arreglat&quot;. <strong>Candidata per a Outfit</strong> (va passar de debò, commit <code>1ae212e</code>): l&#39;estilista deia que ja tenies tot el que calia per a una entrevista, i proposava uns texans. Ara mira la formalitat de cada peça, et diu clarament què et falta i no fa veure que els texans són pantalons d&#39;entrevista.</p>
+<table>
+<thead>
+<tr>
+<th>Dia i hora</th>
+<th>Lloc</th>
+<th>Idioma</th>
+<th>Què</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dt 15:00</td>
+<td>X</td>
+<td>EN</td>
+<td>Fil curt de 3 missatges amb la història; l&#39;enllaç a l&#39;últim, <code>#buildinpublic</code></td>
+</tr>
+<tr>
+<td>dc 9:00</td>
+<td>LinkedIn</td>
+<td>CA</td>
+<td>La mateixa història en format llarg; l&#39;enllaç al primer comentari</td>
+</tr>
+<tr>
+<td>dj 15:00</td>
+<td>Indie Hackers</td>
+<td>EN</td>
+<td>&quot;Tres setmanes amb una app d&#39;estil: què m&#39;han ensenyat els primers usuaris&quot;, amb registres, activats, D7 i cost d&#39;IA per usuari actiu</td>
+</tr>
+<tr>
+<td>dg</td>
+<td>—</td>
+<td>—</td>
+<td><strong>Mirar quin canal porta gent que es queda</strong> (columna &quot;Used&quot; i activació per grup). Repetir els dos que porten gent activa; deixar el que porta registres que no s&#39;activen.</td>
+</tr>
+</tbody></table>
+<h3>S4–S5 · Directoris i premsa</h3>
+<ul>
+<li><strong>S4 dt 10:00:</strong> BetaList, AlternativeTo (com a alternativa a Whering, Indyx, Acloset, Stylebook) i SaaSHub. Descripció curta = el lema de Product Hunt.</li>
+<li><strong>S5 dt 10:00:</strong> There&#39;s An AI For That, Futurepedia, Uneed i Microlaunch (aquests dos donen un dia de llançament: dimarts o dimecres). No cal pagar per sortir abans.</li>
+<li><strong>S5 dj 10:00:</strong> correu als mitjans catalans (un per persona, amb el seu nom, el vídeo adjunt o per descarregar). Plantilla a § Textos preparats.</li>
+</ul>
+<h3>El dia gran (si es compleixen les condicions)</h3>
+<ul>
+<li><strong>Dimarts 9:01:</strong> Product Hunt.</li>
+<li><strong>Dimecres 10:00:</strong> correu a Genbeta i Xataka, i als mitjans de moda (&quot;ahir va sortir a Product Hunt&quot;).</li>
+<li><strong>Dijous 20:00:</strong> Show HN.</li>
+</ul>
+<h2>Canals</h2>
+<h3>Es poden repetir</h3>
+<table>
+<thead>
+<tr>
+<th>Canal</th>
+<th>Idioma</th>
+<th>Què funciona</th>
+<th>Compte</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Amics, feina (WhatsApp)</td>
+<td>ca / es</td>
+<td>Demanar-ho un a un, amb el codi</td>
+<td>Un missatge a un grup rendeix molt menys</td>
+</tr>
+<tr>
+<td>Estilistes personals i botigues de barri</td>
+<td>ca / es</td>
+<td>Oferir-los accés complet gratis (Admin → Users) a canvi de provar-la amb clients</td>
+<td>Volen veure-la funcionar en persona</td>
+</tr>
+<tr>
+<td>Instagram Reels i TikTok</td>
+<td>ca / es / en</td>
+<td>Gravació de pantalla de 15–30 s amb un titular i <strong>un sol missatge per vídeo</strong> (&quot;el look d&#39;avui amb la teva roba&quot;, &quot;et diu què et falta, sense inventar-s&#39;ho&quot;), sense sortir a càmera</td>
+<td>Sense cara costa més arribar lluny; el teaser serveix de fixat al perfil</td>
+</tr>
+<tr>
+<td>Pinterest</td>
+<td>es / en</td>
+<td>Pins verticals amb el look d&#39;avui i les peces; enllaç a la landing</td>
+<td>Trànsit lent però constant; és on la gent ja busca outfits</td>
+</tr>
+<tr>
+<td>X (#buildinpublic)</td>
+<td>en</td>
+<td>Xifres i decisions de la beta, amb captura o vídeo</td>
+<td>Porta fundadors, no gent de moda</td>
+</tr>
+<tr>
+<td>LinkedIn (personal)</td>
+<td>ca / es</td>
+<td>La història: per què l&#39;has fet, què has après</td>
+<td>Una per setmana com a màxim</td>
+</tr>
+<tr>
+<td>Indie Hackers</td>
+<td>en</td>
+<td>Fil de &quot;com vaig&quot; amb números</td>
+<td>Públic de producte</td>
+</tr>
+<tr>
+<td>Reddit: r/SideProject, r/webdev, r/SaaS</td>
+<td>en</td>
+<td>&quot;He fet això, què en penseu?&quot; amb el vídeo</td>
+<td>Comprova les normes de cada subreddit</td>
+</tr>
+<tr>
+<td>Reddit: r/capsulewardrobe, r/femalefashionadvice, r/malefashionadvice</td>
+<td>en</td>
+<td>Demanar opinió, no anunciar</td>
+<td>Solen esborrar l&#39;autopromoció; participar-hi abans</td>
+</tr>
+<tr>
+<td>Grups de Telegram/Discord i fòrums de moda en castellà</td>
+<td>es</td>
+<td>Participar-hi abans i després ensenyar-la</td>
+<td>Cal antiguitat</td>
+</tr>
+</tbody></table>
+<h3>Directoris (una alta, trànsit petit però constant)</h3>
+<p>BetaList · There&#39;s An AI For That · Futurepedia · AlternativeTo (com a alternativa a Whering, Indyx, Acloset, Stylebook) · SaaSHub · Uneed · Microlaunch. En anglès. Alguns cobren per sortir abans: no cal pagar.</p>
+<h3>Un sol tret</h3>
+<table>
+<thead>
+<tr>
+<th>Canal</th>
+<th>Què cal</th>
+<th>Què dona</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Product Hunt</strong></td>
+<td>Text i vídeo en anglès, 4–5 imatges, un primer comentari teu, i 30–50 persones avisades per al dia</td>
+<td>Visibilitat entre gent de producte, enllaços, alguna menció en butlletins</td>
+</tr>
+<tr>
+<td><strong>Hacker News (Show HN)</strong></td>
+<td>Un títol sobri i un comentari tècnic honest; respondre durant hores</td>
+<td>Trànsit molt alt o res; públic exigent</td>
+</tr>
+<tr>
+<td><strong>Mitjans de tecnologia en castellà</strong> (Genbeta, Xataka)</td>
+<td>Un correu curt amb el vídeo i què la fa diferent</td>
+<td>Molts registres d&#39;un sol cop si surt</td>
+</tr>
+<tr>
+<td><strong>Mitjans de moda i estil</strong> (seccions de moda de diaris, blogs i newsletters de moda)</td>
+<td>L&#39;angle &quot;l&#39;armari que ja tens&quot;, sostenibilitat, menys compres</td>
+<td>Públic just; costa més arribar-hi</td>
+</tr>
+<tr>
+<td><strong>Mitjans catalans</strong> (VIA Empresa, seccions de tecnologia dels diaris, ràdio local)</td>
+<td>L&#39;angle &quot;feta a Catalunya, en català&quot;</td>
+<td>Poc volum, molta credibilitat local</td>
+</tr>
+</tbody></table>
+<h2>Textos preparats</h2>
+<p>Esborranys a partir dels de mAI Fitness: adapta&#39;ls a la teva veu i <strong>comprova que tot el que diuen és cert</strong> a l&#39;app el dia que es publiquin. En blogs, mitjans i comunitats, l&#39;enllaç porta el codi d&#39;aquell lloc: <code>https://&lt;domini&gt;/register?invite=[CODI]</code>.</p>
+<p><strong>WhatsApp a un amic (ca)</strong></p>
+<blockquote>
+<p>Ei! He fet una app que cada matí et proposa què posar-te amb la roba que ja tens, i un estilista amb qui pots parlar si avui tens un pla diferent. Busco gent que la provi unes setmanes i em digui què no li agrada. T&#39;hi apuntes? Entres per aquí: <code>https://&lt;domini&gt;/register</code>. Tot el que em diguis, encara que sigui &quot;això és un pal&quot;, em va bé.</p>
+</blockquote>
+<p><strong>Presentació, LinkedIn (ca)</strong></p>
+<blockquote>
+<p>Fa uns mesos vaig començar una app per a mi. Tenia l&#39;armari ple i cada matí em posava el mateix.</p>
+<p>Avui la deixo veure: Outfit of the Day.</p>
+<p>→ Quan l&#39;obres, el look d&#39;avui ja hi és: fet amb la teva roba, pensat per al temps que fa i per al que tens avui.
+→ Si avui tens un sopar o una entrevista, ho dius i el look canvia. Si no t&#39;agrada una peça, la canvies amb un toc.
+→ Si et falta alguna cosa per a una ocasió, t&#39;ho diu clar. No fa veure que ja la tens.
+→ Un estilista d&#39;IA aprèn el teu gust. Proposa canvis al teu perfil i a l&#39;armari, i tu decideixes si els acceptes.</p>
+<p>Funciona al navegador del mòbil i s&#39;instal·la com una app. En català, castellà i anglès.</p>
+<p>Ara la fem servir jo i un grup petit d&#39;amics. El pas següent és posar-la a les mans de gent que en sap: estilistes, assessors d&#39;imatge i gent a qui la roba li importa de debò. Si ets una d&#39;aquestes persones i tens 20 minuts per dir-me què faries diferent, escriu-me.</p>
+<p>És gratis durant la beta. L&#39;enllaç, al primer comentari 👇</p>
+</blockquote>
+<p>Primer comentari: <code>Es pot provar gratis durant la beta: &lt;enllaç amb el codi de LinkedIn&gt;</code></p>
+<p><strong>Presentació, LinkedIn (es)</strong></p>
+<blockquote>
+<p>Hace unos meses empecé una app para mí. Tenía el armario lleno y cada mañana me ponía lo mismo.</p>
+<p>Hoy la enseño: Outfit of the Day.</p>
+<p>→ Cuando la abres, el look de hoy ya está: hecho con tu ropa, pensado para el tiempo que hace y para lo que tienes hoy.
+→ Si hoy tienes una cena o una entrevista, lo dices y el look cambia. Si no te gusta una prenda, la cambias con un toque.
+→ Si te falta algo para una ocasión, te lo dice claro. No finge que ya lo tienes.
+→ Un estilista de IA aprende tu gusto. Propone cambios en tu perfil y tu armario, y tú decides si los aceptas.</p>
+<p>Funciona en el navegador del móvil y se instala como una app. En castellano, catalán e inglés.</p>
+<p>Ahora la usamos yo y un grupo pequeño de amigos. El siguiente paso es ponerla en manos de gente que sabe: estilistas, asesores de imagen y gente a la que la ropa le importa de verdad. Si eres una de esas personas y tienes 20 minutos para decirme qué harías distinto, escríbeme.</p>
+<p>Es gratis durante la beta. El enlace, en el primer comentario 👇</p>
+</blockquote>
+<p>Primer comentario: <code>Se puede probar gratis durante la beta: &lt;enlace con el código de LinkedIn&gt;</code></p>
+<p><strong>Presentació, X (fil en anglès)</strong> — complementa el fil de <code>ai/MARKETING_CAMPAIGN.md</code></p>
+<blockquote>
+<p>1/ I built Outfit of the Day: every morning, today&#39;s look is already there, made from the clothes you own. 🧵 [vídeo]</p>
+</blockquote>
+<blockquote>
+<p>2/ It knows the weather and what your day holds. A dinner, an interview, a lazy Sunday: say it and the look changes. Don&#39;t like the shoes? Swap them with one tap.</p>
+</blockquote>
+<blockquote>
+<p>3/ The rule I care about most: it&#39;s honest about your closet. If an occasion needs something you don&#39;t own, it says so, instead of pretending your jeans are interview trousers.</p>
+</blockquote>
+<blockquote>
+<p>4/ The AI stylist learns your taste, but it never changes your profile or your wardrobe on its own: it proposes, you accept or reject.</p>
+</blockquote>
+<blockquote>
+<p>5/ It&#39;s a web app: open it on your phone and add it to your home screen. In English, Spanish and Catalan.</p>
+<p>Free during the beta: <link></p>
+<p>Stylists and fashion people: I&#39;d love you to tear it apart. #buildinpublic</p>
+</blockquote>
+<p><strong>Presentació, X (un sol post, ca / es)</strong></p>
+<blockquote>
+<p>He fet Outfit of the Day: cada matí, el look d&#39;avui ja hi és, amb la roba que tens. Si tens un pla diferent, ho dius i canvia. I si et falta alguna cosa, t&#39;ho diu.</p>
+<domini></blockquote>
+<blockquote>
+<p>He hecho Outfit of the Day: cada mañana, el look de hoy ya está, con la ropa que tienes. Si tienes otro plan, lo dices y cambia. Y si te falta algo, te lo dice.</p>
+<domini></blockquote>
+<p><strong>Reel d&#39;Instagram (ca, S1)</strong></p>
+<blockquote>
+<p>El look d&#39;avui ja és aquí quan obres l&#39;app: amb la teva roba, pensat per al temps i per al que tens avui. Si tens un pla diferent, ho dius i canvia.</p>
+<p>Gratis durant la beta: enllaç a la bio.</p>
+<p>#outfitdeldia #armari #estil #moda #fetacatalunya</p>
+</blockquote>
+<p><strong>Carrusel d&#39;Instagram (es, S2)</strong></p>
+<blockquote>
+<p>Lo que hace Outfit of the Day, en cinco pantallas:</p>
+<ol>
+<li>Hoy: el look de hoy, con tu ropa</li>
+<li>¿Otro plan? Cena, entrevista, deporte: el look cambia</li>
+<li>El estilista: le hablas y propone, tú decides</li>
+<li>Tu armario, con lo que llevas y lo que no te pones hace tiempo</li>
+<li>Lo que te has puesto, día a día</li>
+</ol>
+<p>Gratis durante la beta: enlace en la bio.</p>
+<p>#outfitdeldia #armariocapsula #estilo #moda #ootd</p>
+</blockquote>
+<p><strong>TikTok (es, S1 / ca, S2)</strong></p>
+<blockquote>
+<p>Mi app te dice qué ponerte cada mañana con la ropa que ya tienes. Y si para una ocasión te falta algo, te lo dice. ¿Qué le falta para que la uses? 👇</p>
+<p>#ootd #outfitdeldia #armariocapsula #moda #estilo</p>
+</blockquote>
+<blockquote>
+<p>La meva app et diu què posar-te cada matí amb la roba que ja tens, en català. I si per a una ocasió et falta alguna cosa, t&#39;ho diu. Què hi trobes a faltar? 👇</p>
+<p>#ootd #outfitdeldia #moda #estil #catalunya</p>
+</blockquote>
+<p><strong>Product Hunt</strong></p>
+<ul>
+<li>Nom: Outfit of the Day</li>
+<li>Lema (màx. 60 caràcters): <code>Today&#39;s outfit from the clothes you already own</code></li>
+<li>Descripció: <code>Outfit of the Day opens with today&#39;s look ready: your own clothes, the weather and what your day holds. Change the plan or a piece in one tap, talk to a stylist that learns your taste, and see honestly what&#39;s missing for an occasion. The stylist proposes; you decide.</code></li>
+<li>Primer comentari: qui ets, per què l&#39;has fet, què és diferent (la teva roba, honestedat amb el que falta, proposa i tu decideixes), què encara falla, i una pregunta concreta a la comunitat.</li>
+</ul>
+<p><strong>Show HN</strong></p>
+<ul>
+<li>Títol: <code>Show HN: Outfit of the Day – an AI stylist that only proposes; you accept or reject</code></li>
+<li>Comentari: com està fet (selecció de l&#39;armari, temps i rotació amb regles; el model tria entre les peces que li passa l&#39;app i fa servir eines amb propostes estructurades; foto del look generada a part), què no fa, i que és una PWA.</li>
+</ul>
+<p><strong>Reddit, demanar opinió (en)</strong></p>
+<blockquote>
+<p>I built a web app that picks today&#39;s outfit from the clothes you already own (weather, occasion, a stylist you can talk to). I&#39;m looking for honest feedback from people who care about clothes, not signups. What would make you drop it in the first five minutes? [vídeo]</p>
+</blockquote>
+<p><strong>Correu als mitjans catalans (ca)</strong></p>
+<ul>
+<li>Assumpte: <code>Una app feta aquí que et diu què posar-te amb la roba que ja tens, en català</code><blockquote>
+<p>Hola, [nom]:</p>
+<p>Soc Jose, de [ciutat]. He fet Outfit of the Day, una app que cada matí et proposa el look del dia amb la roba que ja tens, i un estilista d&#39;IA amb qui pots parlar si tens un pla diferent. És una de les poques apps d&#39;estil amb IA que funciona en català.</p>
+<p>El que la fa diferent: no t&#39;empeny a comprar. Treu partit del teu armari i, si per a una ocasió et falta alguna cosa, t&#39;ho diu clar. L&#39;estilista proposa i tu decideixes. Ara la fan servir [N] persones en beta.</p>
+<p>T&#39;adjunto un vídeo de 40 segons. Si et pot interessar, t&#39;ho explico en 15 minuts quan et vagi bé.</p>
+<p>&lt;enllaç&gt;</p>
+<p>Gràcies,
+Jose</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>Indie Hackers (en, S3)</strong></p>
+<ul>
+<li>Títol: <code>Three weeks into an AI stylist app: what the first users taught me</code><blockquote>
+<p>I&#39;m building Outfit of the Day, a web app that picks today&#39;s outfit from the clothes you already own and lets you talk to an AI stylist that only proposes changes.</p>
+<p>Numbers after three weeks in public:</p>
+<ul>
+<li>[N] sign-ups, [N] activated (saw a first look)</li>
+<li>D7 retention: [N] %</li>
+<li>AI cost per active user: about [N] € a month (photos are most of it)</li>
+<li>What people asked for most: [...]</li>
+</ul>
+<p>What surprised me: [...]</p>
+<p>What I&#39;m doing next: [...]</p>
+<p>Try it: &lt;enllaç&gt;. Feedback welcome, especially the harsh kind.</p>
+</blockquote>
+</li>
+</ul>
+<h2>Teasers</h2>
+<p>Un vídeo curt de producte (~40 s) que serveix de fixat als perfils, de vídeo a Product Hunt i de base per als Reels. <strong>Pendent: no es fa fins que l&#39;app estigui provada</strong> (§ Abans de publicar res); gravar-lo abans vol dir refer-lo.</p>
+<p><strong>Com es van fer a mAI Fitness</strong> (<code>../mAI_fitness/scripts/teaser/README.md</code>, refets el 16/10 amb les pantalles noves):</p>
+<ul>
+<li><strong>Tocs reals</strong> sobre una build local amb dades de prova (mai producció), a 390×844, gravats fotograma a fotograma per Chrome (DevTools), amb un punt on es toca.</li>
+<li>Compostos dins d&#39;un <strong>marc de telèfon amb un titular per pantalla</strong> (<code>compose.html</code>) i renderitzats amb ffmpeg.</li>
+<li><strong>Tres idiomes</strong> (ca/es/en: l&#39;script troba els botons pel text de cada idioma) i <strong>dos formats</strong>: vertical 1080×1920 (Reels, TikTok, Stories) i horitzontal 1920×1080 (X, LinkedIn, Product Hunt).</li>
+<li>La conversa del coach és text d&#39;exemple inserit a mà, no una resposta del model: cada presa surt igual i no costa res.</li>
+<li>Cada presa comença d&#39;una base de dades nova (la presa canvia les dades).</li>
+</ul>
+<p><strong>Proposta d&#39;escenes per a Outfit</strong> (a validar amb maqueta abans de gravar):</p>
+<ol>
+<li>Avui: el look del dia amb la foto i el motiu en una línia.</li>
+<li>&quot;Avui tens un pla diferent?&quot; → Sopar → el look canvia.</li>
+<li>Canviar una peça amb un toc.</li>
+<li>L&#39;estilista: &quot;Avui plou i tinc reunió&quot; → resposta i targeta del look (text d&#39;exemple, com a mAI Fitness).</li>
+<li>&quot;Me&#39;l poso&quot; → el calendari amb la fila de looks portats.</li>
+</ol>
+<p><strong>Què caldrà per fer-los a OOTD:</strong> copiar <code>scripts/teaser/</code> de mAI Fitness i adaptar <code>record.mjs</code> (etiquetes dels botons, ruta d&#39;inici de sessió, usuari <code>e2e@local</code> de <code>scripts/e2e/up.sh</code>, port :3110) i els titulars de <code>compose.html</code>. Les <strong>fotos dels looks</strong> s&#39;han de deixar fetes abans a la llavor: generar-les durant la gravació costaria diners (Gemini), seria lent i cada presa sortiria diferent.</p>
+<h2>Com mesurar</h2>
+<ul>
+<li><strong>Per canal:</strong> Admin → Beta → codis d&#39;invitació, columna &quot;Used&quot; de cada codi (només els llocs on l&#39;enllaç porta codi).</li>
+<li><strong>Qualitat:</strong> Admin → Beta, per grup (activació, D1/D7/D30, NPS).</li>
+<li><strong>Què diuen:</strong> el feedback de l&#39;app més el que arribi per fora.</li>
+<li>Un canal que porta gent que no s&#39;activa no val la pena repetir-lo, per molts registres que doni.</li>
+</ul>
+<h2>Registre</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Canal</th>
+<th>Enllaç</th>
+<th>Codi</th>
+<th>Registres</th>
+<th>Activats</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>

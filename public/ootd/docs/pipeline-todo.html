@@ -1,0 +1,123 @@
+<h1>Image pipeline — garment extraction + AI collage</h1>
+<blockquote>
+<p><strong>Superseded (2026-10):</strong> outfits are now generated as photos of a person — see <code>ai/OUTFIT_IMAGE_PIPELINE.md</code>. Section &quot;B. AI collage&quot; is obsolete. Section A (garment extraction) is the base for <code>ai/WARDROBE_RECONSTRUCTION_NEXT.md</code>.</p>
+</blockquote>
+<p><strong>Goal:</strong> a photo (even a selfie) → detect each garment → reconstruct each one as a
+clean, unified product image → save as its own wardrobe item → build the collage
+<strong>with AI</strong>, not canvas.</p>
+<p><strong>Engine:</strong> Claude <em>understands</em> (detects garments); <strong>Gemini 2.5 Flash Image
+(&quot;nano-banana&quot;)</strong> makes the <em>pixels</em> (reconstruction + collage).</p>
+<hr>
+<h2>✅ Done (this pass — engine + tests, nothing wired into the live flow yet)</h2>
+<ul>
+<li><code>lib/gemini.ts</code> — nano-banana client (REST, no SDK dep):<ul>
+<li><code>reconstructGarment(source, garment)</code> → isolated product shot of ONE garment</li>
+<li><code>composeCollage(images, { style })</code> → one editorial flat-lay collage</li>
+<li><code>isGeminiConfigured()</code>, <code>generateImage()</code>, fixed <code>STUDIO_RECIPE</code>, prompt builders</li>
+</ul>
+</li>
+<li><code>lib/ai.ts</code> — <code>detectGarments(image)</code> + <code>parseDetectedGarments()</code>: Claude returns
+a JSON list of every garment in the photo (name / category / description),
+ignoring face, skin, hands and background. <strong>This is the piece that fixes the
+&quot;selfie glued whole into the collage&quot; problem.</strong></li>
+<li><code>lib/usage-cost.ts</code> — <code>geminiImageCostUsd(n)</code> (~$0.039 / image).</li>
+<li><code>.env.local.example</code> — <code>GEMINI_API_KEY</code>, <code>GEMINI_IMAGE_MODEL</code>.</li>
+<li>Tests: <code>tests/lib/gemini.test.ts</code>, extended <code>tests/lib/ai.test.ts</code> (25 new/related, all green).</li>
+</ul>
+<p>Nothing above changes current behaviour — it&#39;s inert until wired + a key is set.</p>
+<hr>
+<h2>🔜 To wire (my next steps, once you&#39;ve done &quot;Your actions&quot;)</h2>
+<h3>A. Garment extraction on upload  → replaces &quot;removebg of the whole photo&quot;</h3>
+<p><strong>Decided rules:</strong></p>
+<ul>
+<li><strong>Max 2 garments per photo</strong> (cap detection output at 2 — the 2 most prominent).</li>
+<li><strong>Discard the original photo</strong> — keep only the reconstructed per-garment images.</li>
+<li><strong>Few photos → analyse immediately; many photos → background</strong> (survives the
+browser closing → some items land analysed, the rest finish server-side).</li>
+</ul>
+<p><strong>Core op</strong> <code>POST /api/wardrobe/extract</code> (pattern: copy <code>app/api/wardrobe/route.ts</code></p>
+<ul>
+<li>the Claude-key plumbing from <code>app/api/analyze/wardrobe/[id]/route.ts</code>):</li>
+</ul>
+<ol>
+<li>Receive the photo → <code>shrinkForApi</code> → base64.</li>
+<li><code>detectGarments(base64, mime, { apiKey: ANTHROPIC_API_KEY, model })</code> → <strong>take ≤2</strong>.</li>
+<li>For each garment → <code>reconstructGarment(...)</code> → <code>uploadFile(&#39;wardrobe/{id}.png&#39;)</code>
+→ <code>addWardrobeItemDb({ ...garment, analyzed: true, bgRemoved: true })</code>.</li>
+<li><strong>Delete the original</strong> upload from storage.</li>
+<li>Track usage: <code>geminiImageCostUsd(n)</code> + Claude tokens.</li>
+</ol>
+<p><strong>Immediate vs background</strong> (this is new — current analysis is client-driven and
+dies when the tab closes):</p>
+<ul>
+<li>Threshold in <code>handleFiles</code> (<code>wardrobe/page.tsx</code>): <strong>≤ 3 photos → call <code>/extract</code>
+synchronously</strong> (user waits behind <code>AnalyzingOverlay</code>, sees items appear).</li>
+<li><strong>&gt; 3 photos → enqueue</strong> and return instantly. Needs a server-side queue:<ul>
+<li>New table <code>extraction_jobs</code> (userId, storagePath, status pending|done|error).</li>
+<li>Upload stashes the raw photos + a pending row; UI shows the pending items as
+skeletons that fill in as they get processed.</li>
+<li>A <strong>drain endpoint</strong> <code>POST /api/cron/extract</code> (protected by <code>CRON_SECRET</code>)
+processes a batch of pending jobs. Trigger it two ways: a best-effort kick
+right after enqueue (serverless, handles small backlogs) <strong>and</strong> a <strong>frequent
+Netlify Scheduled Function (~1 min)</strong> so it keeps draining after the tab closes.
+NOTE: the existing <code>app/api/cron/daily</code> is daily → too slow; add the ~1-min one.</li>
+</ul>
+</li>
+</ul>
+<h3>B. AI collage → replaces the canvas collage</h3>
+<ul>
+<li><code>lib/collage-generator.ts</code> (canvas) and its placeholder PNGs become the
+<strong>fallback</strong>, not the default.</li>
+<li>New <code>POST /api/outfits/[id]/collage-ai</code>: gather the outfit&#39;s garment images →
+<code>composeCollage(images, { style })</code> → <code>uploadFile</code> → save <code>collageUrl</code>.</li>
+<li><code>components/OutfitCollage.tsx</code>: if Gemini configured → call the AI route; else
+→ current canvas path.</li>
+<li>Bonus: for AI-suggested pieces the user does <strong>not</strong> own, nano-banana can render
+the garment straight from its text description → <strong>no more generic placeholders</strong>.</li>
+</ul>
+<hr>
+<h2>👉 Your actions</h2>
+<ol>
+<li><strong>Get a Gemini API key</strong> → <a href="https://aistudio.google.com/apikey">https://aistudio.google.com/apikey</a>. Put it in
+<code>.env.local</code> (and Netlify env) as <code>GEMINI_API_KEY</code>. That&#39;s the only hard blocker.</li>
+<li><strong>Confirm <code>ANTHROPIC_API_KEY</code> is set</strong> in Netlify (detection needs it — it powers
+<code>detectGarments</code>).</li>
+<li><strong>Decisions (settled 2026-07-04):</strong><ul>
+<li>Extraction <strong>automatic on upload</strong>. ✓</li>
+<li><strong>Discard the original photo</strong> — keep only per-garment images. ✓</li>
+<li><strong>Max 2 garments per photo.</strong> ✓</li>
+<li><strong>Few → immediate, many → background</strong> (server-side, survives tab close). ✓</li>
+<li>How the &quot;max 2 / what we found&quot; is communicated → <strong>non-blocking</strong>: a pre-upload
+hint (&quot;1–2 peces per foto&quot;) + garments just appear as editable wardrobe cards;
+a toast only when a photo clearly had &gt;2 (&quot;n&#39;hem desat 2, puja la resta a part&quot;).</li>
+<li>Still open: if detection finds <strong>0 garments</strong> → save the photo as one item, or
+drop it with a toast? <em>(Recommend: drop + toast.)</em></li>
+<li>Still open: regenerate collages for <strong>already-saved</strong> outfits, or only new ones?</li>
+</ul>
+</li>
+<li><strong>Sanity-check cost</strong> against your budget (numbers below) and current Google
+pricing (my figure may be stale).</li>
+</ol>
+<hr>
+<h2>💰 Cost (nano-banana ≈ <strong>$0.039 / generated image</strong>)</h2>
+<ul>
+<li><strong>Add a garment photo</strong> (selfie, 2 items): detection (Claude) ~$0.01–0.02<ul>
+<li>2 × $0.039 reconstruction ≈ <strong>~$0.10 per upload</strong>.</li>
+</ul>
+</li>
+<li><strong>Build a 30-item wardrobe</strong>: ≈ <strong>~$1.2</strong> one-off.</li>
+<li><strong>Each AI collage</strong>: <strong>~$0.04</strong>.
+Reconstruction runs <strong>once per garment</strong> (cached), never per outfit — that&#39;s what
+keeps it cheap.</li>
+</ul>
+<hr>
+<h2>⚠️ Watch out for</h2>
+<ul>
+<li><strong>Fidelity</strong>: reconstruction must keep the <em>real</em> garment (exact colour, print,
+logo). The prompt says &quot;preserve&quot;; validate on real photos and tune if a detail
+drifts. If it invents details, we switch to lower-denoise img2img.</li>
+<li><strong>Latency</strong>: N image calls per upload → keep the async overlay; consider a small
+concurrency limit (like the existing <code>ANALYZE_CONCURRENCY = 3</code>).</li>
+<li><strong>Never break prod</strong>: everything gates on <code>isGeminiConfigured()</code> — no key ⇒
+current canvas/removebg flow stays.</li>
+</ul>

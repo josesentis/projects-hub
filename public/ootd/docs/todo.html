@@ -1,0 +1,57 @@
+<h1>TODO — les teves tasques (només el que no pot fer l&#39;agent)</h1>
+<blockquote>
+<p>Llista consolidada el 7 d&#39;octubre de 2026 a partir de: <code>ai/BETA.md</code> §1, <code>ai/NEGOCI.md</code> §4–5, <code>ai/ENV.md</code>, <code>ai/PROVES-PENDENTS.md</code>, <code>ai/PLAN-estilista.md</code> §6–7, <code>ai/NANO_BANANA_TESTS.md</code> i <code>ai/ROADMAP.md</code>.
+<strong>No és una garantia que sigui completa</strong>: només hi és el que algú va apuntar en algun document. Si tens tasques al cap, a Notion o a converses, afegeix-les aquí.
+Les tasques de programació són a <code>ai/ROADMAP.md</code> (hi ha caselles antigues d&#39;abans del canvi de model que cal revisar: no les he pogut verificar totes).</p>
+</blockquote>
+<h2>1. Desbloquejar producció (ara, per ordre)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Aplicar les migracions <code>0018_operations</code> i <code>0019_photo_consent</code>: <code>! set -a; . ./.env.local; set +a; npm run db:apply -- --production</code></li>
+<li><input disabled="" type="checkbox"> Dir-me «fet» → dry-run, push a <code>main</code>, verificar Netlify, <code>/api/version</code> i <code>/api/health</code></li>
+<li><input disabled="" type="checkbox"> A Netlify: <code>CRON_SECRET</code> (sense ella el xat no respon), claus VAPID, <code>GEMINI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code></li>
+<li><input disabled="" type="checkbox"> Regió de les funcions de Netlify a Europa (al costat de la base de dades)</li>
+<li><input disabled="" type="checkbox"> <code>db:reset-history</code> (amb còpia prèvia)</li>
+</ul>
+<h2>2. Abans de convidar ningú a la beta</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Resend</strong>: verificar el domini d&#39;enviament (+ <code>RESEND_FROM</code>); sense això els correus només arriben al propietari</li>
+<li><input disabled="" type="checkbox"> Domini propi: comprar, DNS, Netlify, <code>NEXT_PUBLIC_APP_URL</code></li>
+<li><input disabled="" type="checkbox"> <strong>Revisió legal</strong> de termes, privacitat, desistiment de 14 dies i fotos de persones (RGPD art. 9); després canviar <code>LEGAL_VERSION</code> i activar <code>LEGAL_GATE_ENABLED=true</code> (i <code>PHOTO_CONSENT_REQUIRED</code> quan toqui)</li>
+<li><input disabled="" type="checkbox"> Prova de recorregut complet amb un compte nou (codi → correu → onboarding → primer look → «Me&#39;l poso»)</li>
+<li><input disabled="" type="checkbox"> Preparar les 3 enquestes de <strong>Tally</strong> i les preguntes de preu (Van Westendorp, setmana 4)</li>
+<li><input disabled="" type="checkbox"> Deixar <code>STRIPE_SECRET_KEY</code> <strong>sense posar</strong> (mode beta obert)</li>
+</ul>
+<h2>2b. Tests que has de fer tu</h2>
+<p>Cada línia és una casella a marcar als fitxers; aquí només hi ha l&#39;índex.</p>
+<ul>
+<li><input disabled="" type="checkbox"> <strong><code>ai/PROVES-PENDENTS.md</code></strong>: producció després del desplegament · telèfon real (teclat, mode avió, xarxa dolenta, PWA) · perfils d&#39;ús i plans · correus (cal Resend) · beta (codis, feedback, NPS) · conversa i onboarding amb compte real · notificació del matí · privacitat (consentiment, exportar, esborrar compte) · Admin · landing (3 idiomes, preus, FAQ, mòbil, compartir enllaç) · Armari/Inspiració/Calendari · tema i idiomes · escriptori · legal</li>
+<li><input disabled="" type="checkbox"> <strong><code>ai/NANO_BANANA_TESTS.md</code></strong>: ~$3–5 reals amb 3–4 persones que hi accedeixin: fidelitat d&#39;identitat, peces, referències, qualitat, filtre de seguretat, resiliència, cost i latència (inclou el que s&#39;ha afegit amb l&#39;estilista i el consentiment)</li>
+<li><input disabled="" type="checkbox"> <strong>Llista antiga <code>ai/ROADMAP.md</code> §2.1</strong> (onboarding antic, dashboard, referències, TopBar): és d&#39;abans del canvi de model; decideix si ja no té sentit i, si cal, repassa-ho amb la UI actual (la part de referències i carpetes sí que segueix viva: està a PROVES-PENDENTS → Inspiració)</li>
+<li><input disabled="" type="checkbox"> Un dia de prova amb ús real propi abans de convidar ningú: apunta què t&#39;estorba i digues-m&#39;ho</li>
+</ul>
+<h2>3. Quan es vulgui cobrar</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Compte de <strong>Stripe</strong> (Espanya), primer en mode de prova; claus a Netlify (<code>ai/ENV.md</code>)</li>
+<li><input disabled="" type="checkbox"> Alta a l&#39;<strong>OSS de l&#39;IVA europeu</strong> + activar <strong>Stripe Tax</strong></li>
+<li><input disabled="" type="checkbox"> Provar el cicle (és a PROVES-PENDENTS → Perfils d&#39;ús i plans): prova de 14 dies → pagar amb targeta de prova → portal → cancel·lar; webhook <code>invoice.payment_failed</code></li>
+<li><input disabled="" type="checkbox"> <strong>CMP</strong> certificat per Google (IAB TCF 2.2 + Consent Mode v2) i després AdSense (<code>ADS_ENABLED</code>)</li>
+<li><input disabled="" type="checkbox"> Apple Developer Program (99 $/any) si es vol Apple Sign In</li>
+</ul>
+<h2>4. Recurrents</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Revisió mensual de serveis (&gt;80 % del pla = alerta): Netlify, Supabase, Anthropic, Google AI, Resend, Stripe</li>
+</ul>
+<h2>5. Per decidir (amb dades de la beta)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Preus i límits definitius (<code>lib/billing/plans.ts</code> és una proposta; la landing els llegeix d&#39;allà)</li>
+<li><input disabled="" type="checkbox"> Si l&#39;Estilista necessita menys fotos</li>
+<li><input disabled="" type="checkbox"> Substituir remove.bg per reconstrucció amb Gemini (<code>ai/WARDROBE_RECONSTRUCTION_NEXT.md</code>)</li>
+<li><input disabled="" type="checkbox"> Si el social (perfil públic) té sentit: ara està amagat</li>
+</ul>
+<h2>6. No fet (fora d&#39;abast fins ara)</h2>
+<ul>
+<li>Vista dividida fils | conversa de l&#39;Estilista</li>
+<li>Pla de negoci com a artifact, tauler Trello, estudi de mercat</li>
+<li>Admin en tres idiomes (és en anglès)</li>
+<li>Esborrar taules antigues (<code>saved_outfits</code>…): migració destructiva, cal aprovar-la</li>
+</ul>

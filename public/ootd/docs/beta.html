@@ -1,0 +1,112 @@
+<h1>Beta: com es fa i com es llegeix</h1>
+<p>Mida orientativa: <strong>40 testers en 3 grups durant 6 setmanes</strong>. Tot el material tècnic ja és a l&#39;app (codis d&#39;invitació, esdeveniments, feedback i NPS, panell). Això és la guia per fer-la servir.</p>
+<h2>1. Abans de convidar ningú (llista de comprovació)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Migracions 0013–0018 aplicades a producció (les aplica l&#39;usuari: <code>! set -a; . ./.env.local; set +a; npm run db:apply -- --production</code>, amb el dry-run abans).</li>
+<li><input disabled="" type="checkbox"> Variables a Netlify: <code>CRON_SECRET</code>, <code>GEMINI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code>, claus VAPID, <code>RESEND_API_KEY</code> amb un <strong>domini verificat</strong> a Resend (amb <code>onboarding@resend.dev</code> només arriben correus al propietari del compte).</li>
+<li><input disabled="" type="checkbox"> Regió de les funcions de Netlify al costat de la base de dades (Europa).</li>
+<li><input disabled="" type="checkbox"> <code>STRIPE_SECRET_KEY</code> <strong>no</strong> posada: sense ella tot l&#39;app és oberta i no hi ha límits (és el mode beta). Posar-la només quan es vulgui cobrar.</li>
+<li><input disabled="" type="checkbox"> Revisió legal dels termes i la privacitat <strong>abans de la beta</strong>, sobretot el tractament de fotos de persones (RGPD art. 9 si es processen cares: consentiment explícit, DPIA i contracte de tractament amb Google). Quan els textos estiguin revisats, canviar <code>LEGAL_VERSION</code> (<code>lib/legal.ts</code>) i posar <code>LEGAL_GATE_ENABLED=true</code>.</li>
+<li><input disabled="" type="checkbox"> Prova de recorregut complet amb un compte nou (alta amb codi → verificar correu → onboarding → primer look → «Me&#39;l poso»).</li>
+</ul>
+<h2>2. Els grups</h2>
+<p>Un codi per grup (Admin → Beta → Codis d&#39;invitació). El codi fixa el grup, el preu fundador i el perfil d&#39;ús suggerit. Proposta:</p>
+<table>
+<thead>
+<tr>
+<th>Grup</th>
+<th>Per què</th>
+<th>Perfil suggerit</th>
+<th>Places</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>amics</code></td>
+<td>Gent propera; feedback honest i ràpid</td>
+<td>Estilista</td>
+<td>15</td>
+</tr>
+<tr>
+<td><code>armari</code></td>
+<td>Gent que vol ordre i rotació, no conversa</td>
+<td>Armari</td>
+<td>15</td>
+</tr>
+<tr>
+<td><code>looks</code></td>
+<td>Gent que només vol saber què posar-se</td>
+<td>Només looks</td>
+<td>10</td>
+</tr>
+</tbody></table>
+<p>El preu fundador (30 % de descompte per sempre) es fixa en canviar <code>founder</code> del codi (per defecte actiu) i es crea al cupó de Stripe (<code>STRIPE_FOUNDER_COUPON</code>).</p>
+<p>L&#39;enllaç que s&#39;envia: <code>https://&lt;domini&gt;/register?invite=CODI</code> (el botó «Copy link» del panell el copia). Si algú entra amb Google/Apple, el codi es recorda 7 dies en una cookie.</p>
+<h2>3. Què es mesura</h2>
+<p>Esdeveniments (<code>product_events</code>), tots del servidor excepte <code>app_opened</code>: <code>signup</code>, <code>onboarding_done</code>, <code>activated</code> (primer look mostrat), <code>look_shown</code>, <code>look_worn</code>, <code>look_rejected</code>, <code>piece_swapped</code>, <code>photo_made</code>, <code>photo_blocked</code>, <code>chat_message</code>, <code>proposal_accepted/rejected</code>, <code>wardrobe_piece_added</code>, <code>wishlist_added</code>, <code>checkout_started</code>, <code>subscribed</code>, <code>feedback_sent</code>, <code>nps_sent</code>, <code>app_opened</code>.</p>
+<p>Admin → Beta, per grup:</p>
+<ul>
+<li><strong>Activació</strong>: % que arriba al primer look.</li>
+<li><strong>Tornen D1/D7/D30</strong>: % que torna <strong>a partir</strong> del dia N (entre qui porta ≥ N dies). No és «exactament el dia N»: amb grups petits cal el senyal.</li>
+<li><strong>Missatges per usuari actiu</strong> (només els que han escrit).</li>
+<li><strong>Cost d&#39;IA per persona</strong>.</li>
+<li><strong>NPS</strong> (% promotors 9–10 menys % detractors 0–6) i quantitat de feedback.</li>
+<li>Selector <strong>Testers</strong> (només amb codi) / <strong>Everyone</strong> (tothom; sense codi surten a «No cohort»; després de la beta fa de panell de salut).</li>
+</ul>
+<p>Admin → Health: cost setmanal/mensual i previsió, gent activa, fotos fallides, mida de la base de dades, subscripcions, versió publicada. Cada dilluns arriba un resum per correu als admins i, com a màxim un cop al dia per tipus, els avisos (previsió sobre el pressupost, 80 % del pressupost, base de dades al 80 %, fotos fallant, pagament fallat, tasca del cron fallida).</p>
+<h2>4. Calendari de 6 setmanes</h2>
+<table>
+<thead>
+<tr>
+<th>Setmana</th>
+<th>Què es fa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>Convidar el primer grup (<code>amics</code>). Mirar activació i errors cada dia.</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Convidar la resta de grups. Revisar els costos reals a Admin → Health.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Enquesta Tally #1</strong> (primeres impressions, què falta, què sobra).</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Mirar D7. Arreglar el que digui el feedback.</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Enquesta Tally #2</strong> amb les preguntes de preu (Van Westendorp, §5).</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Mirar D30 dels primers. Decidir plans i preus.</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Enquesta Tally #3</strong> + informe final (§6).</td>
+</tr>
+</tbody></table>
+<p>Cap setmana sense llegir el feedback dels testers: les notes lliures són or (revelen restriccions que cap pregunta directa treuria).</p>
+<h2>5. Preguntes de preu (setmana 4, Van Westendorp)</h2>
+<ol>
+<li>A quin preu al mes diries «és tan car que no ho consideraria»?</li>
+<li>A quin preu diries «és car, però ho consideraria»?</li>
+<li>A quin preu diries «és una bona oferta»?</li>
+<li>A quin preu diries «és tan barat que dubtaria de la qualitat»?</li>
+</ol>
+<p>Es creuen les quatre corbes per trobar el rang acceptable. Els preus actuals (<code>lib/billing/plans.ts</code>) són una <strong>proposta calculada del cost real</strong> (una foto ≈ 0,039 $, un torn de text ≈ 0,015 $); es confirmen o es canvien amb aquestes dades.</p>
+<h2>6. Plantilla de l&#39;informe final</h2>
+<ol>
+<li><strong>Resum</strong> (5 línies): s&#39;ha de fer el pas següent? sí / no / amb canvis.</li>
+<li><strong>Activació i retenció per grup</strong> (la taula del panell, amb el que va passar en cada setmana).</li>
+<li><strong>Ús</strong>: què fan servir més (look del dia, «Un altre», canviar peça, conversa, armari, calendari) i què no.</li>
+<li><strong>Cost</strong>: per persona i grup, i quin perfil d&#39;ús dóna marge amb els preus proposats.</li>
+<li><strong>NPS i temes del feedback</strong> (agrupar les notes lliures en 5–7 temes, amb cites).</li>
+<li><strong>Preu</strong>: el rang de Van Westendorp i el pla que s&#39;ha de destacar.</li>
+<li><strong>Problemes tècnics</strong>: fotos fallides, errors, latència.</li>
+<li><strong>Decisions i següents passos</strong>, amb responsable i data.</li>
+</ol>

@@ -1,0 +1,16 @@
+[
+ {
+  "slug": "listing",
+  "title": "Fitxa de la Community",
+  "group": "Llançament",
+  "source": "store/listing.md",
+  "updated": "2026-10-19"
+ },
+ {
+  "slug": "readme",
+  "title": "Com funciona el plugin",
+  "group": "Tècnic",
+  "source": "README.md",
+  "updated": "2026-10-19"
+ }
+]

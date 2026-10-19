@@ -1,0 +1,337 @@
+<h1>Traspàs: de &quot;app de rutines&quot; a coach conversacional centrat en l&#39;AVUI</h1>
+<p>Aquest document recull <strong>totes les decisions</strong> (de producte, estructurals, tècniques i estètiques) de la iteració v2 de mAI Fitness. També recull <strong>com hi vam arribar</strong> i <strong>què va fallar pel camí</strong>, per poder repetir la mateixa transformació en un altre projecte sense repetir els errors.</p>
+<hr>
+<h2>0. D&#39;on veníem i on hem arribat</h2>
+<p><strong>Abans:</strong></p>
+<ul>
+<li>Una plantilla reaprofitada d&#39;una app de moda (<em>Outfit of the Day</em>).</li>
+<li>Rutines generades per IA i parsejades amb <code>&lt;routine&gt;…&lt;/routine&gt;</code>.</li>
+<li>Un log per sessió (durada i intensitat), sense sèries ni històric per exercici.</li>
+<li>El coach era un xat sec.</li>
+<li>Estètica de plantilla Tailwind: vores grises, etiquetes en majúscules i accent llima sobre negre.</li>
+</ul>
+<p><strong>Ara:</strong></p>
+<ul>
+<li>Un <strong>coach personal conversacional, multidisciplina</strong>, organitzat al voltant de <strong>l&#39;AVUI i de la setmana</strong>. Funciona com una app de tasques: què em toca avui, ho he fet, faig una altra cosa.</li>
+<li>El coach proposa canvis i tu acceptes o rebutges cada canvi per separat.</li>
+<li>Estètica càlida i calmada (<em>Her</em>) amb la navegació clara i ràpida de Nike Training Club.</li>
+</ul>
+<hr>
+<h2>1. Procés de treball (el més important per repetir-ho)</h2>
+<ol>
+<li><strong>Preguntes abans de planificar.</strong> Una ronda llarga de preguntes sobre l&#39;objectiu, el context d&#39;ús, el log, l&#39;històric, la IA, el cost, l&#39;i18n i les dades. Les respostes van quedar com a decisions escrites.</li>
+<li><strong>Pla per fases</strong> (neteja → model de dades → motor → pantalles → coach → proactiu → progrés → landing), amb tests a cada fase. L&#39;usuari va preferir <strong>fer-ho tot i iterar en directe</strong> en lloc de validar fase a fase.</li>
+<li><strong>Per a la UI, sempre un prototip visual abans de programar.</strong> Les iteracions que van fallar (vegeu §8) van ser quan es programava a partir d&#39;una descripció en text. Quan es va fer un prototip navegable (3 pantalles de mòbil) i l&#39;usuari el va validar, l&#39;aplicació va quedar bé a la primera.</li>
+<li><strong>Preguntes amb opcions visuals</strong> (maquetes ASCII o previsualitzacions) quan el concepte no estigui clar. Si l&#39;usuari diu &quot;no ho entens&quot;, s&#39;ha de parar, preguntar i proposar, i no continuar construint.</li>
+<li><strong>Desplegar sovint i provar en producció.</strong> Hi ha problemes que només apareixen a producció: les funcions de Netlify, la regió, les dades reals i la memòria del build.</li>
+</ol>
+<hr>
+<h2>2. Decisions de producte</h2>
+<h3>2.1 El centre és l&#39;AVUI (vista &quot;Avui&quot; d&#39;una app de tasques)</h3>
+<ul>
+<li><strong>Patró d&#39;ús real:</strong> el mòbil al gimnàs, per consultar la sessió, i <strong>sobretot al vespre, a casa, per registrar</strong>. Els dies de descans gairebé no s&#39;obre l&#39;app.</li>
+<li><strong>Estructura de la pantalla Avui:</strong><ol>
+<li>La data (gran) i el títol &quot;Avui&quot;.</li>
+<li><strong>La setmana com una fila de calendari</strong>: cercles de colors (fet, avui, previst). Si toques un dia, et diu què hi havia o què hi ha.</li>
+<li><strong>&quot;Et toca&quot;</strong>: UNA tasca. És una targeta gran amb un sol botó, &quot;Ja l&#39;he fet&quot;, que porta directament al registre, i un botó per veure els exercicis.</li>
+<li>El <strong>progrés de la setmana</strong> en una línia: anell, sessions fetes de les previstes, extres, minuts i kcal.</li>
+<li><strong>&quot;Avui fas una altra cosa?&quot;</strong>: dreceres en pastilles. Avançar la propera sessió, activitats suggerides, una altra sessió, avui descanso / desfer.</li>
+<li><strong>El coach, discret</strong>: una barra flotant (&quot;Explica&#39;m com estàs…&quot;) que obre un full de conversa.</li>
+</ol>
+</li>
+<li><strong>El dia de descans és informatiu</strong>, però deixa registrar igualment (&quot;Has entrenat igualment?&quot;).</li>
+<li><strong>Registrar = només coses fetes</strong>: la sessió que tocava, un esport o un altre entrenament. <strong>No es registra mai &quot;un dia lliure&quot;.</strong></li>
+</ul>
+<h3>2.2 La setmana és una llista de pendents, no un calendari rígid</h3>
+<ul>
+<li>Cada sessió té un <strong>dia suggerit</strong> i es pot fer <strong>qualsevol dia de la setmana</strong>, en qualsevol ordre.</li>
+<li>Una sessió no feta <strong>no és &quot;perduda&quot; fins que s&#39;acaba la setmana</strong>. L&#39;adherència i el senyal d&#39;inactivitat només jutgen setmanes tancades.</li>
+<li>Moure sessions (&quot;fer-la avui&quot;, &quot;avui no&quot;) només canvia el dia <strong>dins de la setmana</strong>. La sincronització amb el programa compara la setmana actual per sessió (així no es desfà el que has mogut) i les setmanes futures per data exacta (així s&#39;apliquen els canvis del programa).</li>
+<li><strong>Proposta del dia</strong>, sense IA:<ol>
+<li>primer, una sessió pendent d&#39;un dia anterior;</li>
+<li>després, en un dia d&#39;entrenament, la que es va quedar sense fer la setmana passada;</li>
+<li>després, la del dia;</li>
+<li>si queden menys dies que sessions, la propera (&quot;catch-up&quot;);</li>
+<li>si no, descans.</li>
+</ol>
+</li>
+</ul>
+<h3>2.3 Activitats fora del programa (&quot;una altra cosa&quot;)</h3>
+<ul>
+<li>Catàleg realista d&#39;unes <strong>65 activitats en 10 grups</strong>: cardio, gimnàs i força (peses, funcional, CrossFit, Hyrox, HIIT…), classes, cos i ment, raqueta, equip, combat, aigua, muntanya i altres. Cada una amb disciplina, MET (per a les calories) i durada típica.</li>
+<li><strong>Suggeriments deterministes</strong>, instantanis i gratuïts:<ul>
+<li>el que fas sovint (&quot;T&#39;agrada · 5 cops&quot;);</li>
+<li>el que fa setmanes que no fas;</li>
+<li>cardio si aquesta setmana en vas curt;</li>
+<li>mobilitat si fa dies que no n&#39;hi ha;</li>
+<li>activitats d&#39;inici si no hi ha historial.</li>
+</ul>
+</li>
+<li>Si tries una activitat, passa a ser la tasca d&#39;avui, i la sessió prevista es mou a un dia lliure. Comptar-la com a &quot;extra&quot; no penalitza el progrés del programa.</li>
+</ul>
+<h3>2.4 Formulari de registre únic</h3>
+<ul>
+<li>&quot;Què has fet avui?&quot; i un <strong>selector segmentat</strong>: sessió / esport / un altre entrenament. Per defecte surt seleccionat el que tocava avui.</li>
+<li><strong>Sessió</strong>: sèries pre-omplertes amb l&#39;objectiu calculat (progressió). Només corregeixes el que ha estat diferent.</li>
+<li><strong>Esport</strong>: activitat (un desplegable llarg, amb les suggerides a dalt), <strong>durada com a número gegant amb − i +</strong>, esforç en 4 trams (&quot;Dur, però bé&quot;) i notes. Les kcal es calculen soles.</li>
+<li>Calories: <strong>sempre estimades</strong> (MET × pes × temps × esforç), excepte si l&#39;usuari les corregeix.</li>
+</ul>
+<h3>2.5 El coach (IA)</h3>
+<ul>
+<li>Es pot parlar amb el coach des de la Home i des de la seva pantalla. Hi tens dreceres: &quot;Tinc poc temps&quot;, &quot;Falta una màquina&quot;, &quot;Em fa mal alguna cosa&quot;, &quot;Reorganitza la setmana&quot;.</li>
+<li><strong>Mai no canvia res directament</strong>: proposa i tu acceptes o rebutges <strong>cada canvi per separat</strong>.<ul>
+<li>Propostes de programa nou.</li>
+<li>Canvis al programa (ops sobre la plantilla, i cada canvi crea una nova versió).</li>
+<li>Reorganització de la setmana (moure o treure sessions).</li>
+<li>Canvis temporals d&#39;exercici.</li>
+</ul>
+</li>
+<li><strong>Proactiu</strong>: senyals diaris (final de bloc, revisió mensual, inactivitat, estancament, RPE alt, dolor a les notes) que obren una conversa &quot;demanada&quot; i una finestra emergent.</li>
+<li><strong>Context per torn</strong>: perfil, lesions, programa i versió, bloc, setmana com a llista de pendents, check-ins, històric recent, tendència d&#39;e1RM i senyals.</li>
+<li><strong>Cost</strong>: clau del servidor i límit mensual de tokens per usuari. Qui hi posa la seva pròpia clau (BYOK) no té límit.</li>
+</ul>
+<h3>2.6 Altres</h3>
+<ul>
+<li>Log per sèrie, catàleg canònic d&#39;exercicis (128, ca/es/en) i alternatives quan una màquina està ocupada (per patró de moviment).</li>
+<li>Programa = plantilla JSON versionada + blocs + sessions planificades.</li>
+<li>Progrés: resum, exercicis (e1RM), cardio i cos.</li>
+<li>i18n ca/es/en, PWA, dades de producció migrades.</li>
+</ul>
+<hr>
+<h2>3. Arquitectura i dades (resum tècnic)</h2>
+<ul>
+<li><strong>Next.js App Router</strong> (versió canary, amb canvis respecte al que es coneix) + Drizzle + Postgres (Supabase) + Tailwind v4.</li>
+<li><strong>Lògica pura i testejable</strong> a <code>lib/training/*</code>:<ul>
+<li>plantilla, operacions, calendari, setmana, proposta del dia, check-in;</li>
+<li>activitats, suggeriments, progressió, mètriques, calories, senyals i catàleg.</li>
+</ul>
+</li>
+<li><strong>Serveis</strong> (<code>lib/services/*</code>) que munten les dades de cada pantalla. Les rutes d&#39;API són primes.</li>
+<li><strong>Migracions incrementals</strong> idempotents, amb dry-run en una transacció que es desfà al final, i apply amb <code>--production</code>.</li>
+<li><strong>Taules v2</strong>:<ul>
+<li>programes, versions, blocs i sessions planificades;</li>
+<li>workouts, entrades i sèries;</li>
+<li>catàleg d&#39;exercicis;</li>
+<li>fils, missatges i propostes del coach;</li>
+<li>check-ins diaris; mesures corporals.</li>
+</ul>
+</li>
+<li><strong>Coach</strong>:<ul>
+<li>bucle propi de tool use amb streaming;</li>
+<li>eines definides amb zod i exportades a JSON Schema draft 2020-12;</li>
+<li>prompt de sistema estàtic i memoritzat; el snapshot s&#39;afegeix només quan canvia;</li>
+<li>l&#39;esforç del model depèn del tipus de conversa;</li>
+<li>mai s&#39;executen eines d&#39;un torn tallat.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>4. Lliçons de producció (importants)</h2>
+<ol>
+<li><strong>Netlify talla les funcions als 10 s</strong> (26 s en el pla Pro), també si la resposta és en streaming. Un torn del coach dura entre 15 i 45 s. Solució:<ul>
+<li><strong>Background function</strong> (fins a 15 min, disponible a tots els plans).</li>
+<li>La ruta respon 202, el torn escriu el progrés a la base de dades (<code>coach_threads.live</code>) i el client el consulta cada segon.</li>
+<li>En local es continua fent servir l&#39;streaming SSE.</li>
+</ul>
+</li>
+<li><strong>Latència per regió</strong>: la base de dades a Irlanda i les funcions a Ohio fan que cada consulta trigui ~100 ms. Opcions:<ul>
+<li>canviar la regió de les funcions (només amb Netlify Pro);</li>
+<li>posar la base de dades al costat de les funcions;</li>
+<li>reduir les consultes.</li>
+</ul>
+</li>
+<li><strong>Reduir consultes</strong> (Avui ha passat de 28 a 15):<ul>
+<li>memoritzar per petició l&#39;usuari i el programa actiu (React <code>cache</code>);</li>
+<li>no escriure si la sincronització no canvia res;</li>
+<li>llegir les dades de la setmana d&#39;una sola vegada;</li>
+<li>servir el catàleg global des de memòria;</li>
+<li>historials en bloc;</li>
+<li><code>Promise.all</code> per a les consultes independents.</li>
+<li>Instrumentar-ho amb <code>DB_LOG=1</code>.</li>
+</ul>
+</li>
+<li><strong>Sensació de velocitat</strong>:<ul>
+<li><code>loading.tsx</code> amb un esquelet, perquè la navegació no es quedi congelada;</li>
+<li><code>experimental.staleTimes</code> perquè canviar de pestanya sigui instantani.</li>
+</ul>
+</li>
+<li><strong>Tests a Netlify</strong>:<ul>
+<li>Cada test de base de dades obria un Postgres en memòria (PGlite) que no es tancava, i el build es quedava sense memòria. Ara es tanquen després de cada test i a CI s&#39;executen com a màxim 2 processos alhora.</li>
+<li>Fer els tests amb <code>TZ=UTC</code> i les variables d&#39;entorn de producció.</li>
+<li>Evitar tests que depenguin de variables d&#39;entorn.</li>
+</ul>
+</li>
+<li><strong>OAuth a Netlify</strong>: <code>request.url</code> porta el domini intern del desplegament. Cal fer servir el <strong>domini públic</strong> (<code>NEXT_PUBLIC_APP_URL</code> o <code>URL</code>) per a la redirect URI. També cal enllaçar comptes per correu verificat.</li>
+<li><strong>postgres-js i JSON</strong>: en SQL directe, <code>$n::text::jsonb</code>, perquè un <code>::jsonb</code> sol fa que el valor es codifiqui dues vegades.</li>
+<li><strong>Dates</strong>: mai <code>toISOString()</code> per a dies locals.</li>
+</ol>
+<hr>
+<h2>5. Sistema de disseny (&quot;Her&quot; + Nike)</h2>
+<ul>
+<li><strong>Atmosfera</strong>: càlida, calmada, de paper; navegació clara i ràpida. Que no sembli una plantilla:<ul>
+<li>sense vores grises, etiquetes en majúscules, xips idèntics ni emojis;</li>
+<li>sense negres ni blancs purs.</li>
+</ul>
+</li>
+<li><strong>Paleta</strong>:<ul>
+<li>fons crema #F6EFE8, paper #FFFAF5, sorra #F0E6DC;</li>
+<li>tinta #2B2320, text secundari #6F6058;</li>
+<li>coral #E2674A (text: #B4482C);</li>
+<li>préssec #F2B8A0 per a la targeta d&#39;avui;</li>
+<li>sàlvia #5E8A6C per al progrés.</li>
+<li>De nit, la mateixa calidesa en marró, no en negre.</li>
+</ul>
+</li>
+<li><strong>Tipografia</strong>:<ul>
+<li><strong>Bricolage Grotesque</strong> per a tot. Escala petita (vegeu §9.1): títol de pantalla 1,75rem al mòbil i 2,125rem a l&#39;escriptori; la jerarquia ve del pes i del color, no de la mida;</li>
+<li><strong>Instrument Serif en cursiva NOMÉS per a la veu del coach</strong> (la primera frase de cada resposta, els estats buits on parla el coach i el &quot;com ha anat&quot; del registre).</li>
+</ul>
+</li>
+<li><strong>Components propis</strong> (<code>app/ui.css</code>): screen, title, card, card-peach, list i row, btn (primary/coral/soft/sand/ghost), icon-btn, pill, seg, field (sorra dins de les targetes), scroller, voice, coach-voice i rise.<ul>
+<li>El focus és sempre un contorn coral visible.</li>
+<li>Els fulls són bottom sheets amb cantonades de 24 px, que pugen des de baix i queden sobre el teclat.</li>
+</ul>
+</li>
+<li><strong>Navegació</strong>:<ul>
+<li>mòbil: barra inferior (Avui, Programa, Progrés, Coach, Perfil), sense capçalera superior, i un títol gran a cada pantalla;</li>
+<li>escriptori: barra lateral de color crema amb l&#39;element actiu en una pastilla sorra.</li>
+</ul>
+</li>
+<li><strong>Coach a la UI</strong>: un orb coral; la seva veu va en serif cursiva gran i sense bombolla; l&#39;usuari, en bombolles petites de color sorra.</li>
+</ul>
+<hr>
+<h2>6. Què ha valorat l&#39;usuari (criteris per a futures decisions)</h2>
+<ul>
+<li><strong>&quot;L&#39;objectiu no és pensar&quot;</strong>: l&#39;app ha de proposar (suggeriments i recomanacions) i l&#39;usuari tria amb un toc.</li>
+<li><strong>Accions directes</strong>: si l&#39;usuari diu &quot;ja he entrenat&quot;, es va directe al formulari, sense menús intermedis.</li>
+<li><strong>Visual abans que text</strong>: el progrés de la setmana ha de ser un widget, no paràgrafs.</li>
+<li><strong>El coach com a extensió de les opcions del dia</strong> (canviar coses d&#39;avui, màquines, dolor), no com una secció a part.</li>
+<li><strong>Rendiment</strong>: si canviar de pàgina és lent, l&#39;app sembla trencada.</li>
+</ul>
+<hr>
+<h2>7. Checklist per repetir la iteració en un altre projecte</h2>
+<ol>
+<li>Fer la ronda de preguntes: objectiu, moments d&#39;ús (on, quan, amb quin dispositiu), què es registra, com evoluciona el pla, què fa la IA, cost, dades existents.</li>
+<li>Definir el <strong>model &quot;setmana com a llista de pendents&quot;</strong> i la <strong>pantalla Avui com una app de tasques</strong>.</li>
+<li>Separar els conceptes: <strong>planificar el dia</strong> (dreceres), <strong>registrar el que s&#39;ha fet</strong> (formulari únic i directe) i <strong>parlar amb el coach</strong>.</li>
+<li>Fer la lògica pura i testejable primer (proposta del dia, suggeriments, setmana, calories); la IA, només per a la conversa i les propostes.</li>
+<li><strong>Prototip visual navegable</strong> de les pantalles clau, i validació abans de programar la UI.</li>
+<li>Construir el sistema de disseny propi (tokens + capa de components) i aplicar-lo a tota l&#39;app, inclosos la landing i l&#39;accés.</li>
+<li>Preparar la infraestructura des del principi:<ul>
+<li>torns llargs d&#39;IA en segon pla;</li>
+<li>regió de la base de dades = regió de les funcions;</li>
+<li>comptar les consultes per pàgina;</li>
+<li><code>loading.tsx</code> i memòria cau del client.</li>
+</ul>
+</li>
+<li>Desplegar sovint, provar en producció i iterar amb captures de pantalla (Chrome sense finestra) per revisar la UI.</li>
+</ol>
+<hr>
+<h2>8. Historial d&#39;iteracions de la UI (i per què van fallar)</h2>
+<ol>
+<li><strong>Check-in amb 4 xips</strong> (&quot;Faig el que toca&quot;, &quot;Estic tocat&quot;…): l&#39;usuari no entenia els noms i volia començar amb una proposta.</li>
+<li><strong>Una sola targeta de veredicte</strong> (&quot;Avui et suggereixo: Descans&quot;): imposava una decisió i barrejava conceptes dins de &quot;Canviar&quot;.</li>
+<li><strong>Menú del dia</strong> (targetes de sessions, la recomanada a dalt): agradava més, però la jerarquia no era bona i hi havia massa etiquetes.</li>
+<li><strong>Vista &quot;Avui&quot; d&#39;app de tasques</strong> (data, setmana, una tasca, opcions, coach): aquesta funcionava. Hi faltava el widget de progrés, més dreceres i un camp de text gran amb títol.</li>
+<li><strong>Submenús de registre</strong>: es barrejaven conceptes. Solució: anar directe a un <strong>formulari únic</strong> amb selector segmentat.</li>
+<li><strong>Canvi estètic global</strong>: prototip validat (<em>Her</em> + Nike), després aplicat a tot amb CSS propi.</li>
+</ol>
+<p>Lliçó: <strong>cada vegada que es va construir a partir d&#39;una interpretació en text, va fallar; cada vegada que es va validar una maqueta o un prototip, va funcionar.</strong></p>
+<hr>
+<h2>9. Segona tanda (octubre 2026): polir fins que sembli nativa</h2>
+<p>Després de la v2, l&#39;usuari va provar l&#39;app al mòbil i al gimnàs. Gairebé tot el que va sortir era de <strong>qualitat d&#39;interacció i infraestructura</strong>, no de producte. Aquesta secció és tan important com les anteriors.</p>
+<h3>9.1 Escala d&#39;app per a mòbil (no &quot;plantilla&quot;)</h3>
+<ul>
+<li><strong>Problema:</strong> s&#39;havia aplicat l&#39;escala &quot;Nike de pantalla gran&quot; a tot arreu (títols de 34 px, botons de 50 px, paddings de 20–24 px i fulls amb padding doble). L&#39;usuari ho va descriure com &quot;paddings molt grans, textos que no caben als desplegables, espai mal aprofitat&quot;.</li>
+<li><strong>Solució: tres tokens de ritme</strong> a <code>app/ui.css</code>, i res de números a mà.<ul>
+<li><code>--gutter</code>: 16 px al mòbil. És el marge de pantalla, el padding de les targetes i el dels fulls.</li>
+<li><code>--gap-section</code>: 20 px entre blocs (<code>ui-stack</code>).</li>
+<li><code>--gap-item</code>: 10 px dins d&#39;un bloc (<code>ui-group</code>).</li>
+</ul>
+</li>
+<li><strong>Mides:</strong><ul>
+<li>Botons: 40 px; 46 px només l&#39;acció principal; 32 px els petits.</li>
+<li>Botons d&#39;icona: 36 px. Pastilles: 36 px. Selector segmentat: 32 px.</li>
+<li>Camps: 42 px, amb text de 16 px (perquè iOS no faci zoom). Els desplegables reserven poc espai per a la fletxa i acaben en &quot;…&quot;.</li>
+<li>Radis: targetes 18 px, targeta destacada 22 px, camps 12 px.</li>
+<li>Regla: un radi mai no supera el padding del costat en més de ~4 px.</li>
+</ul>
+</li>
+<li><strong>Regles:</strong><ul>
+<li>El contingut d&#39;un full és qui posa el marge; el full no n&#39;hi posa (el padding mai es duplica).</li>
+<li>Dos botons al costat millor que apilats.</li>
+<li>Les targetes no tenen vores.</li>
+<li>Els formularis posen enrere, la data i la pregunta en una sola fila.</li>
+</ul>
+</li>
+<li><strong>La landing és un altre món.</strong> La landing de màrqueting té el seu propi sistema i no s&#39;ha de tocar quan es retoca l&#39;app. L&#39;usuari ho va haver de dir explícitament.</li>
+</ul>
+<h3>9.2 Requisit indispensable: interaccions d&#39;alt nivell</h3>
+<p>L&#39;usuari ho va posar al mateix nivell que els tests: <strong>&quot;No pot semblar una web que està WIP.&quot;</strong> Està escrit a <code>ai/AGENTS.md</code> i <code>ai/DESIGN.md</code> §5. A la pràctica:</p>
+<ul>
+<li><strong>Xat</strong> (<code>components/chat/*</code>):<ul>
+<li><strong>Pantalla:</strong> la conversa és un panell a pantalla completa de la mida del <em>visual viewport</em> (<code>useVisualViewport</code>). La capçalera i la caixa de text no es mouen, només fa scroll la conversa, el teclat empeny la caixa cap amunt i la pàgina del darrere no es mou (<code>useLockPageScroll</code>).</li>
+<li><strong>Seguiment:</strong> la conversa segueix els missatges nous només si ets a baix de tot (<code>useStickToBottom</code>, amb ResizeObserver). Si no, apareix un botó &quot;últim missatge&quot;.</li>
+<li><strong>Caixa de text</strong> (<code>ChatComposer</code>): una línia en repòs. En rebre el focus s&#39;obre com un textarea i creix amb el text (alçada animada, mesurada amb un textarea bessó invisible). Al mòbil, Retorn fa salt de línia; amb teclat físic, Retorn envia. El botó d&#39;enviar no treu el focus, perquè el teclat no es tanqui.</li>
+<li><strong>Estats:</strong> punts d&#39;escriptura, &quot;Torna-ho a provar&quot; si un torn falla, i una resposta que ja s&#39;ha llegit no desapareix mai de la pantalla.</li>
+</ul>
+</li>
+<li><strong>Fulls:</strong> pugen des de baix, el fons s&#39;enfosqueix amb un fos, queden sobre el teclat i bloquegen la pàgina.</li>
+<li><strong>Gestos</strong> (<code>SwipeRow</code>): lliscar a l&#39;esquerra per esborrar (com WhatsApp).<ul>
+<li>El dit arrossega la fila i l&#39;scroll vertical continua sent natiu (<code>touch-action: pan-y</code>).</li>
+<li>Es queda oberta si passa de la meitat o amb un cop ràpid; si s&#39;arrossega més enllà de l&#39;acció, fa resistència elàstica.</li>
+<li>Només una fila oberta alhora; un toc a fora la tanca.</li>
+<li>Amb ratolí, la icona surt en passar-hi per sobre.</li>
+</ul>
+</li>
+<li><strong>Sempre:</strong> estats de pressió (<code>active:scale</code>), entrades amb <code>ui-rise</code>, esquelets amb la forma del contingut, corba <code>cubic-bezier(0.2, 0.7, 0.2, 1)</code>, durades de 150–380 ms i <code>prefers-reduced-motion</code>.</li>
+<li><strong>Mètode:</strong> cada pantalla es prova a 390×844 i amb el teclat obert. Hi ha scripts de Chrome sense finestra que simulen gestos i tocs (<code>scripts/e2e/*</code>).</li>
+</ul>
+<h3>9.3 Errors de producció que no es veien en local</h3>
+<ol>
+<li><strong>Pooler de Supabase + sentències preparades = escriptures perdudes.</strong><ul>
+<li><strong>Símptoma:</strong> el coach &quot;no responia&quot;. En realitat, la resposta es generava i no es desava mai.</li>
+<li><strong>Causa:</strong> producció es connecta pel pooler en mode transacció (<code>:6543</code>) i <code>postgres-js</code> fa servir sentències preparades amb nom. Les consultes acaben al backend equivocat: es pengen o les escriptures es perden sense error.</li>
+<li><strong>Solució:</strong> <code>prepare: false</code> sempre que la connexió passi per un pooler (<code>usesPooler()</code> a <code>lib/db/index.ts</code>).</li>
+<li><strong>Com ho vam diagnosticar:</strong> comparant el consum de l&#39;API (sí que hi havia respostes) amb els missatges desats (no n&#39;hi havia), en una transacció de només lectura.</li>
+</ul>
+</li>
+<li><strong>Supabase Storage sense cap bucket.</strong> Totes les pujades fallaven amb &quot;Bucket not found&quot;. Ara <code>uploadFile</code> crea el bucket públic si falta i torna a provar. A més, cada foto té un nom nou, perquè el CDN no serveixi l&#39;antiga.</li>
+<li><strong>Netlify talla les funcions</strong> (vegeu §4.1). Els torns llargs van a una background function; el client consulta el progrés i detecta un torn encallat (3 min sense progrés → error amb reintent, no 10 min de silenci).</li>
+</ol>
+<h3>9.4 Offline i actualitzacions de la PWA</h3>
+<ul>
+<li><strong>Offline al gimnàs:</strong><ul>
+<li>El service worker serveix els fitxers estàtics des de la memòria cau.</li>
+<li>Les pàgines de l&#39;app van primer a la xarxa, amb un temps límit de 3,5 s, i si no hi ha resposta serveixen l&#39;última còpia bona.</li>
+<li>Les escriptures que no es poden perdre passen per una cua a IndexedDB amb <code>Idempotency-Key</code>, i el servidor les embolcalla amb <code>idempotent()</code> perquè no es dupliquin mai.</li>
+</ul>
+</li>
+<li><strong>Versions noves:</strong><ul>
+<li>Cada build té un identificador (<code>NEXT_PUBLIC_BUILD_ID</code>) i <code>/api/version</code> diu quin hi ha publicat.</li>
+<li>L&#39;app ho comprova en obrir-se, en tornar-hi, en recuperar la connexió i cada 5 min, i mostra &quot;Nova versió a punt · Actualitzar&quot;.</li>
+<li>Perfil → App mostra la versió i té un botó &quot;Recarregar&quot; que sempre funciona.</li>
+<li>El service worker es registra com a <code>/sw.js?v=&lt;build&gt;</code>, així que cada desplegament n&#39;instal·la un de nou.</li>
+<li>Si falta un fitxer de codi després d&#39;un desplegament (<code>ChunkLoadError</code>), l&#39;app es recarrega sola.</li>
+</ul>
+</li>
+</ul>
+<h3>9.5 Idiomes</h3>
+<ul>
+<li><code>users.language</code> guarda una <strong>preferència</strong>, no un valor fix:<ul>
+<li>null o <code>auto:xx</code>: segueix l&#39;idioma del sistema (<code>xx</code> és l&#39;últim detectat, per a push, correu i el coach proactiu);</li>
+<li><code>ca</code> / <code>es</code> / <code>en</code>: triat al Perfil.</li>
+</ul>
+</li>
+<li><strong>Amb sessió iniciada</strong>, l&#39;idioma és el triat al Perfil o, si no n&#39;hi ha, el de la capçalera <code>Accept-Language</code> de la petició. Es resol igual a les pantalles i a les APIs (<code>requireUser()</code> → <code>ctx.lang</code>), perquè el coach respongui en el mateix idioma que la pantalla.</li>
+<li><strong>Al Perfil</strong> hi ha &quot;Automàtic · Català (sistema)&quot; i els tres idiomes. El canvi s&#39;aplica a l&#39;instant i refresca la pàgina.</li>
+<li><strong>Cap text visible ni etiqueta d&#39;accessibilitat escrita directament al codi</strong>, i <code>&lt;html lang&gt;</code> segueix l&#39;idioma de la pantalla.</li>
+</ul>
+<h3>9.6 Lliçons de procés d&#39;aquesta tanda</h3>
+<ul>
+<li>Quan l&#39;usuari diu &quot;segueix sent massa gran&quot;, no n&#39;hi ha prou de reduir uns quants valors: cal <strong>canviar el sistema</strong> (tokens) i buscar els valors fets a mà.</li>
+<li><strong>Mirar el que hi cap a la primera pantalla a 390×844</strong>, no captures de pàgina sencera.</li>
+<li>Davant d&#39;un &quot;no respon&quot;, <strong>mirar les dades de producció només llegint</strong> abans de teoritzar.</li>
+<li><strong>Mai sobreescriure un fitxer sense llegir-lo.</strong> Un fitxer de tests nou en va trepitjar un d&#39;existent; ens en vam adonar perquè el recompte de tests havia baixat. Cal vigilar el recompte.</li>
+<li><strong>No prometre &quot;desplegat&quot; sense comprovar-ho</strong> (<code>/api/version</code> o un text que només existeixi al build nou).</li>
+</ul>

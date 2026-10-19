@@ -1,0 +1,103 @@
+{
+  "title": "Hub",
+  "lede": "Tot el que estic llançant, en un lloc: el pla de negoci, el calendari i els textos per publicar, les tasques, les proves, els prototips i els documents de cada projecte. El que marques aquí es desa per a tothom qui hi entri amb la contrasenya.",
+  "projects": [
+    {
+      "id": "mai",
+      "name": "mAI Fitness",
+      "kind": "App web (PWA)",
+      "status": "Beta amb amics",
+      "tagline": "Un coach amb IA per a l'entrenament i el menjar, amb plans que s'adapten a la setmana real.",
+      "color": "#0f766e",
+      "repo": "../mAI_fitness",
+      "links": [{ "label": "maifitness.netlify.app", "href": "https://maifitness.netlify.app" }],
+      "pages": [
+        { "href": "negoci.html#pla", "tag": "Negoci", "title": "Pla de negoci", "text": "Les quatre fases, els números per subscriptor, la competència i els riscos.", "big": true },
+        { "href": "negoci.html#publicar", "tag": "Llançament", "title": "Publicar", "text": "Què publicar, on i quan, amb el text de cada post de LinkedIn, X, Instagram, TikTok i la resta." },
+        { "href": "negoci.html#tasques", "tag": "Tasques", "title": "Tauler de tasques", "text": "Per fer, en curs i fet, per fases." },
+        { "href": "negoci.html#documents", "tag": "Documents", "title": "Documents", "text": "Llançament, beta, roadmap i TODOs, i la documentació tècnica." },
+        { "href": "proves.html", "tag": "Proves", "title": "Proves pendents", "text": "El que s'ha de provar a mà, per àrees." },
+        { "href": "receptari.html", "tag": "Menjar", "title": "Receptari base", "text": "La revisió dels plats del llibre: sí, no o diferent." },
+        { "href": "negoci.html#guies", "tag": "Guies", "title": "Com es fa cada cosa", "text": "Publicar versions, variables de Netlify, anuncis, revisions dels serveis i presentar l’app a X i LinkedIn." },
+        { "href": "negoci.html#estudi", "tag": "Estudi", "title": "Estudi de mercat i preus", "text": "Com cobrar sense perdre diners amb la IA." },
+        { "href": "negoci.html#docs", "tag": "Producte", "title": "Com funciona l'app", "text": "Les pantalles, els conceptes, els plans i els models d'IA, sense tecnicismes." },
+        { "href": "prototips.html", "tag": "Disseny", "title": "Prototips", "text": "Les pantalles dissenyades de Menjar i del nou disseny." }
+      ],
+      "docs": [
+        { "slug": "llancament", "file": "ai/LAUNCH.md", "title": "Llançament: on, quan i amb quins textos", "group": "Negoci" },
+        { "slug": "beta", "file": "ai/BETA.md", "title": "Beta: com portar-la i plantilla de l’informe", "group": "Negoci" },
+        { "slug": "roadmap", "file": "ai/ROADMAP.md", "title": "Roadmap, TODOs i millores futures", "group": "Negoci" },
+        { "slug": "app", "file": "ai/AGENTS.md", "title": "Com funciona l’app (tècnic)", "group": "Tècnic" },
+        { "slug": "disseny", "file": "ai/DESIGN.md", "title": "Sistema de disseny", "group": "Tècnic" },
+        { "slug": "setup", "file": "SETUP.md", "title": "Configuració i comptes", "group": "Tècnic" },
+        { "slug": "traspas", "file": "ai/TRASPAS-iteracio-v2.md", "title": "Traspàs de la iteració v2", "group": "Tècnic" },
+        { "slug": "template", "file": "ai/TEMPLATE.md", "title": "Sincronització amb la plantilla", "group": "Tècnic" }
+      ]
+    },
+    {
+      "id": "ootd",
+      "name": "Outfit of the Day",
+      "kind": "App web (PWA)",
+      "status": "Preparant la beta",
+      "tagline": "Un estilista amb IA que coneix el teu armari i et vesteix cada matí, amb una foto teva amb el look.",
+      "color": "#6d28d9",
+      "repo": "../outfit-of-the-day",
+      "links": [],
+      "pages": [
+        { "href": "negoci.html#pla", "tag": "Negoci", "title": "Pla de negoci", "text": "Les quatre fases, els números per subscriptor, el pressupost de llançament i els riscos.", "big": true },
+        { "href": "negoci.html#tasques", "tag": "Tasques", "title": "Tauler de tasques", "text": "Per fer, en curs i fet, per fases." },
+        { "href": "negoci.html#documents", "tag": "Documents", "title": "Documents", "text": "Negoci, llançament, campanya, beta, roadmap, TODOs, proves i la documentació tècnica." },
+        { "href": "negoci.html#estudi", "tag": "Estudi", "title": "Estudi de mercat i preus", "text": "Com cobrar sense que les fotos se mengin el marge." },
+        { "href": "negoci.html#docs", "tag": "Producte", "title": "Com funciona l'app", "text": "Les pantalles, els conceptes, els plans i els models d'IA, sense tecnicismes." },
+        { "href": "estilista.html", "tag": "Disseny", "title": "Prototip de l'estilista", "text": "Avui, l'estilista i l'armari en tres mòbils, amb el mode fosc i el clar." }
+      ],
+      "docs": [
+        { "slug": "todo", "file": "TODO.md", "title": "TODO: les teves tasques", "group": "Negoci" },
+        { "slug": "negoci", "file": "ai/NEGOCI.md", "title": "Negoci", "group": "Negoci" },
+        { "slug": "competencia", "file": "ai/COMPETITION.md", "title": "Competència", "group": "Negoci" },
+        { "slug": "llancament", "file": "ai/LAUNCH.md", "title": "Llançament", "group": "Negoci" },
+        { "slug": "pressupost", "file": "ai/LAUNCH_BUDGET.md", "title": "Pressupost de llançament", "group": "Negoci" },
+        { "slug": "campanya", "file": "ai/MARKETING_CAMPAIGN.md", "title": "Campanya de màrqueting", "group": "Negoci" },
+        { "slug": "beta", "file": "ai/BETA.md", "title": "Beta", "group": "Negoci" },
+        { "slug": "roadmap", "file": "ai/ROADMAP.md", "title": "Roadmap", "group": "Producte" },
+        { "slug": "proves", "file": "ai/PROVES-PENDENTS.md", "title": "Proves pendents", "group": "Producte" },
+        { "slug": "estilista", "file": "ai/PLAN-estilista.md", "title": "Pla de l'estilista", "group": "Producte" },
+        { "slug": "referencies", "file": "ai/VISUAL_REFERENCES.md", "title": "Referències visuals", "group": "Producte" },
+        { "slug": "fases", "file": "ai/phases/README.md", "title": "Fases", "group": "Producte" },
+        { "slug": "fase-1", "file": "ai/phases/phase-1-landing/README.md", "title": "Fase 1 · Landing", "group": "Producte" },
+        { "slug": "fase-1-prompts", "file": "ai/phases/phase-1-landing/freepik_image_prompts.md", "title": "Fase 1 · Prompts d'imatges", "group": "Producte" },
+        { "slug": "fase-2", "file": "ai/phases/phase-2-outfit-engine/README.md", "title": "Fase 2 · Motor d'outfits", "group": "Producte" },
+        { "slug": "fase-3", "file": "ai/phases/phase-3-onboarding/README.md", "title": "Fase 3 · Onboarding", "group": "Producte" },
+        { "slug": "fase-4", "file": "ai/phases/phase-4-imagery/README.md", "title": "Fase 4 · Imatges", "group": "Producte" },
+        { "slug": "app", "file": "ai/AGENTS.md", "title": "Com funciona l’app (tècnic)", "group": "Tècnic" },
+        { "slug": "disseny", "file": "ai/DESIGN.md", "title": "Sistema de disseny", "group": "Tècnic" },
+        { "slug": "env", "file": "ai/ENV.md", "title": "Variables d'entorn", "group": "Tècnic" },
+        { "slug": "pipeline", "file": "ai/OUTFIT_IMAGE_PIPELINE.md", "title": "Pipeline d'imatges", "group": "Tècnic" },
+        { "slug": "pipeline-todo", "file": "ai/IMAGE_PIPELINE_TODO.md", "title": "Pipeline d'imatges: pendents", "group": "Tècnic" },
+        { "slug": "nano-banana", "file": "ai/NANO_BANANA_TESTS.md", "title": "Proves amb Nano Banana", "group": "Tècnic" },
+        { "slug": "armari", "file": "ai/WARDROBE_RECONSTRUCTION_NEXT.md", "title": "Reconstrucció de l'armari", "group": "Tècnic" },
+        { "slug": "traspas", "file": "ai/TRASPAS-model-conversacional.md", "title": "Traspàs del model conversacional", "group": "Tècnic" },
+        { "slug": "template", "file": "ai/TEMPLATE.md", "title": "Sincronització amb la plantilla", "group": "Tècnic" }
+      ]
+    },
+    {
+      "id": "figma",
+      "name": "AI Slides to Figma",
+      "kind": "Plugin de Figma",
+      "status": "Llest per publicar a la Community",
+      "tagline": "Converteix les presentacions HTML fetes amb IA en slides editables de Figma Slides o Figma Design.",
+      "color": "#c2410c",
+      "repo": "../ai-slides-to-figma",
+      "links": [],
+      "images": [
+        { "src": "img/cover.png", "alt": "Portada de la Community" },
+        { "src": "img/gallery.png", "alt": "Imatge de la galeria" }
+      ],
+      "pages": [],
+      "docs": [
+        { "slug": "listing", "file": "store/listing.md", "title": "Fitxa de la Community", "group": "Llançament" },
+        { "slug": "readme", "file": "README.md", "title": "Com funciona el plugin", "group": "Tècnic" }
+      ]
+    }
+  ]
+}

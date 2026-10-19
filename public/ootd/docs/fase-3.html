@@ -1,0 +1,72 @@
+<h1>OOTD — Onboarding journey (capturing taste, references &amp; wardrobe)</h1>
+<p>A brief for <strong>Claude Code</strong>. Companion to <code>OOTD_app_journey_brief.md</code>. Goal: get the user from
+install → their <strong>first outfit</strong> with as little friction as possible, while gathering the data the
+stylist needs (taste, references, wardrobe) <strong>progressively</strong> rather than in one giant form.</p>
+<hr>
+<h2>The core tension</h2>
+<p>The styling engine wants a lot: weighted vibes, fit/modesty prefs, reference folders, and ~40 wardrobe
+items with photos. Asking for all of that up front = a wall of forms = churn before the first &quot;wow&quot;.</p>
+<p><strong>Philosophy: deliver value fast, earn the data over time.</strong></p>
+<ul>
+<li>Get to a <strong>first real outfit in under ~3 minutes</strong>, even with a thin wardrobe.</li>
+<li>Make every input method <strong>fast, visual and a little fun</strong> (swipes, camera, import) — never a spreadsheet.</li>
+<li>Be <strong>honest about confidence</strong> (&quot;I&#39;ve got the gist — add a few more pieces and I&#39;ll really nail it&quot;) so the user <em>wants</em> to give more.</li>
+<li><strong>Enrich forever, not just at onboarding</strong> — the app keeps learning as you wear, save and react.</li>
+</ul>
+<hr>
+<h2>The onboarding flow (progressive)</h2>
+<p><strong>Step 0 — Welcome (1 screen, ~5s).</strong>
+The promise, warm and short: <em>&quot;I&#39;m your stylist. Tell me what you like, show me your closet, and I&#39;ll dress you every morning.&quot;</em> One <code>Get started</code>.</p>
+<p><strong>Step 1 — Coarse taste seed (visual, ~20s).</strong>
+&quot;Which of these feel like you?&quot; — a grid of <strong>aesthetic cards</strong> (Workwear, Quiet Luxury, Streetwear, Minimal, Old Money, Y2K, Sporty, Bohemian…), pick 2-4. This seeds Layer-1 identity instantly with zero typing. (Multi-select, no wrong answers.)</p>
+<p><strong>Step 2 — Taste refinement game (swipe, ~45s, fun).</strong>
+A <strong>&quot;this or you?&quot; swipe deck</strong>: ~12-15 outfit images, swipe ♥ / ✕ (or &quot;this vs that&quot; pairs). This builds the <strong>taste vector</strong> far more accurately than self-reported labels — and feels like a game, not a form. Show a tiny live read (&quot;getting a feel for you… 🔥&quot;). Skippable after a few.</p>
+<p><strong>Step 3 — Quick practical prefs (taps, ~20s).</strong>
+Only the few that change outputs: <strong>fit</strong> (loose / fitted / mix), <strong>colours you avoid</strong> (tap swatches), <strong>modesty / coverage</strong> if relevant, <strong>no-go items</strong> (&quot;never heels&quot;). Three taps, not a questionnaire. Everything optional with sensible defaults.</p>
+<p><strong>Step 4 — Wardrobe seed (the hard one — make it effortless).</strong>
+Don&#39;t ask for 40 items. Ask for a <strong>&quot;core 10&quot;</strong> — your most-worn pieces — to get going. Offer several capture methods, pick whichever the user likes:</p>
+<ul>
+<li>📸 <strong>Closet scan (hero method):</strong> &quot;Lay some pieces out or open your wardrobe and snap a photo — I&#39;ll detect the items.&quot; Use <strong>multi-garment detection</strong> so one photo = several items auto-cropped &amp; categorised; user confirms/edits in a quick review grid. Far faster than one-by-one.</li>
+<li>🧺 <strong>One-tap from photos:</strong> scan the camera roll for clothing flat-lays/outfit pics already there.</li>
+<li>🛍️ <strong>Import (future):</strong> from order-history emails / retailer accounts.</li>
+<li>✋ <strong>Manual add:</strong> snap or pick one item, auto-fill category/colour, user tweaks. Always available as fallback.
+Show a <strong>progress ring</strong> (&quot;7 of your core 10&quot;) and let them <strong>finish anytime</strong> — the wardrobe is never &quot;done&quot;, it grows.</li>
+</ul>
+<p><strong>Step 5 — References (optional, skippable, ~15s).</strong>
+&quot;Got a place you save looks?&quot; — connect/import: <strong>Pinterest board</strong>, <strong>Instagram saved</strong>, or <strong>drop screenshots</strong> (most people have a screenshots folder). Set up the <strong>share-sheet</strong> here too so saving to OOTD from anywhere becomes a habit. Fully skippable — can be added later.</p>
+<p><strong>Step 6 — First outfit reveal (the payoff). 🎉</strong>
+Immediately show a real look from their seeded wardrobe + taste, framed in the assistant&#39;s voice, with the honest confidence note: <em>&quot;Here&#39;s your first look — I&#39;m ~70% sure of your taste. The more you wear and save, the sharper I get.&quot;</em> This is the moment that earns continued investment.</p>
+<p><strong>Step 7 — Set the habit.</strong>
+Ask permission for <strong>morning notifications</strong> (&quot;Want me to have a look ready each morning?&quot;) + location/weather access (explained in plain terms: <em>&quot;so I can dress you for the actual weather&quot;</em>). Done.</p>
+<hr>
+<h2>Ongoing enrichment (after onboarding — just as important)</h2>
+<p>The profile keeps sharpening through normal use, never another form:</p>
+<ul>
+<li><strong>&quot;Mark worn&quot;</strong> on accepted looks → wear history (no-repeat + favourites).</li>
+<li><strong>Accept / reject / swap</strong> every day → continuously refines the taste vector.</li>
+<li><strong>Share-sheet saves</strong> → reference folders grow passively.</li>
+<li><strong>&quot;Add as you go&quot;:</strong> when a look references something not owned, or the user wears something new, a gentle one-tap &quot;add this to your wardrobe?&quot;.</li>
+<li><strong>Seasonal nudges:</strong> &quot;Add a few warm pieces? Winter&#39;s coming and your closet&#39;s light on knitwear.&quot; Frames a data gap as helpful, not a chore.</li>
+<li><strong>Confidence meter</strong> somewhere subtle, so the user sees giving more = better results.</li>
+</ul>
+<hr>
+<h2>Principles checklist (for the design)</h2>
+<ul>
+<li>⏱️ <strong>First outfit &lt; 3 min</strong>, even with ~10 items.</li>
+<li>🎈 <strong>Every step skippable / finishable</strong> — never a hard gate except the absolute minimum (a coarse taste seed + a handful of items).</li>
+<li>👆 <strong>Taps &amp; swipes &amp; camera over typing.</strong> Typing is the last resort.</li>
+<li>📈 <strong>Progressive disclosure</strong> — coarse → fine; seed now, enrich forever.</li>
+<li>🫶 <strong>Warm, honest copy</strong> — confidence over false precision; gaps framed as &quot;I&#39;ll get better&quot;.</li>
+<li>🔁 <strong>Onboarding never really ends</strong> — the best data comes from daily use, so design for that.</li>
+</ul>
+<hr>
+<h2>Prompt to paste into Claude Code</h2>
+<blockquote>
+<p>Design a <strong>modern, progressive onboarding</strong> for OOTD that captures the user&#39;s <strong>taste, references and wardrobe</strong> without a wall of forms. Core philosophy: <strong>deliver value fast (first real outfit in under ~3 minutes, even with a thin wardrobe) and earn the rest of the data over time.</strong> Every input method should be fast, visual and a little fun — taps, swipes and camera over typing.</p>
+<p><strong>Flow:</strong> (0) warm 1-screen welcome with the promise; (1) coarse taste seed — pick 2-4 aesthetic cards (Workwear, Quiet Luxury, Streetwear, Minimal, Y2K, Sporty…) to seed the persistent style profile instantly; (2) a <strong>swipe game</strong> of <del>12-15 outfit images (♥/✕ or this-vs-that) that builds the taste vector far better than self-labels, with a live &quot;getting a feel for you&quot; read, skippable after a few; (3) a few <strong>quick practical prefs</strong> by tapping — fit (loose/fitted), colours to avoid, modesty, no-go items — all optional with defaults; (4) <strong>wardrobe seed</strong> asking only for a &quot;core 10&quot; most-worn pieces, NOT 40, offered via several effortless methods — a <strong>closet scan that uses multi-garment detection</strong> (one photo → several items auto-cropped &amp; categorised, confirmed in a review grid), camera-roll scan, manual add fallback, and import-from-receipts as a future option, with a progress ring and &quot;finish anytime&quot;; (5) <strong>references</strong> (optional/skippable) — connect Pinterest/Instagram saved or drop screenshots, and set up a share-sheet for ongoing saves; (6) <strong>first outfit reveal</strong> as the payoff, in the assistant&#39;s warm voice, with an honest confidence note (&quot;</del>70% sure of your taste — the more you wear and save, the sharper I get&quot;); (7) ask permission for morning notifications + weather/location, explained in plain terms.</p>
+<p><strong>Also design the ongoing enrichment</strong> (the profile must keep sharpening through normal use, never another form): mark-worn → wear history; accept/reject/swap → refine taste vector; share-sheet saves grow reference folders; &quot;add as you go&quot; when a look references an unowned item or the user wears something new; seasonal nudges framing data gaps as helpful; a subtle confidence meter so users see that giving more = better results.</p>
+<p><strong>Principles to honour:</strong> first outfit &lt; 3 min; every step skippable/finishable except the bare minimum; progressive disclosure (seed now, enrich forever); warm honest copy with confidence over false precision; onboarding never truly &quot;ends&quot; — the best data comes from daily use, so design for that. Keep it consistent with the conversational journey in <code>OOTD_app_journey_brief.md</code> and the landing-page promise (&quot;learns your wardrobe, references and taste, then dresses you every morning&quot;).</p>
+<p>Deliver the screen-by-screen flow, the key components, and the state/data model for the captured taste profile, references and wardrobe.</p>
+</blockquote>
+<hr>
+<p><em>Tune the &quot;core 10&quot; number, how many swipe cards, and which capture methods you actually build first to match your real tech (multi-garment detection is the highest-value but hardest piece — a manual/one-by-one add is a fine v1 fallback).</em></p>

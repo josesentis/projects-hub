@@ -1,0 +1,86 @@
+<h1>OOTD — Implementation plan (phased)</h1>
+<p>Everything needed to build OOTD, <strong>split into phases you implement one at a time</strong>. Each phase is
+self-contained — hand the phase folder to Claude Code, ship it, then move on.</p>
+<p>Work them in order: each builds on the last.</p>
+<hr>
+<h2>📦 Phase 1 — Landing page</h2>
+<p><strong>Folder:</strong> <code>ai/phases/phase-1-landing/</code>
+Redesign &amp; build the marketing landing page: dark cinematic editorial site, 3D hero with intro
+animation, continuous-progress carousels, style slider, lookbook, pricing + notify modal, footer.</p>
+<ul>
+<li><code>README.md</code> — full design spec (tokens, type, every section, all interactions).</li>
+<li><code>freepik_image_prompts.md</code> — prompts to generate the photography (diverse cast, trendy styling).</li>
+<li>Reference prototype files: <code>OOTD.html</code>, <code>ootd.css</code>, <code>sections.jsx</code>, <code>app.jsx</code>.</li>
+<li><strong>Start here</strong> — it sets the brand promise everything else must live up to.</li>
+<li><strong>Status: ✅ Done.</strong></li>
+</ul>
+<h2>🧠 Phase 2 — Outfit engine &amp; conversational journey</h2>
+<p><strong>Folder:</strong> <code>ai/phases/phase-2-outfit-engine/</code>
+Restructure the core app from a form-driven generator into a <strong>conversational AI stylist</strong>, and
+define the inputs/outputs of an outfit generation (incl. the 3-layer taste model).</p>
+<ul>
+<li><code>README.md</code> — the journey redesign, inputs, outputs, JSON shape, tone, the persistent-vs-today
+taste layering, and a paste-ready Claude Code prompt.</li>
+<li><strong>Depends on Phase 1</strong> for tone/promise alignment. The biggest product change — do it second.</li>
+</ul>
+<h2>🎨 Dashboard restyle + Style Manual (apply now, across phases)</h2>
+<p><strong>Files:</strong> <code>dashboard-restyle/</code> · <code>ai/DESIGN.md</code>
+A styling pass that applies the OOTD brand system to the <strong>current</strong> app: dark editorial sidebar +
+light gallery content, serif/grotesk/mono type, lime accent, <code>.ootd-dash</code> CSS scoping.</p>
+<ul>
+<li><code>ai/DESIGN.md</code> — <strong>the app&#39;s design system</strong>: tokens, type, every component, and a checklist
+for building new screens. Keep this in the repo so Claude Code generates consistent UI.</li>
+<li><code>dashboard-restyle/</code> — a working reference prototype of every current screen (Home, Calendar,
+References, Wardrobe + modal, Analytics, Users) + <code>nextjs/ootd-dashboard.css</code> (the system) +
+TSX components. The CSS is ported to <code>app/(dashboard)/dashboard.css</code>.</li>
+<li>Use the manual for <strong>all</strong> new app UI; use the tokens for every colour, never hard-code hex.</li>
+<li><strong>Status: ✅ Done.</strong> CSS applied, sidebar + topbar updated.</li>
+</ul>
+<h2>📣 Social &amp; favicon assets</h2>
+<p><strong>Folder:</strong> <code>public/favicons/</code> · <code>public/social/</code>
+Share images, favicons, app icons, web manifest and meta tags for the marketing site.</p>
+<ul>
+<li><code>public/favicons/</code> — <code>favicon.svg</code> + PNG 16/32/48, Apple touch icons, Android/PWA icons, maskable variants.</li>
+<li><code>public/social/</code> — <code>og-image.png</code> / <code>twitter-image.png</code> (1200×630).</li>
+<li><code>public/site.webmanifest</code> — PWA manifest.</li>
+<li>Metadata wired in <code>app/layout.tsx</code>.</li>
+<li><strong>Status: ✅ Done.</strong></li>
+</ul>
+<h2>✨ Phase 3 — Onboarding &amp; data capture</h2>
+<p><strong>Folder:</strong> <code>ai/phases/phase-3-onboarding/</code>
+A modern, progressive onboarding that captures <strong>taste, references and wardrobe</strong> without a wall of
+forms — plus the ongoing enrichment loop.</p>
+<ul>
+<li><code>README.md</code> — the onboarding flow, capture methods, enrichment, and a paste-ready prompt.</li>
+<li><strong>Depends on Phase 2</strong> (it feeds the engine&#39;s inputs). Do it third — once the engine knows what
+data it needs, onboarding fills it well.</li>
+</ul>
+<h2>🖼️ Phase 4 — Outfit imagery (collage V1 + Premium &quot;See it on you&quot;)</h2>
+<p><strong>Folder:</strong> <code>ai/phases/phase-4-imagery/</code>
+How OOTD <strong>shows</strong> an outfit. Decision: <strong>don&#39;t block V1 on generated images</strong> — ship a
+well-designed <strong>collage / flat-lay of the user&#39;s real garment cut-outs</strong> (instant, free, truthful),
+and reserve a <strong>generative &quot;See it on you&quot; try-on for Premium</strong> (labelled AI, with fidelity +
+consent guardrails).</p>
+<ul>
+<li><code>README.md</code> — the two-tier strategy, the V1 collage template system, the Premium try-on spec +
+guardrails, and a paste-ready Claude Code prompt.</li>
+<li><strong>Pairs with Phase 2</strong> (the engine decides the outfit; this decides how it looks). The collage
+can ship with V1; the generative try-on is a later Premium surface.</li>
+</ul>
+<hr>
+<h2>How to use with Claude Code</h2>
+<p>For each phase: open the phase&#39;s <code>README.md</code>, and either paste its &quot;Prompt to paste into Claude
+Code&quot; section, or tell Claude <em>&quot;read <code>ai/phases/phase-N-.../README.md</code> and implement it.&quot;</em> Ship &amp;
+review one phase before starting the next.</p>
+<h2>Business / fundraising docs (not for Claude Code — for you &amp; investors)</h2>
+<ul>
+<li><code>ai/LAUNCH_BUDGET.md</code> — the one-time <strong>Launch Kit</strong> budget (LEAN ~€25k vs SOLID ~€45–50k),
+line items, and what each covers. Founder salary excluded (separate runway line).</li>
+</ul>
+<h2>Future / parked ideas (not yet a phase)</h2>
+<ul>
+<li>Connect device calendar (Google/Apple) → automatic occasion &amp; dress-code inference (Phase 2 notes
+this; OOTD&#39;s own calendar only stores outfits, so occasion is conversational until then).</li>
+<li>Retailer / order-history import to auto-populate the wardrobe.</li>
+<li>Multi-look &quot;give me 3&quot; as a premium surface (referenced in Phase 1 pricing + Phase 2 outputs).</li>
+</ul>

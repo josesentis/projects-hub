@@ -1,0 +1,169 @@
+<h1>OOTD — Reimagining the user journey (conversational AI stylist)</h1>
+<p>A brief for <strong>Claude Code</strong> to evolve the OOTD app from a form-driven generator into a
+warm, conversational AI stylist — matching the promise of the landing page:</p>
+<blockquote>
+<p><em>&quot;A stylist that actually knows you. It learns your wardrobe, your references and your taste — then dresses you, every morning.&quot;</em></p>
+</blockquote>
+<hr>
+<h2>1. The problem with the current journey</h2>
+<p>Today the app is a <strong>form</strong>: prompt box → vibe list → editable categories → reference folders → &quot;Generate&quot; → one outfit of N pieces. It works, but it <em>feels like configuring software</em>, not like talking to a stylist. Every decision is front-loaded onto the user before anything happens, and the single rigid output gives no room for the back-and-forth that real styling is.</p>
+<p><strong>North star:</strong> it should feel like texting a stylish friend who already knows your closet.
+Not &quot;fill this in and I&#39;ll compute a result&quot; — but <em>&quot;Morning! It&#39;s drizzly and you&#39;ve got that studio day — here&#39;s what I&#39;d wear. Want it warmer?&quot;</em></p>
+<hr>
+<h2>2. Principles for the new journey</h2>
+<ol>
+<li><strong>Proactive, not reactive.</strong> OOTD opens with a suggestion already made, not an empty prompt. The user <em>reacts and refines</em> instead of <em>configuring from zero</em>.</li>
+<li><strong>Conversation is the primary interface.</strong> The prompt box becomes a chat thread. Vibes, categories and references become <em>things you can mention or tap</em>, not mandatory form fields.</li>
+<li><strong>Context does the heavy lifting.</strong> The app already knows the weather, time, calendar and wardrobe — so it shouldn&#39;t ask the user to restate them. Show that it knows (&quot;18° and clearing up ☀️&quot;) to build trust.</li>
+<li><strong>Refinement is cheap and natural.</strong> &quot;make it warmer&quot;, &quot;swap the shoes&quot;, &quot;I want to wear my new jeans&quot;, &quot;more sporty&quot; — all handled in-conversation, regenerating only what&#39;s needed.</li>
+<li><strong>Warm, human, brief.</strong> Short sentences, first person, a little personality. Never clinical. (See §6.)</li>
+<li><strong>Always escapable to control.</strong> Power users can still tap to pin a vibe, lock an item, or open the wardrobe — the structure isn&#39;t gone, it&#39;s <em>demoted</em> from gate to option.</li>
+</ol>
+<hr>
+<h2>3. The reimagined journey (happy path)</h2>
+<p><strong>A. The morning open (proactive)</strong>
+Instead of an empty generator, the app opens on today&#39;s suggestion, framed as a message:</p>
+<blockquote>
+<p>☀️ <em>Good morning, Jose.</em>
+<em>It&#39;s 14° and drizzly in Barcelona, and you&#39;ve got Studio day → dinner at 8.</em>
+<em>Here&#39;s what I&#39;d wear today:</em>
+<strong>[ Look card: a single styled outfit, hero image/flatlay + the pieces ]</strong>
+<em>Layered for the rain, easy to dress up for tonight. Want to tweak anything?</em></p>
+<p><code>[ Love it ]  [ Make it warmer ]  [ More sporty ]  [ Swap a piece ]  [ Show another ]</code></p>
+</blockquote>
+<p>The user lands in a <em>conversation already in progress</em>. No blank slate.</p>
+<p><strong>B. Refine by chatting</strong>
+The quick-reply chips are shortcuts; the user can also just type. Each refinement is a turn in the thread, and OOTD answers with an updated look + a one-line rationale:</p>
+<blockquote>
+<p>🧑 <em>more sporty, I&#39;m cycling there</em>
+🤖 <em>Got it — swapped the trousers for your black joggers and the boots for the Sambas. Still warm enough for 14°.</em> <strong>[ updated look ]</strong></p>
+</blockquote>
+<p><strong>C. Steer with vibe / occasion (optional, inline)</strong>
+Vibes and occasions are surfaced as <em>suggestible chips</em>, not a required list:</p>
+<blockquote>
+<p><code>Today feels like…  [ Quiet Luxury ]  [ Streetwear ]  [ Old Money ]  [ + tell me ]</code></p>
+</blockquote>
+<p>Tapping one (or typing &quot;something more Y2K&quot;) re-styles. The previously-selected categories live behind a small <strong>&quot;Adjust what I consider&quot;</strong> control, not on the main path.</p>
+<p><strong>D. Anchor to a piece or a reference (optional)</strong>
+&quot;I want to wear my new white boots&quot; → OOTD builds the look <em>around</em> that item.
+&quot;Use my Pinterest &#39;autumn&#39; folder&quot; → it leans on that reference set. These are mentions in the chat or taps in a slim tray, not mandatory steps.</p>
+<p><strong>E. Commit</strong>
+When the user is happy: <code>[ Wear this ]</code> → marks it worn (feeds the &quot;don&#39;t repeat&quot; history), optionally adds a calendar/notification, and can save to the lookbook. Done before coffee.</p>
+<p><strong>F. Want options?</strong>
+&quot;Show another&quot; / &quot;give me 3&quot; returns a small set of distinct looks to swipe — reconciling the landing&#39;s <em>&quot;3 looks ready for you today.&quot;</em> (See §5 on free vs premium.)</p>
+<hr>
+<h2>4. INPUTS — the signals OOTD should consider</h2>
+<p>Group them so the app gathers most automatically and only <em>asks</em> when it adds real value.</p>
+<h2>4b. How vibes &amp; styles layer (persistent taste vs today&#39;s intent)</h2>
+<p>A key question: do the user&#39;s vibes/styles live in <em>settings</em> or at <em>generation time</em>? <strong>Both — in three layers</strong>, so the user never re-picks their taste every morning, but can always override it.</p>
+<ol>
+<li><strong>Style identity (persistent — user profile).</strong> The user&#39;s default self, set once in onboarding and rarely edited. <em>&quot;I wear a lot of workwear&quot;</em> is stored here and applied to <strong>every</strong> outfit — dinner or work — without restating it. Store it <strong>weighted</strong>, not binary: e.g. <code>Workwear 70% · Minimal 20% · Streetwear 10%</code>, so the lean dominates but outputs still vary. Evolves automatically from accept/reject history.</li>
+<li><strong>This-moment intent (per generation — conversational / chips).</strong> Today&#39;s deviation. Most days the user touches nothing and Layer 1 applies. But &quot;I have a wedding today&quot; (typed, or an occasion chip) <strong>temporarily overrides</strong> the workwear lean for that one generation. It&#39;s <strong>ephemeral</strong> — tomorrow returns to the profile automatically; nothing to undo.</li>
+<li><strong>Occasion / dress code.</strong> Either volunteered in chat or tapped from the <code>Work · Gym · Dinner · Event · Chill</code> chip row (and, if the device calendar is connected, inferred). Sets the formality target.</li>
+</ol>
+<p><strong>The golden rule: occasion/intent overrides persistent identity for <em>formality</em>, but the persistent taste still shapes the <em>aesthetic</em>.</strong> So a wedding for a workwear-leaning user → formal, <strong>but in their DNA</strong> (a clean, minimal-cut suit/dress — not a flashy tuxedo), which is what keeps it feeling &quot;theirs&quot;. When today&#39;s intent conflicts with the profile, <strong>OOTD should say so, not switch silently</strong>: <em>&quot;Going dressier than your usual workwear since it&#39;s a wedding — keeping it minimal so it still feels like you.&quot;</em> That transparency builds trust.</p>
+<p><strong>UX:</strong> profile lives on a &quot;Your style&quot; settings page (weighted vibes, colours you avoid, fit, modesty — configured once); at generation a suggestible chip row shows your default pre-selected, and tapping one or typing an occasion affects <strong>today only</strong>. Do nothing → Layers 1 + 3 generate friction-free.</p>
+<h3>Ambient / contextual (automatic — never ask the user to type these)</h3>
+<ul>
+<li><strong>Weather today:</strong> temperature (high/low), &quot;feels like&quot;, precipitation %, wind, UV/sun, humidity. Drives warmth, layers, waterproofing, fabrics.</li>
+<li><strong>Location:</strong> city/region (for weather + cultural/seasonal norms), indoor vs outdoor day.</li>
+<li><strong>Time &amp; date:</strong> time of day (morning vs going-out), day of week, season.</li>
+<li><strong>Occasion / what today is:</strong> ⚠️ <strong>OOTD&#39;s own calendar only stores outfits (today&#39;s + past), NOT external events</strong> — so it cannot infer &quot;wedding&quot; on its own. The occasion must come from: (a) <strong>conversation</strong> (&quot;I have a wedding at 5&quot;), or (b) a <strong>quick chip row at generation</strong> (<code>Work · Gym · Dinner · Event · Chill</code>). <em>Future/premium:</em> optionally <strong>connect the device calendar</strong> (Google/Apple) to recover automatic dress-code inference. The outfit history calendar is still used for <strong>no-repeat</strong> logic and &quot;not worn in 3 weeks&quot;.</li>
+</ul>
+<h3>User / taste (learned, persistent)</h3>
+<ul>
+<li><strong>Style profile / taste vector:</strong> learned from onboarding + saved references + accept/reject history. <em>This is the moat — &quot;knows you&quot;.</em></li>
+<li><strong>Reference folders:</strong> saved looks, screenshots, Pinterest-style boards the user curated.</li>
+<li><strong>Preferred vibes / aesthetics:</strong> the ones they lean on (Quiet Luxury, Streetwear…).</li>
+<li><strong>Fit &amp; comfort preferences:</strong> loose vs fitted, no heels, always layers, colours they avoid, modesty preferences.</li>
+<li><strong>Wear history:</strong> what they&#39;ve worn recently → avoid repeating the same pieces too soon; surface under-worn items.</li>
+</ul>
+<h3>Wardrobe (the inventory it styles from)</h3>
+<ul>
+<li><strong>Items the user owns:</strong> category, colour, fabric/warmth, formality, pattern, season, and <em>photos</em>. (Free tier ~40 items.)</li>
+<li><strong>Availability:</strong> in laundry / packed / unavailable → exclude.</li>
+<li><strong>Pairing memory:</strong> combinations the user has worn/loved before.</li>
+</ul>
+<h3>This-moment intent (optional, conversational)</h3>
+<ul>
+<li><strong>Free-text request / mood:</strong> &quot;comfy but cute&quot;, &quot;I feel like wearing colour&quot;, &quot;all black&quot;.</li>
+<li><strong>Occasion override:</strong> when today differs from the calendar (&quot;date tonight&quot;).</li>
+<li><strong>Anchor item:</strong> &quot;build around my new boots&quot;.</li>
+<li><strong>Constraints:</strong> &quot;it&#39;s a long day on my feet&quot;, &quot;no jacket, I&#39;ll be inside&quot;.</li>
+</ul>
+<blockquote>
+<p>Rule of thumb: <strong>infer everything in the first two groups silently; let the user <em>volunteer</em> the fourth group through chat.</strong> Only ask a question when a real ambiguity would change the result (e.g. &quot;Indoors all day or out in the rain?&quot;).</p>
+</blockquote>
+<hr>
+<h2>5. OUTPUTS — what a generation should return</h2>
+<p>Your current output is <em>a single outfit of N pieces</em>. To feel like a stylist (and match the landing), enrich it — even if the default view still shows <strong>one primary look</strong>.</p>
+<p>For each suggestion return:</p>
+<ol>
+<li><strong>The look</strong> — the ordered set of wardrobe pieces (top, bottom, outerwear, shoes, accessories), each linked to the real item in the user&#39;s wardrobe (with its photo). Flag any <em>gap</em> (&quot;you don&#39;t own a light rain jacket — here&#39;s the closest thing&quot;).</li>
+<li><strong>A one-line rationale</strong> — <em>why this, today</em>, in the assistant&#39;s voice. &quot;Layered for the drizzle, dressy enough for dinner.&quot; This single line is what makes it feel intelligent rather than random.</li>
+<li><strong>A title / vibe tag</strong> — e.g. &quot;Studio → Dinner&quot; or &quot;Off-duty sporty&quot;. Useful for the lookbook + quick scanning.</li>
+<li><strong>Confidence / context chips</strong> — small, honest signals: <code>14° · drizzle</code> · <code>bridges 2 events</code> · <code>you haven&#39;t worn this in 3 weeks</code>.</li>
+<li><strong>Refinement affordances</strong> — per-piece <strong>swap</strong> (give 2-3 alternatives for any slot the user taps) and global moves (warmer / dressier / sportier / different colour / surprise me).</li>
+<li><strong>Alternates</strong> — 0 by default in the thread, but <strong>&quot;show another&quot; / &quot;give me options&quot;</strong> returns <strong>2-3 distinct looks</strong> (the landing&#39;s &quot;3 looks ready&quot;). Suggest gating: <em>free = 1 daily look + unlimited swaps; premium = multiple full looks &amp; re-styles on demand</em> (aligns with the pricing section).</li>
+</ol>
+<blockquote>
+<p>So: the <strong>atomic output is still one outfit</strong>, but wrapped with <em>reasoning, context, swap-alternatives, and an optional small set of full alternates</em>. That&#39;s the difference between &quot;a generator&quot; and &quot;a stylist&quot;.</p>
+</blockquote>
+<h3>Suggested response shape (for the model/back-end)</h3>
+<pre><code class="language-json">{
+  &quot;greeting&quot;: &quot;Morning, Jose — 14° and drizzly, Studio day then dinner at 8.&quot;,
+  &quot;looks&quot;: [
+    {
+      &quot;id&quot;: &quot;look_01&quot;,
+      &quot;title&quot;: &quot;Studio → Dinner&quot;,
+      &quot;vibe&quot;: &quot;smart-casual&quot;,
+      &quot;rationale&quot;: &quot;Layered for the rain, easy to dress up tonight.&quot;,
+      &quot;context_chips&quot;: [&quot;14° · drizzle&quot;, &quot;bridges 2 events&quot;],
+      &quot;items&quot;: [
+        { &quot;slot&quot;: &quot;outerwear&quot;, &quot;wardrobe_id&quot;: &quot;w_113&quot;, &quot;name&quot;: &quot;Charcoal overshirt&quot;, &quot;warmth&quot;: 3 },
+        { &quot;slot&quot;: &quot;top&quot;,       &quot;wardrobe_id&quot;: &quot;w_044&quot;, &quot;name&quot;: &quot;White tee&quot; },
+        { &quot;slot&quot;: &quot;bottom&quot;,    &quot;wardrobe_id&quot;: &quot;w_201&quot;, &quot;name&quot;: &quot;Black tapered trousers&quot; },
+        { &quot;slot&quot;: &quot;shoes&quot;,     &quot;wardrobe_id&quot;: &quot;w_309&quot;, &quot;name&quot;: &quot;Leather sneakers&quot; }
+      ],
+      &quot;swaps&quot;: { &quot;shoes&quot;: [&quot;w_310&quot;, &quot;w_277&quot;], &quot;bottom&quot;: [&quot;w_188&quot;] },
+      &quot;gaps&quot;: []
+    }
+  ],
+  &quot;quick_replies&quot;: [&quot;Love it&quot;, &quot;Make it warmer&quot;, &quot;More sporty&quot;, &quot;Swap a piece&quot;, &quot;Show another&quot;]
+}
+</code></pre>
+<hr>
+<h2>6. Tone &amp; copy guidelines</h2>
+<ul>
+<li><strong>First person, warm, brief.</strong> &quot;Here&#39;s what I&#39;d wear&quot; — not &quot;Outfit generated.&quot;</li>
+<li><strong>Show you know the context, lightly.</strong> A weather/calendar nod once per morning, not on every line.</li>
+<li><strong>One idea per message.</strong> Short bubbles, like texting.</li>
+<li><strong>Personality without gimmicks.</strong> A little warmth and the odd emoji (☀️🧥) is fine; avoid robotic status text (&quot;Processing your 4 selected categories…&quot;).</li>
+<li><strong>Honesty over hype.</strong> If the wardrobe lacks something, say so kindly and offer the closest option.</li>
+<li><strong>Never block on configuration.</strong> Questions only when they change the outcome.</li>
+</ul>
+<hr>
+<h2>7. Migration notes (don&#39;t throw away what works)</h2>
+<ul>
+<li>The <strong>vibe list, category editor and reference folders still exist</strong> — relocate them from <em>mandatory pre-generation form</em> to <em>optional, inline or in a side tray</em> (&quot;Adjust what I consider&quot;, per-piece swaps, a vibe chip row).</li>
+<li>Keep the <strong>wardrobe and reference ingestion</strong> exactly as-is — that data is the input engine described in §4.</li>
+<li>The <strong>generate action becomes implicit</strong> (auto on open) <strong>+ conversational</strong> (every chat turn re-generates as needed). A manual &quot;new look&quot; button can remain.</li>
+</ul>
+<hr>
+<h2>8. Prompt to paste into Claude Code</h2>
+<blockquote>
+<p>I want to redesign OOTD&#39;s core user journey to feel like a <strong>conversational AI stylist</strong>, not a form-driven generator. Right now the flow is: prompt box → vibe list → editable categories → reference folders → &quot;Generate&quot; → one outfit. It feels robotic and front-loads every decision. I want it to feel like texting a stylish friend who already knows my closet.</p>
+<p>Please redesign the journey around these principles: <strong>(1) proactive</strong> — open on today&#39;s suggested look already made, framed as a message, not an empty prompt; <strong>(2) conversational</strong> — a chat thread is the primary interface, with quick-reply chips (Love it / Make it warmer / More sporty / Swap a piece / Show another) and free-text refinement; <strong>(3) context-aware</strong> — silently use the signals below and <em>show</em> that it knows them (&quot;14° and drizzly in Barcelona, Studio day then dinner at 8&quot;) instead of asking; <strong>(4) cheap refinement</strong> — handle &quot;make it warmer&quot;, &quot;swap the shoes&quot;, &quot;build around my new boots&quot;, &quot;more Y2K&quot; as conversation turns that re-style only what&#39;s needed; <strong>(5) warm, brief, first-person copy</strong> — never clinical status text; <strong>(6) controls demoted, not removed</strong> — vibes, categories and reference folders become optional inline chips / a side tray (&quot;Adjust what I consider&quot;) and per-piece swaps, not mandatory gates.</p>
+<p><strong>Inputs the styling should consider</strong> — infer the first groups automatically, let the user volunteer the last via chat:</p>
+<ul>
+<li><em>Ambient (auto):</em> today&#39;s temperature/feels-like, precipitation, wind, sun; location/city; time of day, day, season; calendar events and their implied dress code.</li>
+<li><em>User/taste (learned, persistent):</em> style profile/taste vector from onboarding + saved references + accept/reject history; reference folders; preferred vibes; fit/comfort/modesty preferences; recent wear history (avoid repeats).</li>
+<li><em>Wardrobe:</em> owned items (category, colour, fabric/warmth, formality, season, photo), availability (laundry/packed), past loved pairings.</li>
+<li><em>This-moment intent (optional, conversational):</em> free-text mood, occasion override, anchor item, constraints.
+Only ask the user a question when a genuine ambiguity would change the result.</li>
+</ul>
+<p><strong>Output of each generation</strong> — the atomic result stays <em>one primary outfit</em>, but wrap it so it feels like a stylist: the ordered set of pieces each linked to the real wardrobe item + photo (flag gaps if a needed piece isn&#39;t owned); a <strong>one-line rationale</strong> in the assistant&#39;s voice (&quot;layered for the drizzle, dressy enough for dinner&quot;); a short title/vibe tag; honest context chips (<code>14° · drizzle</code>, <code>bridges 2 events</code>, <code>not worn in 3 weeks</code>); <strong>per-piece swap</strong> alternatives; and an optional <strong>&quot;show another / give me 3&quot;</strong> that returns 2-3 distinct full looks. Suggested gating: free = 1 daily look + unlimited swaps; premium = multiple full looks &amp; re-styles on demand. (See the JSON response shape in the brief for a concrete structure.)</p>
+<p>Deliver: an updated screen/flow design and the component/state changes to implement it. Reuse the existing wardrobe + reference ingestion and the vibe/category data — just relocate them per principle (6). Keep everything aligned with the landing page promise (&quot;learns your wardrobe, references and taste, then dresses you every morning, for today&#39;s weather, calendar and mood&quot;).</p>
+</blockquote>
+<hr>
+<p><em>This brief is a starting point — adjust the free/premium split, the number of alternates, and how proactive the morning open is to match your real data and model capabilities.</em></p>

@@ -1,0 +1,133 @@
+<h1>AI Slides → Figma</h1>
+<p>Plugin de Figma que importa presentacions HTML fetes amb IA (Claude, ChatGPT, Gemini, reveal.js, Marp…) i les converteix en slides <strong>editables</strong>: text real, vectors, imatges i capes amb nom.</p>
+<p>Funciona a <strong>Figma Slides</strong> (crea una slide per pàgina, escalada a 1920×1080) i a <strong>Figma Design</strong> (crea un frame per slide dins d&#39;una secció).</p>
+<h2>Preu</h2>
+<p>La versió gratuïta importa les 3 primeres slides de cada presentació. La versió completa és un pagament únic (12 $) a <strong>Lemon Squeezy</strong>, que envia una clau de llicència per correu. Figma no accepta venedors nous, així que el cobrament no passa per Figma.</p>
+<ul>
+<li><code>src/ui/license.ts</code>: enllaç de compra i IDs de la botiga i el producte (<code>SHOP</code>). Amb els IDs a 0, s&#39;accepta qualsevol clau (només per provar).</li>
+<li>El panell activa la clau (una activació per ordinador) i la torna a comprovar cada vegada que s&#39;obre. Si s&#39;ha retornat o desactivat, el plugin torna a la versió gratuïta. Sense connexió, continua funcionant.</li>
+<li>La clau es desa amb <code>figma.clientStorage</code>. El límit el controla <code>src/main.ts</code> (<code>FREE</code>), no només el panell.</li>
+</ul>
+<h2>Provar-lo a Figma (5 minuts)</h2>
+<ol>
+<li><code>npm install &amp;&amp; npm run build</code></li>
+<li>Obre Figma <strong>Desktop</strong> i un fitxer de Slides (o de Design).</li>
+<li>Menú <strong>Plugins → Development → Import plugin from manifest…</strong> i tria <code>manifest.json</code> d&#39;aquesta carpeta.</li>
+<li><strong>Plugins → Development → AI Slides to Figma</strong>.</li>
+<li>Arrossega un <code>.html</code> o un <code>.zip</code> al panell, revisa la vista prèvia i prem <strong>Importa</strong>.</li>
+</ol>
+<p>Fitxers per provar: <code>test/fixtures/</code> (presentació amb Tailwind, una de ChatGPT, una de reveal.js, una de React, un zip amb imatges i CSS propis i un zip amb un HTML per slide).</p>
+<h2>Què fa, pas a pas</h2>
+<ol>
+<li><strong>Llegeix el fitxer</strong> (<code>src/ui/ui.ts</code>): un <code>.html</code> sol o un <code>.zip</code>. Si el zip té un <code>index.html</code>, fa servir aquest; si no, importa tots els HTML per ordre (cas de les eines que exporten una slide per fitxer).</li>
+<li><strong>El prepara</strong> (<code>src/ui/prepare.ts</code>): incrusta CSS, imatges i fonts del zip; substitueix Tailwind i Lucide pels que porta el plugin (funciona sense connexió), i afegeix una política de seguretat estricta.</li>
+<li><strong>El pinta en un iframe aïllat</strong> amb el <em>probe</em> (<code>src/probe/</code>), que:<ul>
+<li>detecta les slides (reveal.js, Marp, classes <code>.slide</code>/<code>.page</code>, seccions repetides de la mateixa mida o, si és una web normal, la talla en trossos);</li>
+<li>activa cada slide com ho faria el JavaScript original;</li>
+<li>converteix ::before/::after en elements reals, per no perdre barres decoratives ni vinyetes;</li>
+<li>llegeix posicions, colors, degradats, ombres, vores, radis, text i estils.</li>
+</ul>
+</li>
+<li><strong>Ho construeix a Figma</strong> (<code>src/main.ts</code>): frames, text amb estils per trams, SVG com a vectors, imatges, efectes i desenfocaments.</li>
+</ol>
+<h2>Seguretat (el tema del JavaScript)</h2>
+<ul>
+<li>El fitxer es renderitza en un iframe <code>sandbox=&quot;allow-scripts&quot;</code> <strong>sense</strong> <code>allow-same-origin</code>: no pot llegir el panell, ni el fitxer de Figma, ni res del navegador.</li>
+<li><strong>Mode normal:</strong> els scripts del fitxer s&#39;eliminen i una CSP amb <em>nonce</em> bloqueja qualsevol script que no sigui nostre.</li>
+<li><strong>Mode «Executa els scripts del fitxer»:</strong> per a fitxers que sense JavaScript surten buits (React, exportacions empaquetades com el manual de Marco Cannelloni). S&#39;activa sol quan cal i el panell ho avisa. Els scripts continuen tancats a l&#39;iframe aïllat i sense <code>connect-src</code> cap a internet.</li>
+<li>El canal panell → plugin porta un <strong>token secret</strong>: res que s&#39;executi dins el fitxer pot fer-se passar pel panell.</li>
+<li>El fitxer no s&#39;envia enlloc. L&#39;únic accés a internet és per baixar fonts i imatges que el mateix fitxer enllaça. Es pot desactivar al panell.</li>
+</ul>
+<h2>Detalls que ja resol</h2>
+<ul>
+<li><strong>Fonts:</strong> fa servir la primera font de la llista CSS que hi hagi a Figma. Si la font està incrustada amb un nom inventat (<code>&#39;MC Gill&#39;</code>), llegeix el nom real de dins del fitxer de la font (<em>Gill Sans</em>) i també el pes exacte. Avisa de les que falten.</li>
+<li><strong>Text:</strong> estils barrejats dins una mateixa línia (negreta, colors, subratllat, majúscules), text amb degradat (<code>background-clip: text</code>), ombres de text, llistes amb vinyetes o números, padding de les etiquetes de text inline.</li>
+<li><strong>Fons:</strong> colors, degradats lineals i radials, imatges (cover/contain/mosaic), degradats repetits (ratlles i quadres; es converteixen en imatge), <em>glassmorphism</em> (<code>backdrop-filter</code>).</li>
+<li><strong>Icones:</strong> SVG inline (Lucide, Heroicons…) com a vectors; fonts d&#39;icones (Font Awesome, Material) com a imatge.</li>
+<li><strong>Animacions d&#39;entrada:</strong> salta directament a l&#39;estat final (incloses les que comencen amb <code>opacity: 0</code>).</li>
+</ul>
+<h2>Limitacions conegudes</h2>
+<ul>
+<li>Gràfics de Chart.js i similars: en mode normal surten com a caixa buida. Amb «Executa els scripts» s&#39;importen com a imatge, no com a vectors.</li>
+<li><code>transform: rotate()</code> i <code>clip-path</code> no es traspassen; els elements surten rectes o sense retallar.</li>
+<li>Els <em>blend modes</em>, <code>mix-blend-mode</code> i els filtres que no són desenfocament es perden.</li>
+<li>Les notes del presentador de reveal.js es llegeixen, però l&#39;API de Figma Slides encara no permet desar-les.</li>
+</ul>
+<h2>Proves</h2>
+<pre><code>npm run build
+npm test            # totes les presentacions de test/fixtures (i test/private, si n&#39;hi ha)
+npm test reveal     # només les que contenen &quot;reveal&quot;
+node test/payments.mjs   # límit gratuït i llicències (API de Lemon Squeezy simulada)
+test/compare.sh     # imatges original | importat a test/out/*-cmp.jpg
+</code></pre>
+<p><code>npm test</code> carrega el panell i el plugin reals en un Chrome amb un Figma simulat (<code>test/mock-figma.js</code>). També pinta el resultat (<code>test/render-figma.js</code>) per comparar-lo amb l&#39;original. <code>test/private/</code> queda fora de git: hi ha el manual de Marco Cannelloni, que és material del client.</p>
+<h3>Resultats actuals</h3>
+<table>
+<thead>
+<tr>
+<th>Presentació</th>
+<th>Slides</th>
+<th>Temps</th>
+<th>Observacions</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tailwind + Lucide (estil Claude)</td>
+<td>4/4</td>
+<td>2 s</td>
+<td>pràcticament idèntica</td>
+</tr>
+<tr>
+<td>HTML amb seccions (estil ChatGPT)</td>
+<td>4/4</td>
+<td>1,5 s</td>
+<td>el gràfic de Chart.js surt com a caixa buida (avisat)</td>
+</tr>
+<tr>
+<td>reveal.js (CDN)</td>
+<td>5/5</td>
+<td>1,3 s</td>
+<td>inclou subslides verticals i fons de <code>data-background</code></td>
+</tr>
+<tr>
+<td>React + Babel</td>
+<td>3/3</td>
+<td>2 s</td>
+<td>executa els scripts sol (avisat)</td>
+</tr>
+<tr>
+<td>Zip amb CSS, @import, SVG i PNG</td>
+<td>2/2</td>
+<td>1 s</td>
+<td>idèntica</td>
+</tr>
+<tr>
+<td>Zip amb un HTML per slide</td>
+<td>4/4</td>
+<td>2 s</td>
+<td>ordre natural (slide_2 abans que slide_10)</td>
+</tr>
+<tr>
+<td>Manual de Marco Cannelloni (exportació de Claude, 30 MB)</td>
+<td>37/37</td>
+<td>72 s</td>
+<td>Gill Sans reconeguda; Gyatho i Nova Quinta cal tenir-les instal·lades</td>
+</tr>
+</tbody></table>
+<h2>Què encara no s&#39;ha pogut provar</h2>
+<p>Tot l&#39;anterior s&#39;ha comprovat amb el Figma simulat, no amb Figma de veritat. Els punts que cal mirar el primer dia dins Figma:</p>
+<ol>
+<li>Que el panell carregui l&#39;iframe aïllat (<code>srcdoc</code>) dins l&#39;iframe del plugin. Hauria de funcionar, però la CSP de Figma s&#39;hereta.</li>
+<li>En mode «Executa els scripts»: si la CSP de Figma no permet <code>unsafe-eval</code>, les presentacions que fan servir Babel al navegador fallaran. React precompilat i Tailwind no en depenen.</li>
+<li><code>figma.createSlide()</code> i <code>rescale()</code> a Figma Slides.</li>
+<li>Si algun element dona error, la importació continua i el panell mostra el primer error. Copia&#39;l i el corregim.</li>
+</ol>
+<h2>Estructura</h2>
+<pre><code>manifest.json        plugin (editorType: slides + figma)
+src/main.ts          costat Figma: construeix els nodes
+src/ui/              panell: lectura de fitxers, preparació, imatges, textos (ca/es/en)
+src/probe/           s&#39;executa dins l&#39;iframe aïllat: detecció, mesura, fonts, CSS
+src/shared/types.ts  format intermedi i missatges entre les tres parts
+vendor/              Tailwind Play CDN 3.4.17 (Tailwind 4 i Lucide surten de node_modules)
+test/                banc de proves amb Figma simulat
+</code></pre>

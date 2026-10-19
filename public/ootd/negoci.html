@@ -1,0 +1,888 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><script src="../assets/store.js" data-ns="ootd-negoci"></script><script src="../assets/hub-bar.js"></script>
+<title>Outfit of the Day · Negoci</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column (~760px) with full-bleed tables and charts; sticky section index on wide screens. */
+:root {
+  --bg: #f4f5f1; --surface: #ffffff; --ink: #1b2320; --body: #3a4440; --muted: #6b7570; --line: #dfe3dc;
+  --accent: #0f766e; --accent-soft: #dcefeb; --accent-2: #b45309; --accent-2-soft: #fbeedd; --bad: #b42318; --bad-soft: #fbe3df; --good: #1f7a3a;
+  --bar: #0f766e; --bar-muted: #b9c4bf; --bar-2: #d97706;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --text: "Instrument Sans", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121615; --surface: #1a201e; --ink: #edf1ee; --body: #c9d1cd; --muted: #93a09a; --line: #2c3532;
+  --accent: #4fc3b4; --accent-soft: #163632; --accent-2: #f2a54a; --accent-2-soft: #3a2a16; --bad: #f08a7c; --bad-soft: #3d1f1b; --good: #6fcf8a;
+  --bar: #4fc3b4; --bar-muted: #4a5753; --bar-2: #f2a54a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121615; --surface: #1a201e; --ink: #edf1ee; --body: #c9d1cd; --muted: #93a09a; --line: #2c3532;
+  --accent: #4fc3b4; --accent-soft: #163632; --accent-2: #f2a54a; --accent-2-soft: #3a2a16; --bad: #f08a7c; --bad-soft: #3d1f1b; --good: #6fcf8a;
+  --bar: #4fc3b4; --bar-muted: #4a5753; --bar-2: #f2a54a; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--body); font: 16px/1.6 var(--text); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px }
+@media (min-width: 1000px) { .wrap { grid-template-columns: 200px minmax(0, 1fr); padding-inline: 32px } }
+nav.toc { display: none }
+@media (min-width: 1000px) { nav.toc { display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 80px); align-self: start; font-size: 13px } }
+nav.toc a { display: block; color: var(--muted); text-decoration: none; padding: 5px 0 5px 12px; border-left: 2px solid var(--line) }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--ink); border-left-color: var(--accent); outline: none }
+main { min-width: 0; display: flex; flex-direction: column; gap: 56px }
+header.hero { display: flex; flex-direction: column; gap: 12px }
+.eyebrow { font: 600 12px/1 var(--text); letter-spacing: .08em; text-transform: uppercase; color: var(--accent) }
+h1 { font: 800 clamp(2rem, 5vw, 3.1rem)/1.05 var(--display); color: var(--ink); margin: 0; letter-spacing: -0.02em; text-wrap: balance }
+h2 { font: 700 1.6rem/1.15 var(--display); color: var(--ink); margin: 0 0 6px; letter-spacing: -0.01em; text-wrap: balance }
+h3 { font: 700 1.05rem/1.3 var(--text); color: var(--ink); margin: 24px 0 8px }
+p { margin: 0 0 12px; max-width: 70ch }
+.lede { font-size: 1.12rem; color: var(--body); max-width: 62ch }
+.meta { font-size: 13px; color: var(--muted) }
+section { display: flex; flex-direction: column; gap: 4px; scroll-margin-top: 80px }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 16px }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px }
+.kpi b { display: block; font: 700 1.3rem/1.2 var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.02em }
+.kpi span { font-size: 13px; color: var(--muted) }
+.callout { border-radius: 14px; padding: 16px 18px; background: var(--accent-soft); color: var(--ink); max-width: 76ch; margin: 8px 0 }
+.callout.warn { background: var(--accent-2-soft) }
+.callout.bad { background: var(--bad-soft) }
+.callout p:last-child { margin: 0 }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); margin: 8px 0 }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 560px }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; background: var(--surface) }
+tr:last-child td { border-bottom: 0 }
+td.n, th.n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap }
+tr.us td { background: var(--accent-soft); color: var(--ink) }
+.pos { color: var(--good); font-weight: 600 } .neg { color: var(--bad); font-weight: 600 }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 8px 0 }
+.chart svg { display: block; width: 100%; height: auto }
+.chart .cap { font-size: 13px; color: var(--muted); margin-top: 8px }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--body); margin-bottom: 8px }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin: 8px 0 }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 6px }
+.card.rec { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset }
+.card .price { font: 700 1.6rem/1.1 var(--mono); color: var(--ink) }
+.card .price small { font: 500 13px var(--text); color: var(--muted) }
+.card ul { margin: 6px 0 0; padding-left: 18px; font-size: 14px }
+.tag { align-self: flex-start; font: 600 11px/1 var(--text); letter-spacing: .05em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent) }
+ul.check { list-style: none; padding: 0; margin: 4px 0 }
+ul.check li { padding: 8px 0 8px 28px; border-bottom: 1px solid var(--line); position: relative; max-width: 80ch }
+ul.check li::before { content: ""; position: absolute; left: 4px; top: 13px; width: 12px; height: 12px; border: 2px solid var(--accent); border-radius: 3px }
+ul.check li b { color: var(--ink) }
+.src { font-size: 13px; color: var(--muted) } .src a { color: var(--accent); overflow-wrap: anywhere }
+a { color: var(--accent) }
+code { font-family: var(--mono); font-size: .88em; background: var(--accent-soft); color: var(--ink); padding: 1px 5px; border-radius: 4px }
+ol.sources { font-size: 13px; color: var(--muted); padding-left: 20px } ol.sources li { margin: 4px 0; overflow-wrap: anywhere }
+.two { display: grid; grid-template-columns: minmax(0,1fr); gap: 12px } @media (min-width: 760px) { .two { grid-template-columns: 1fr 1fr } }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important } }
+
+/* Site shell: a top bar with the four pages; one page visible at a time. */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line) }
+.topbar-in { max-width: 1120px; margin: 0 auto; padding-inline: 16px; display: flex; align-items: center; gap: 16px; min-height: 56px; flex-wrap: wrap }
+@media (min-width: 1000px) { .topbar-in { padding-inline: 32px } }
+.brand { font: 800 1.05rem/1 var(--display); color: var(--ink); letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; white-space: nowrap }
+.brand i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-2); display: inline-block }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; margin-inline: -4px; padding: 8px 4px }
+.tabs a { font: 600 14px/1 var(--text); color: var(--muted); text-decoration: none; padding: 9px 12px; border-radius: 999px; white-space: nowrap }
+.tabs a:hover { color: var(--ink) }
+.tabs a[aria-current="page"] { background: var(--ink); color: var(--bg) }
+.page[hidden] { display: none !important }
+.page-simple { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; display: flex; flex-direction: column; gap: 48px }
+@media (min-width: 1000px) { .page-simple { padding-inline: 32px } }
+.page-simple > section { max-width: 900px }
+
+/* Phases */
+.phases { display: flex; flex-direction: column; gap: 16px; counter-reset: ph }
+.phase { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr) }
+@media (min-width: 820px) { .phase { grid-template-columns: 220px minmax(0, 1fr) } }
+.phase-head .num { font: 700 12px/1 var(--mono); color: var(--accent); letter-spacing: .06em; text-transform: uppercase }
+.phase-head h3 { margin: 6px 0 4px; font: 700 1.2rem/1.2 var(--display); color: var(--ink) }
+.phase-head .when { font-size: 13px; color: var(--muted) }
+.phase dl { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px 16px; margin: 0 }
+@media (min-width: 620px) { .phase dl { grid-template-columns: 150px minmax(0, 1fr) } }
+.phase dt { font: 600 12px/1.5 var(--text); color: var(--muted); text-transform: uppercase; letter-spacing: .05em }
+.phase dd { margin: 0; font-size: 15px }
+.phase dd ul { margin: 0; padding-left: 18px }
+.phase.now { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset }
+.pill { display: inline-block; font: 600 11px/1 var(--text); padding: 5px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); letter-spacing: .04em; text-transform: uppercase }
+
+/* Docs */
+.doc-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px }
+@media (min-width: 760px) { .doc-grid { grid-template-columns: 1fr 1fr } }
+.doc-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px }
+.doc-card h3 { margin: 0 0 6px }
+.doc-card p:last-child { margin-bottom: 0 }
+.term { font-weight: 600; color: var(--ink) }
+
+/* Board */
+.board-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.chip { font: 600 13px/1 var(--text); border: 1px solid var(--line); background: var(--surface); color: var(--body); padding: 8px 12px; border-radius: 999px; cursor: pointer }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink) }
+.btn { font: 600 14px/1 var(--text); border: 0; background: var(--accent); color: #fff; padding: 10px 14px; border-radius: 10px; cursor: pointer }
+.btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--line) }
+.btn:disabled { opacity: .5; cursor: default }
+.board { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start }
+@media (min-width: 900px) { .board { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
+.col { background: color-mix(in srgb, var(--surface) 55%, var(--bg)); border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 120px }
+.col.drop { outline: 2px dashed var(--accent); outline-offset: -4px }
+.col-head { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 4px 0 }
+.col-head h3 { margin: 0; font: 700 15px/1.2 var(--display); color: var(--ink) }
+.col-head span { font: 600 12px/1 var(--mono); color: var(--muted) }
+.cardt { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; cursor: grab }
+.cardt[aria-expanded="true"] { cursor: default; box-shadow: 0 6px 20px rgba(0,0,0,.06) }
+.cardt .meta-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center }
+.cardt .t { font: 600 15px/1.35 var(--text); color: var(--ink); background: none; border: 0; padding: 0; text-align: left; cursor: pointer }
+.badge { font: 600 11px/1 var(--text); padding: 4px 7px; border-radius: 6px; background: var(--accent-soft); color: var(--accent) }
+.badge.who { background: var(--accent-2-soft); color: var(--accent-2) }
+.badge.urgent { background: var(--bad-soft); color: var(--bad) }
+.cardt .why { font-size: 14px; color: var(--body); margin: 0 }
+.cardt ol { margin: 0; padding-left: 20px; font-size: 14px; display: flex; flex-direction: column; gap: 4px }
+.cardt code { overflow-wrap: anywhere }
+.cardt textarea, .newcard textarea, .newcard input, .newcard select { width: 100%; font: 14px/1.4 var(--text); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px }
+.cardt .acts { display: flex; gap: 6px; flex-wrap: wrap }
+.cardt .acts button { font: 600 12px/1 var(--text); border: 1px solid var(--line); background: transparent; color: var(--body); padding: 7px 9px; border-radius: 8px; cursor: pointer }
+.cardt .acts button:hover { color: var(--ink); border-color: var(--ink) }
+.newcard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 8px; max-width: 640px }
+.status-line { font-size: 13px; color: var(--muted) }
+.empty-col { font-size: 13px; color: var(--muted); padding: 8px 4px }
+
+/* OOTD palette: plum accent and a lime dot */
+:root { --accent: #6d28d9; --accent-soft: #ede7fb; --bar: #6d28d9; --bar-muted: #c3bccf; --accent-2: #4d7c0f; --accent-2-soft: #ecf5d8 }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #c4b0ff; --accent-soft: #2a2140; --bar: #b49cff; --bar-muted: #4c4658; --accent-2: #b5e45b; --accent-2-soft: #26300f } }
+:root[data-theme="dark"] { --accent: #c4b0ff; --accent-soft: #2a2140; --bar: #b49cff; --bar-muted: #4c4658; --accent-2: #b5e45b; --accent-2-soft: #26300f }
+.brand i { background: #a3e635 }
+.btn { color: #fff }
+</style>
+<header class="topbar">
+  <div class="topbar-in">
+    <span class="brand"><i aria-hidden="true"></i>Outfit of the Day · Negoci</span>
+    <nav class="tabs" aria-label="Seccions del document">
+      <a href="#pla">Pla de negoci</a>
+      <a href="#docs">Com funciona l'app</a>
+      <a href="#tasques">Tasques</a>
+      <a href="#estudi">Estudi de mercat</a>
+      <a href="#documents">Documents</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ───────────────────────── PLA DE NEGOCI ───────────────────────── -->
+<div class="page" id="page-pla">
+<div class="page-simple">
+  <header class="hero">
+    <span class="eyebrow">Pla de negoci · V1 · 5 d'octubre de 2026</span>
+    <h1>Un estilista amb IA que coneix el teu armari, i que es pagui sol</h1>
+    <p class="lede">Outfit of the Day (OOTD) et proposa cada dia què posar-te amb la roba que ja tens, amb una foto teva vestida amb el look. Es cobrarà per subscripció mensual o anual, amb tres plans segons quant la facis servir. Aquest pla explica les quatre fases per arribar-hi i què ha de fer cadascú.</p>
+    <div class="kpis">
+      <div class="kpi"><b>3 plans</b><span>3,99 · 6,99 · 11,99 € al mes (IVA inclòs, proposta)</span></div>
+      <div class="kpi"><b>≈0,047 $</b><span>cost d'una foto de look (la peça cara)</span></div>
+      <div class="kpi"><b>≈0,008 $</b><span>cost d'un missatge a l'estilista (Haiku)</span></div>
+      <div class="kpi"><b>~25</b><span>subscriptors per cobrir els costos fixos (~60 €/mes)</span></div>
+    </div>
+  </header>
+
+  <section>
+    <span class="eyebrow">Com guanya diners</span>
+    <h2>El model en cinc frases</h2>
+    <ul class="check">
+      <li><b>Subscripció en tres plans</b> que corresponen a com fa servir l'app cadascú: <b>Només looks</b> (el look del dia i prou), <b>Armari</b> (inventari, el que t'has posat, rotació) i <b>Estilista</b> (tot, amb conversa i revisió del teu estil).</li>
+      <li><b>El cost el marca la foto del look</b> (~0,047 $ cada una, comptant reintents), no el text. Per això cada pla té un nombre de fotos al mes, i la foto només es fa del look proposat i del que acceptes.</li>
+      <li><b>14 dies de prova amb tot obert</b>, sense targeta. Després, el <b>pla gratuït</b>: armari, calendari i look del dia en text, amb poques fotos al mes i sense conversa.</li>
+      <li><b>Anuncis només al pla gratuït</b> i apagats fins tenir un gestor de consentiment certificat per Google. Aporten cèntims; no són el negoci.</li>
+      <li><b>Una segona font possible:</b> quan a l'estilista li falta una peça (una americana fosca, unes botes), ja la desa a la llista de desitjos. Més endavant, aquesta llista pot portar enllaços d'afiliat o de segona mà (Vinted), com fa Whering. És una opció per a la fase 3, no per al llançament.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Números per subscriptor</span>
+    <h2>Quant ens queda de cada pagament</h2>
+    <p>Estimació a partir dels costos del codi (fotos amb Gemini, conversa amb Haiku) i de l'ús típic de cada perfil (vegeu l'estudi). Del preu es resten l'IVA (21 %), les comissions de Stripe (≈2,7 % + 0,25 € per cobrament) i el cost d'IA.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Pla</th><th class="n">Preu</th><th class="n">Sense IVA</th><th class="n">Comissions</th><th class="n">IA al mes</th><th class="n">Ens queda</th></tr></thead>
+      <tbody>
+        <tr><td>Només looks · mensual</td><td class="n">3,99 €</td><td class="n">3,30 €</td><td class="n">0,36 €</td><td class="n">≈1,05 €</td><td class="n pos">≈1,9 €</td></tr>
+        <tr><td>Armari · mensual</td><td class="n">6,99 €</td><td class="n">5,78 €</td><td class="n">0,44 €</td><td class="n">≈1,80 €</td><td class="n pos">≈3,5 €</td></tr>
+        <tr><td>Estilista · mensual</td><td class="n">11,99 €</td><td class="n">9,91 €</td><td class="n">0,57 €</td><td class="n">≈3,50 €</td><td class="n pos">≈5,8 €</td></tr>
+        <tr><td>Armari · anual (per mes)</td><td class="n">4,17 €</td><td class="n">3,44 €</td><td class="n">0,13 €</td><td class="n">≈1,80 €</td><td class="n pos">≈1,5 €</td></tr>
+        <tr><td>Estilista · anual (per mes)</td><td class="n">7,50 €</td><td class="n">6,20 €</td><td class="n">0,22 €</td><td class="n">≈3,50 €</td><td class="n pos">≈2,5 €</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn"><p><b>La foto és el cost:</b> el text costa cèntims per usuari, però cada foto costa ~4 cèntims, i un usuari que demana moltes fotos se'n pot menjar el marge. Per això els <b>límits de fotos per pla</b> no són opcionals: s'han de programar abans d'obrir els pagaments. I per això els plans anuals no poden tenir un descompte gaire gran.</p></div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Les fases</span>
+    <h2>Quatre fases, una darrere l'altra</h2>
+    <div class="phases">
+      <article class="phase now">
+        <div class="phase-head"><span class="num">Fase 0 · ara</span><h3>Tancar la V1 i preparar el cobrament</h3><span class="when">Octubre–novembre 2026 · 3–5 setmanes</span><p style="margin-top:8px"><span class="pill">En curs</span></p></div>
+        <dl>
+          <dt>Objectiu</dt><dd>L'estilista conversacional publicat a producció, legal per a gent de fora (fotos de cares!), i els pagaments funcionant en mode de proves.</dd>
+          <dt>Què cal fer</dt><dd><ul><li>Aplicar a producció les migracions pendents (0013–0017) i publicar l'estilista.</li><li>Construir a l'app: perfils d'ús, plans i límits (sobretot de fotos), Stripe, kit de beta, models per tasca.</li><li>Revisió legal amb atenció a les fotos amb cara (poden ser dades biomètriques).</li><li>Comptes: Stripe, alta d'IVA a l'OSS, Gemini amb pressupost.</li><li>Decidir com es finança el llançament (vegeu "Pressupost de llançament").</li></ul></dd>
+          <dt>Cost</dt><dd>~60 € al mes d'infraestructura + IA de prova. Advocat i gestor a part.</dd>
+          <dt>Per passar</dt><dd>Un pagament de prova funciona, els límits de fotos tallen bé i els textos legals estan revisats.</dd>
+        </dl>
+      </article>
+      <article class="phase">
+        <div class="phase-head"><span class="num">Fase 1</span><h3>Beta amb 40 persones</h3><span class="when">6 setmanes</span></div>
+        <dl>
+          <dt>Objectiu</dt><dd>Saber si la gent obre l'app cada matí, quantes fotos demana de veritat cada perfil (el cost real) i quant pagaria.</dd>
+          <dt>Què cal fer</dt><dd><ul><li>40 testers en 3 grups: 12 "Només looks", 18 "Armari", 10 "Estilista".</li><li>Codis d'invitació per grup (preu fundador inclòs).</li><li>Seguiment setmanal: activació (armari mínim + primer look en menys de 3 minuts), retenció, fotos per usuari, "Me'l poso" per setmana.</li><li>Enquestes setmanes 2, 4 (preu) i 6; entrevistes.</li></ul></dd>
+          <dt>Cost</dt><dd>IA: ~1–3,5 € al mes per tester, segons el grup. És la beta més cara de les dues apps per les fotos: posar un sostre de fotos per tester.</dd>
+          <dt>Per passar</dt><dd>Activació ≥ 60 %, D30 ≥ 15 %, ≥ 3 "Me'l poso" per setmana als actius, NPS ≥ 30 i preu acceptable mitjà ≥ 5 €.</dd>
+        </dl>
+      </article>
+      <article class="phase">
+        <div class="phase-head"><span class="num">Fase 2</span><h3>Llançament amb pagaments</h3><span class="when">Després de la beta</span></div>
+        <dl>
+          <dt>Objectiu</dt><dd>Primers subscriptors de pagament i cobrir costos fixos.</dd>
+          <dt>Què cal fer</dt><dd><ul><li>Preus finals amb dades de la beta.</li><li>Stripe en mode real.</li><li>Llançament: el fil de X, Product Hunt, Reels/TikTok (ja escrits a la campanya de màrqueting).</li><li>Pressupost de llançament "lean" (~25.000 €) o "sòlid" (~45–50.000 €), segons el finançament.</li></ul></dd>
+          <dt>Cost</dt><dd>Infraestructura + IA dels usuaris + el pressupost de llançament que es triï.</dd>
+          <dt>Per passar</dt><dd>&gt; ~25 subscriptors i baixa mensual &lt; 10 %.</dd>
+        </dl>
+      </article>
+      <article class="phase">
+        <div class="phase-head"><span class="num">Fase 3</span><h3>Créixer</h3><span class="when">Mesos 3–12</span></div>
+        <dl>
+          <dt>Objectiu</dt><dd>100–1.000 subscriptors l'any 1 i una segona font d'ingressos.</dd>
+          <dt>Què cal fer</dt><dd><ul><li>Revisió mensual del cost per foto i per usuari; ajustar límits.</li><li>Targeta de look per compartir (bucle viral, com Yafa).</li><li>Llista de desitjos amb afiliats i "ven-ho a Vinted".</li><li>Valorar l'app a les botigues (15–30 % de comissió).</li></ul></dd>
+          <dt>Referència</dt><dd>Escenari base: ~350 subscriptors al mes 12 → ~2.900 € de contribució l'any 1, abans de màrqueting (vegeu l'estudi).</dd>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Pressupost de llançament</span>
+    <h2>Dues opcions (ja estudiades al document de llançament)</h2>
+    <div class="cards">
+      <div class="card"><span class="tag">Lean</span><div class="price">~25.000 €</div><p>Marca amb freelance, ~1.500 €/mes d'anuncis durant 3 mesos, contingut UGC, tests semi-moderats. Suficient per <b>validar</b> i llançar amb dignitat.</p></div>
+      <div class="card"><span class="tag">Sòlid</span><div class="price">45–50.000 €</div><p>Estudi de marca, ~2.500 €/mes d'anuncis amb gestió, producció de contingut, 40 tests moderats amb informe, legal complet.</p></div>
+    </div>
+    <ul class="check">
+      <li><b>No inclou el sou del fundador</b> (és una línia a part, segons els mesos de marge que es vulguin).</li>
+      <li><b>Primer producte i retenció; després anuncis.</b> Pagar per captar gent abans que es quedi és omplir una galleda foradada. Els 3 mesos d'anuncis són per aprendre, no per escalar.</li>
+      <li><b>Si un amic hi posa diners:</b> formalitzar-ho per escrit (SAFE o préstec convertible) amb un advocat, encara que sigui un amic.</li>
+      <li><b>Mida de la ronda lligada a una fita:</b> "amb X € arribo a Y usuaris actius i Z % de retenció a 30 dies en 9–12 mesos".</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Riscos</span>
+    <h2>Què pot sortir malament i què fem</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Risc</th><th>Què fem</th></tr></thead>
+      <tbody>
+        <tr><td>Les fotos disparen el cost</td><td>Límit de fotos per pla, foto només del look proposat/acceptat, pressupost global de Gemini com a fre d'emergència.</td></tr>
+        <tr><td>Fotos amb cara = dades sensibles</td><td>Consentiment explícit, avaluació d'impacte, contracte amb Google, revisió d'advocat abans de la beta.</td></tr>
+        <tr><td>El mercat està acostumat a apps gratuïtes (Whering, Alta)</td><td>El diferencial és la foto teva vestida i l'estilista que parla; el pla gratuït existeix i és útil.</td></tr>
+        <tr><td>La gent no torna cada matí</td><td>Push del matí ("el teu look és a punt"), ratxes, i mesurar-ho a la beta per grup.</td></tr>
+        <tr><td>Treure el fons de les peces (remove.bg) és car</td><td>~0,10 $ per peça: substituir-lo per la reconstrucció amb Gemini (ja planificada) o només als plans de pagament.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</div>
+</div>
+
+<!-- ───────────────────────── DOCUMENTACIÓ ───────────────────────── -->
+<div class="page" id="page-docs" hidden>
+<div class="page-simple">
+  <header class="hero">
+    <span class="eyebrow">Documentació · per entendre l'app sense ser tècnic</span>
+    <h1>Com funciona Outfit of the Day</h1>
+    <p class="lede">Fotografies la teva roba una vegada. Cada matí, l'estilista et proposa un look amb el que tens, el temps que farà i el teu estil, i et genera una foto teva vestida així. Si no et convenç, li dius "un altre" o li parles. Quan te'l poses, ho marques, i l'app aprèn. Funciona al mòbil com una app (PWA), sense instal·lar res, en català, castellà i anglès.</p>
+  </header>
+
+  <section>
+    <span class="eyebrow">Les pantalles</span>
+    <h2>Què hi ha a cada pestanya</h2>
+    <div class="doc-grid">
+      <div class="doc-card"><h3>Avui</h3><p>El look del dia amb la seva foto, les peces, el temps i les ocasions (feina, sopar, cita, viatge…). "Me'l poso" i "M'he posat una altra cosa" es fan aquí, amb un toc. Si et falta una peça, ho diu.</p></div>
+      <div class="doc-card"><h3>Armari</h3><p>Totes les teves peces fotografiades i descrites per la IA, amb quantes vegades les has portat i si estan disponibles (rentadora, préstec…).</p></div>
+      <div class="doc-card"><h3>Inspiració</h3><p>Imatges de referència i taulers de Pinterest importats. L'estilista hi agafa idees, sense copiar-les.</p></div>
+      <div class="doc-card"><h3>Estilista</h3><p>La conversa. Li pots demanar un look per a una ocasió, canviar una peça, "dona-me'n 3", o revisar el teu estil. Els canvis surten com a propostes que acceptes o no.</p></div>
+      <div class="doc-card"><h3>Calendari</h3><p>El que t'has posat cada dia. Veus la rotació i el que fa temps que no portes.</p></div>
+      <div class="doc-card"><h3>Perfil</h3><p>Dades, fotos teves per a la imatge, idioma, tema clar/fosc, notificacions. (Pendent: pla de pagament i feedback.)</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Conceptes clau</span>
+    <h2>Les idees que fan diferent l'app</h2>
+    <ul class="check">
+      <li><b>Res es genera fins que ho demanes.</b> El primer cop que obres l'app al dia es fa el look amb foto; les altres vegades es reutilitza. El push del matí només avisa. Així no es paguen fotos que ningú mira.</li>
+      <li><b>La foto només del look bo.</b> Els canvis (unes altres sabates) mostren les peces a l'instant; la foto nova només quan dius "Mostra-me'l" o "Me'l poso".</li>
+      <li><b>El teu gust amb pesos.</b> 13 estils (Minimal, Clàssic, Casual, Streetwear, Preppy…) amb un pes cadascun. L'estilista proposa canviar-los quan veu que portes una altra cosa; tu acceptes.</li>
+      <li><b>L'armari curt no és un problema.</b> Si et falta una peça, l'estilista la proposa igualment, la marca i la pots desar a la llista de desitjos.</li>
+      <li><b>L'app filtra, la IA tria.</b> El codi descarta el que no toca (temps, ocasió, el que vas portar ahir, peces no disponibles) i la IA tria i explica entre les que queden.</li>
+      <li><b>Sense cobertura també.</b> "Me'l poso" es guarda al mòbil i s'envia quan hi ha connexió, sense duplicats.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Plans de pagament (proposta, encara no construïts)</span>
+    <h2>Què inclouria cada pla</h2>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th>Gratuït</th><th>Només looks</th><th>Armari</th><th>Estilista</th></tr></thead>
+      <tbody>
+        <tr><td><b>Preu al mes</b></td><td class="n">0 €</td><td class="n">3,99 €</td><td class="n">6,99 €</td><td class="n">11,99 €</td></tr>
+        <tr><td><b>Preu a l'any</b></td><td class="n">—</td><td class="n">29,99 €</td><td class="n">49,99 €</td><td class="n">89,99 €</td></tr>
+        <tr><td>Look del dia</td><td>En text</td><td>Amb foto</td><td>Amb foto</td><td>Amb foto</td></tr>
+        <tr><td>Fotos de look al mes</td><td class="n">3</td><td class="n">40</td><td class="n">70</td><td class="n">150</td></tr>
+        <tr><td>"Un altre" / canviar una peça</td><td>Sí (text)</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+        <tr><td>Armari, calendari, rotació</td><td>Sí</td><td>Bàsic</td><td>Complet + estadístiques</td><td>Complet + estadístiques</td></tr>
+        <tr><td>Missatges a l'estilista al mes</td><td class="n">0</td><td class="n">30</td><td class="n">100</td><td class="n">300</td></tr>
+        <tr><td>"Dona-me'n 3", revisió d'estil, auditoria de l'armari</td><td>No</td><td>No</td><td>No</td><td>Sí</td></tr>
+        <tr><td>Anuncis</td><td>Sí (quan s'activin)</td><td>No</td><td>No</td><td>No</td></tr>
+      </tbody>
+    </table></div>
+    <ul class="check">
+      <li><b>Prova de 14 dies</b> amb tot obert (com Estilista), sense targeta, però amb un sostre de fotos (p. ex. 30) perquè la prova no surti cara.</li>
+      <li><b>Preu fundador:</b> 30 % de descompte per sempre per als testers de la beta.</li>
+      <li><b>Límit del mes:</b> quan s'acaben les fotos, el look continua en text, amb un avís amable per millorar el pla.</li>
+      <li>Preus amb IVA inclòs, modificables a Stripe sense tocar l'app.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Intel·ligència artificial</span>
+    <h2>Quin model fa cada cosa</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Tasca</th><th>Model</th><th class="n">Cost aprox.</th><th>Estat</th></tr></thead>
+      <tbody>
+        <tr><td>Conversa amb l'estilista: triar el look, "un altre", canviar una peça, xips i brief de la foto</td><td>Claude Haiku 4.5</td><td class="n">≈0,005–0,01 $</td><td>Ja és així (configurable amb <code>STYLIST_MODEL</code>)</td></tr>
+        <tr><td>Foto del look (tu vestit amb el look)</td><td>Gemini 2.5 Flash Image ("Nano Banana")</td><td class="n">≈0,039 $ (+ reintents)</td><td>Ja és així</td></tr>
+        <tr><td>Analitzar una peça de l'armari o una referència</td><td>Claude Sonnet 4.6 (per usuari)</td><td class="n">≈0,01 $</td><td>Recomanat: passar a Haiku</td></tr>
+        <tr><td>Definir el teu estil, onboarding, auditoria de l'armari</td><td>Model fort (Sonnet)</td><td class="n">≈0,03–0,09 $</td><td>Recomanat (avui és Haiku)</td></tr>
+        <tr><td>Treure el fons d'una peça</td><td>remove.bg</td><td class="n">≈0,10 $</td><td>Car: substituir</td></tr>
+      </tbody>
+    </table></div>
+    <p class="meta">Referència de cost: Haiku fa bé les tasques rutinàries (≈0,01 $ el missatge), tot i que el català no és perfecte; Sonnet és excel·lent per definir l'estil (≈0,09 $).</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Costos</span>
+    <h2>Quant costa mantenir l'app</h2>
+    <div class="two">
+      <div class="tbl"><table>
+        <thead><tr><th>Fixos</th><th class="n">Al mes</th></tr></thead>
+        <tbody>
+          <tr><td>Netlify (allotjament i funcions)</td><td class="n">≈17,5 €</td></tr>
+          <tr><td>Supabase (base de dades i <b>fotos</b>)</td><td class="n">≈23 €+</td></tr>
+          <tr><td>Resend (correus)</td><td class="n">0–18 €</td></tr>
+          <tr><td>Domini i imprevistos</td><td class="n">≈15 €</td></tr>
+          <tr><td><b>Total</b></td><td class="n"><b>≈60 €</b></td></tr>
+        </tbody>
+      </table></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Variable: IA per usuari actiu</th><th class="n">Al mes</th></tr></thead>
+        <tbody>
+          <tr><td>Només looks</td><td class="n">≈1,05 €</td></tr>
+          <tr><td>Armari</td><td class="n">≈1,80 €</td></tr>
+          <tr><td>Estilista</td><td class="n">≈3,50 €</td></tr>
+          <tr><td>Gratuït (3 fotos)</td><td class="n">≈0,15 €</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <p class="meta">Les fotos ocupen espai: amb molts usuaris, l'emmagatzematge pot pujar (el pla ja preveu passar a Cloudflare R2). El valor real es mesura a Admin → Analytics (cost per funció i mes, amb la línia de pressupost de Claude i de Gemini).</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Proveïdors</span>
+    <h2>Serveis externs</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Servei</th><th>Per a què</th><th>Estat</th></tr></thead>
+      <tbody>
+        <tr><td>Anthropic (Claude)</td><td>L'estilista i l'anàlisi de peces</td><td>Actiu</td></tr>
+        <tr><td>Google (Gemini)</td><td>Les fotos dels looks</td><td>Actiu (cal <code>GEMINI_API_KEY</code> a Netlify)</td></tr>
+        <tr><td>Supabase</td><td>Base de dades i fotos</td><td>Actiu</td></tr>
+        <tr><td>Netlify</td><td>Publicar l'app, funcions i cron del matí</td><td>Actiu</td></tr>
+        <tr><td>remove.bg</td><td>Treure el fons de les peces</td><td>A substituir</td></tr>
+        <tr><td>Pinterest</td><td>Importar taulers (API no oficial: vigilar)</td><td>Actiu</td></tr>
+        <tr><td>Stripe</td><td>Cobraments, IVA, portal de client</td><td>Pendent</td></tr>
+        <tr><td>Resend</td><td>Correus</td><td>Actiu</td></tr>
+        <tr><td>Google AdSense</td><td>Anuncis al pla gratuït</td><td>Dormit</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Dades i privacitat</span>
+    <h2>Resum per explicar-ho</h2>
+    <ul class="check">
+      <li>L'app guarda <b>fotos de la teva roba i fotos teves</b> (per vestir-te a la imatge). Són dades personals; les fotos amb cara poden ser <b>dades biomètriques</b> si es processen per identificar-te.</li>
+      <li>Les fotos viatgen a Google (Gemini) per generar la imatge: cal dir-ho clar, demanar consentiment explícit i tenir el contracte de tractament de dades.</li>
+      <li>Hi ha d'haver una avaluació d'impacte (DPIA) i <b>revisió d'advocat abans de la beta</b>.</li>
+      <li>Abans del llançament oficial, els usuaris actuals han d'acceptar els nous termes (ja apuntat al pla).</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Què cal construir a OOTD</span>
+    <h2>El que falta construir</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Peça</th><th>Per a què</th><th>Estat a OOTD</th></tr></thead>
+      <tbody>
+        <tr><td>Perfils d'ús (Només looks / Armari / Estilista)</td><td>Que l'app serveixi amb poc o molt compromís</td><td>No existeix</td></tr>
+        <tr><td>Plans, drets i límits (fotos i missatges)</td><td>Que cap usuari costi més del que paga</td><td>Hi ha crèdits setmanals (desactivats) i pressupostos globals</td></tr>
+        <tr><td>Stripe (checkout, portal, webhooks, IVA)</td><td>Cobrar</td><td>No existeix</td></tr>
+        <tr><td>Models per tasca</td><td>Barat per al dia a dia, fort per a l'estil</td><td>Haiku a tot arreu a l'estilista; Sonnet a l'anàlisi</td></tr>
+        <tr><td>Kit de beta (codis, esdeveniments, feedback, Admin → Beta)</td><td>Mesurar la beta</td><td>No existeix</td></tr>
+        <tr><td>Anuncis lligats al pla gratuït</td><td>Ingressos petits sense molestar qui paga</td><td>Hi ha <code>noAds</code> manual</td></tr>
+        <tr><td>Maquetació d'escriptori amb criteri</td><td>Que es vegi professional a l'ordinador</td><td>Per fer</td></tr>
+        <tr><td>Recursos al Perfil (només per al propietari)</td><td>Enllaços a aquest document i als panells</td><td>No existeix</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</div>
+</div>
+
+<!-- ───────────────────────── TASQUES ───────────────────────── -->
+<div class="page" id="page-tasques" hidden>
+<div class="page-simple" style="gap:20px">
+  <header class="hero">
+    <span class="eyebrow">Tasques · el que heu de fer vosaltres</span>
+    <h1>Tauler de tasques</h1>
+    <p class="lede">Cada targeta explica què és, per què cal i els passos. Moveu-les entre columnes amb les fletxes o arrossegant-les. Els canvis es guarden i els veu tothom qui té accés a aquesta pàgina.</p>
+  </header>
+  <div class="board-tools" role="toolbar" aria-label="Filtres del tauler">
+    <span class="status-line" style="margin-right:4px">Fase:</span>
+    <button class="chip" data-phase="all" aria-pressed="true">Totes</button>
+    <button class="chip" data-phase="0" aria-pressed="false">0 · Tancar V1</button>
+    <button class="chip" data-phase="1" aria-pressed="false">1 · Beta</button>
+    <button class="chip" data-phase="2" aria-pressed="false">2 · Llançament</button>
+    <button class="chip" data-phase="3" aria-pressed="false">3 · Créixer</button>
+    <span style="flex:1"></span>
+    <button class="btn ghost" id="newBtn" type="button">+ Nova tasca</button>
+  </div>
+  <form class="newcard" id="newForm" hidden>
+    <label class="status-line" for="nf-title">Títol</label><input id="nf-title" required maxlength="140">
+    <label class="status-line" for="nf-why">Per què / notes</label><textarea id="nf-why" rows="3"></textarea>
+    <div class="two">
+      <div><label class="status-line" for="nf-phase">Fase</label><select id="nf-phase"><option value="0">0 · Tancar V1</option><option value="1">1 · Beta</option><option value="2">2 · Llançament</option><option value="3">3 · Créixer</option></select></div>
+      <div><label class="status-line" for="nf-who">Qui</label><input id="nf-who" placeholder="Jose, amic…" maxlength="40"></div>
+    </div>
+    <div style="display:flex;gap:8px"><button class="btn" type="submit">Afegir</button><button class="btn ghost" type="button" id="nf-cancel">Cancel·lar</button></div>
+  </form>
+  <p class="status-line" id="boardStatus" aria-live="polite">Carregant les tasques…</p>
+  <div class="board" id="board"></div>
+</div>
+</div>
+<!-- ───────────────────────── ESTUDI ───────────────────────── -->
+<div class="page" id="page-estudi" hidden>
+<div class="wrap">
+<nav class="toc" aria-label="Seccions de l'estudi">
+  <a href="#resum">Resum</a>
+  <a href="#cost">1 · Cost per usuari</a>
+  <a href="#mercat">2 · Mercat i competència</a>
+  <a href="#opcions">3 · Maneres de cobrar</a>
+  <a href="#recomanacio">4 · Plans i preus</a>
+  <a href="#escenaris">5 · Escenaris a 12 mesos</a>
+  <a href="#beta">6 · Beta</a>
+  <a href="#fonts">Fonts</a>
+</nav>
+<main>
+<header class="hero" id="resum">
+  <span class="eyebrow">Estudi de monetització · OOTD · 5 d'octubre de 2026</span>
+  <h1>Com cobrar Outfit of the Day sense que les fotos se mengin el marge</h1>
+  <p class="lede">El mercat d'apps d'armari és barat: moltes són gratuïtes (Whering, Alta) i les de pagament cobren entre 1 i 10 € al mes. El nostre diferencial (una foto teva vestida amb el look) és també el nostre cost principal. La recomanació: tres plans barats lligats a quantes fotos fas, sense anuncis per a qui paga, i límits de fotos estrictes des del primer dia.</p>
+  <div class="kpis">
+    <div class="kpi"><b>0,047 $</b><span>cost d'una foto de look (0,039 $ + reintents)</span></div>
+    <div class="kpi"><b>1,05 / 1,8 / 3,5 €</b><span>cost IA al mes: Només looks · Armari · Estilista</span></div>
+    <div class="kpi"><b>3,99 / 6,99 / 11,99 €</b><span>preus mensuals proposats (IVA inclòs)</span></div>
+    <div class="kpi"><b>~25</b><span>subscriptors per cobrir ~60 €/mes de costos fixos</span></div>
+  </div>
+  <div class="callout"><p><b>Recomanació en una frase:</b> subscripció en tres nivells (Només looks 3,99 €, Armari 6,99 €, Estilista 11,99 € al mes; anuals 29,99 / 49,99 / 89,99 €), 14 dies de prova amb un sostre de fotos, pla gratuït amb el look en text i 3 fotos al mes, anuncis només al gratuït, Stripe per web, i a la fase 3 una segona font amb la llista de desitjos (afiliats i segona mà).</p></div>
+</header>
+
+<section id="cost">
+  <span class="eyebrow">1 · Economia unitària</span>
+  <h2>Quant costa un usuari actiu</h2>
+  <p>Calculat a partir del codi (taula de preus <code>lib/usage-cost.ts</code>, pipeline d'imatge i estilista) i del cost mesurat de Haiku (≈0,01 $ el missatge). <b>No hem llegit producció</b>: és una estimació a validar a Admin → Analytics (cost per funció i mes, ja amb línia de pressupost de Claude i Gemini).</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Acció</th><th>Servei</th><th class="n">Cost unitari</th><th>Nota</th></tr></thead>
+    <tbody>
+      <tr><td>Foto del look</td><td>Gemini 2.5 Flash Image</td><td class="n">0,039 $ (≈0,047 $ amb reintents)</td><td>Fins a 2 intents per foto</td></tr>
+      <tr><td>Missatge a l'estilista</td><td>Claude Haiku 4.5</td><td class="n">≈0,005–0,01 $</td><td>Cost mesurat ≈0,01 $</td></tr>
+      <tr><td>Analitzar una peça</td><td>Claude Sonnet 4.6</td><td class="n">≈0,01 $</td><td>Amb Haiku ≈0,003 $</td></tr>
+      <tr><td>Treure el fons d'una peça</td><td>remove.bg</td><td class="n">≈0,10 $</td><td>50 peces = 5 $ d'onboarding!</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Tres perfils d'ús, cost IA al mes</h3>
+  <div class="legend"><span><i style="background:var(--bar-muted)"></i>Fotos</span><span><i style="background:var(--bar)"></i>Text (estilista i anàlisi)</span></div>
+  <div class="chart" id="chart-cost" role="img" aria-label="Cost IA al mes per perfil, fotos i text"></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Perfil</th><th>Ús típic al mes</th><th class="n">Fotos</th><th class="n">Text</th><th class="n">Total</th></tr></thead>
+    <tbody>
+      <tr><td><b>Només looks</b></td><td>Obre l'app ~20 dies, 1 look amb foto al dia, alguns "un altre" en text</td><td class="n">≈0,87 €</td><td class="n">≈0,18 €</td><td class="n">≈1,05 €</td></tr>
+      <tr><td><b>Armari</b></td><td>~22 dies, ~8 fotos extra en acceptar un altre look, 30 canvis, 5 peces noves</td><td class="n">≈1,30 €</td><td class="n">≈0,50 €</td><td class="n">≈1,80 €</td></tr>
+      <tr><td><b>Estilista</b></td><td>~28 dies, "dona-me'n 3" sovint (≈48 fotos), 80 missatges, revisió d'estil amb model fort</td><td class="n">≈2,10 €</td><td class="n">≈1,40 €</td><td class="n">≈3,50 €</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">No inclou remove.bg. Si es manté per a totes les peces, l'onboarding d'un armari de 30–50 peces costa 3–5 $ per usuari: s'ha de substituir (reconstrucció amb Gemini, ja planificada) o limitar als plans de pagament.</p>
+
+  <h3>Palanques per abaratir</h3>
+  <ul class="check">
+    <li><b>La foto només del look proposat i de l'acceptat</b> (ja decidit). Els canvis petits no regeneren la foto.</li>
+    <li><b>Reutilitzar la foto</b> del look del dia en totes les obertures del dia (ja decidit).</li>
+    <li><b>Límit de fotos per pla</b> i, en esgotar-lo, look en text. És la palanca principal.</li>
+    <li><b>Analitzar peces amb Haiku</b> en lloc de Sonnet: −70 % en aquesta part.</li>
+    <li><b>Memòria cau del context</b> de l'estilista (ja hi és amb <code>cache_control</code>).</li>
+  </ul>
+</section>
+
+<section id="mercat">
+  <span class="eyebrow">2 · Mercat</span>
+  <h2>Què cobren els altres</h2>
+  <p>A diferència del fitness, aquí el mercat és <b>barat o gratuït</b>. Whering i Alta són gratis (Whering cobra comissions de les compres que s'hi fan). Les apps de pagament van d'1 € a ~14 € al mes, i les que tenen IA "d'estilista" se situen entre 5 i 10 €. Indyx cobra 15 $ al mes per un estilista humà.</p>
+  <div class="legend"><span><i style="background:var(--bar-muted)"></i>Competidors (preu mensual, €)</span><span><i style="background:var(--bar)"></i>OOTD (proposta)</span></div>
+  <div class="chart" id="chart-market" role="img" aria-label="Preu mensual de competidors i d'OOTD"></div>
+  <div class="tbl"><table>
+    <thead><tr><th>App</th><th>Què ofereix</th><th class="n">Mensual</th><th class="n">Anual</th><th>Font</th></tr></thead>
+    <tbody>
+      <tr><td>Whering</td><td>Armari digital, outfits; ingressos per afiliats</td><td class="n">Gratis</td><td class="n">—</td><td class="src"><a href="https://fits-app.com/fits-vs-whering">fits-app.com</a></td></tr>
+      <tr><td>Alta Daily</td><td>Estilista IA amb temps i agenda</td><td class="n">Gratis</td><td class="n">—</td><td class="src"><a href="https://apps.apple.com/app/id6481705400">App Store</a></td></tr>
+      <tr><td>Smart Closet Pro</td><td>Armari i outfits; Pro = còpia i sincronització</td><td class="n">0,99 $</td><td class="n">9,99 $</td><td class="src"><a href="https://apps.apple.com/FR/app/id1198057728">App Store</a></td></tr>
+      <tr><td>Fits Pro</td><td>Xat d'estilista IA il·limitat + 30 crèdits d'emprovador virtual</td><td class="n">4,99 $</td><td class="n">—</td><td class="src"><a href="https://www.fits-app.com/knowledge/what-is-included-in-fits-pro">Fits</a></td></tr>
+      <tr><td>Cladwell</td><td>Càpsula i outfits diaris; estilista 49 $/mes</td><td class="n">4,99–9,99 $</td><td class="n">59,99 $</td><td class="src"><a href="https://apps.apple.com/app/id1140550878">App Store</a> · <a href="https://adapty.io/paywall-library/dwell/">Adapty</a></td></tr>
+      <tr><td>Style DNA</td><td>Estilista IA i anàlisi de color amb selfie (~3 M$/any)</td><td class="n">7,99–9,99 $</td><td class="n">29,99–39,99 $</td><td class="src"><a href="https://apps.apple.com/app/id1358319821">App Store</a> · <a href="https://www.starterstory.com/stories/your-personal-ai-stylist-app">Starter Story</a></td></tr>
+      <tr><td>Pureple</td><td>Planificador d'outfits amb IA</td><td class="n">14,99 $</td><td class="n">89,99 $</td><td class="src"><a href="https://apps.apple.com/app/id628106373">App Store</a></td></tr>
+      <tr><td>Indyx</td><td>Armari gratis; Insider 5 $/mes; estilista humà 15 $/mes</td><td class="n">5–15 $</td><td class="n">—</td><td class="src"><a href="https://getwardrobe.com/compare/indyx/">getwardrobe</a> · <a href="https://myindyx.com/how-it-works">Indyx</a></td></tr>
+      <tr><td>Stylebook</td><td>Armari clàssic d'iOS, sense IA</td><td class="n">4,99 $ (un sol cop)</td><td class="n">—</td><td class="src"><a href="https://apps.appfollow.io/ios/stylebook/335709058?country=us">AppFollow</a></td></tr>
+      <tr><td>Acloset</td><td>Plans Basic / Premium / Expert (preus no publicats)</td><td class="n">?</td><td class="n">?</td><td class="src"><a href="https://www.acloset.app/announcements/subscription-plans-overview-eb9fc8/">Acloset</a></td></tr>
+      <tr class="us"><td><b>OOTD</b></td><td>Estilista conversacional + <i>foto teva vestida</i> amb el teu armari</td><td class="n">3,99–11,99 €</td><td class="n">29,99–89,99 €</td><td>Proposta</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">Preus en dòlars de la botiga dels EUA; a Espanya solen ser semblants en euros. No hem trobat preus públics fiables d'Acloset.</p>
+
+  <h3>Comportament dels usuaris de subscripcions</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Mètrica</th><th class="n">Valor</th><th>Font</th></tr></thead>
+    <tbody>
+      <tr><td>Conversió de prova a pagament: proves de 17–32 dies vs &lt; 4 dies</td><td class="n">42,5 % vs 25,5 %</td><td class="src"><a href="https://www.revenuecat.com/blog/growth/subscription-app-trends-benchmarks-2026">RevenueCat 2026</a></td></tr>
+      <tr><td>Conversió mediana a 35 dies: paywall dur vs freemium</td><td class="n">10,7 % vs 2,1 %</td><td class="src">Ídem</td></tr>
+      <tr><td>Ingrés per usuari l'any 1: apps amb IA vs sense</td><td class="n">30,16 $ vs 21,37 $</td><td class="src">Ídem</td></tr>
+      <tr><td>Retenció de plans mensuals d'apps IA vs tradicionals (12 mesos)</td><td class="n">−36 %</td><td class="src">Ídem</td></tr>
+      <tr><td>Cancel·lacions de proves de 3 dies fetes el dia 0</td><td class="n">55,4 %</td><td class="src">Ídem</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout warn"><p><b>Què en traiem:</b> el freemium converteix 5 vegades menys que un mur de pagament, però en aquest mercat la gent espera poder provar gratis. Per això: prova llarga (14 dies) amb tot obert i un pla gratuït <b>útil però limitat</b> (look en text). Les apps amb IA perden més subscriptors mensuals: cal empènyer el pla anual.</p></div>
+</section>
+
+<section id="opcions">
+  <span class="eyebrow">3 · Opcions</span>
+  <h2>Maneres de cobrar, comparades</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Model</th><th>Ingrés per usuari/mes</th><th>Marge sobre el cost IA</th><th>Riscos</th></tr></thead>
+    <tbody>
+      <tr><td><b>Gratis + anuncis</b></td><td class="n">0,04–0,18 €</td><td class="neg">−0,9 a −3,3 €</td><td>Els anuncis no paguen ni una foto al dia. Cal gestor de consentiment certificat.</td></tr>
+      <tr><td><b>Gratis + afiliats</b> (model Whering)</td><td class="n">Variable</td><td>Depèn de les compres</td><td>Bo com a <b>segona</b> font (llista de desitjos), no com a única amb fotos que costen.</td></tr>
+      <tr><td><b>Subscripció per perfils</b></td><td class="n">3,99–11,99 €</td><td class="pos">+1,5 a +5,8 €</td><td>Cal límit de fotos i empènyer l'anual.</td></tr>
+      <tr><td><b>Crèdits de fotos</b> (paquets)</td><td class="n">Segons ús</td><td class="pos">Sempre positiu</td><td>Fa pensar en cada foto: trenca l'hàbit diari. Bo com a extra ("+20 fotos").</td></tr>
+      <tr><td><b>Pagament únic</b></td><td class="n">Un cobrament</td><td class="neg">Negatiu en mesos</td><td>Les fotos costen cada dia.</td></tr>
+      <tr><td><b>Híbrid recomanat</b></td><td class="n">≈5,4 € de mitjana</td><td class="pos">≈+2,3 €</td><td>Subscripció + paquet de fotos extra + afiliats a la fase 3.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout bad"><p><b>Per què no viure d'anuncis:</b> amb un eCPM de bàner d'~1 $ a Europa occidental (<a href="https://www.monetizemore.com/blog/how-much-ad-revenue-can-apps-generate/">MonetizeMore</a>), un usuari que obre l'app cada matí genera uns cèntims al mes; una sola foto de look ja en costa quatre. Anuncis només al pla gratuït, i quan hi hagi gestor de consentiment certificat.</p></div>
+</section>
+
+<section id="recomanacio">
+  <span class="eyebrow">4 · Recomanació</span>
+  <h2>Plans i preus</h2>
+  <p>Preus amb IVA inclòs (Stripe Tax + OSS). L'anual és ajustat (≈ 37–40 % de descompte, no més) perquè cada mes de l'any té fotos a pagar.</p>
+  <div class="cards">
+    <div class="card"><span class="tag">Gratuït</span><div class="price">0 €</div><p>Armari, calendari, look del dia en text, 3 fotos al mes. Sense conversa. Anuncis (quan s'activin).</p></div>
+    <div class="card"><span class="tag">Només looks</span><div class="price">3,99 € <small>/mes · 29,99 €/any</small></div><ul><li>40 fotos al mes, 30 missatges</li><li>Marge: 1,9 € mensual · 0,9 € anual</li></ul></div>
+    <div class="card rec"><span class="tag">Armari · recomanat</span><div class="price">6,99 € <small>/mes · 49,99 €/any</small></div><ul><li>70 fotos, 100 missatges, estadístiques</li><li>Marge: 3,5 € mensual · 1,5 € anual</li></ul></div>
+    <div class="card"><span class="tag">Estilista</span><div class="price">11,99 € <small>/mes · 89,99 €/any</small></div><ul><li>150 fotos, 300 missatges, "dona-me'n 3", revisió d'estil</li><li>Marge: 5,8 € mensual · 2,5 € anual</li></ul></div>
+  </div>
+  <h3>Marge per pla</h3>
+  <div class="legend"><span><i style="background:var(--bar-muted)"></i>Anual (per mes)</span><span><i style="background:var(--bar)"></i>Mensual</span></div>
+  <div class="chart" id="chart-margin" role="img" aria-label="Marge net mensual per pla i facturació"></div>
+  <ul class="check">
+    <li><b>Prova de 14 dies</b> amb tot obert i sense targeta, amb un sostre de ~30 fotos.</li>
+    <li><b>Preu fundador:</b> 30 % de descompte per sempre per als testers.</li>
+    <li><b>Paquet extra:</b> "+20 fotos" per ~1,99 € quan s'acaba el límit (opcional).</li>
+    <li><b>Punt d'equilibri:</b> ~25 subscriptors cobreixen els ~60 € fixos.</li>
+  </ul>
+</section>
+
+<section id="escenaris">
+  <span class="eyebrow">5 · Escenaris</span>
+  <h2>Els primers 12 mesos</h2>
+  <p>Mix de plans 30 % Només looks, 50 % Armari, 20 % Estilista, amb un 60 % de pagaments anuals: ingrés mitjà ≈5,4 € al mes per subscriptor (amb IVA). Comptem també el cost dels usuaris gratuïts (≈0,15 € al mes cadascun, 4 per cada subscriptor). Sense màrqueting ni el teu temps.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Escenari</th><th class="n">Subscriptors mes 12</th><th class="n">Ingrés de l'any (amb IVA)</th><th class="n">IA de l'any</th><th class="n">Contribució neta de l'any</th></tr></thead>
+    <tbody>
+      <tr><td>Conservador</td><td class="n">100</td><td class="n">≈3.300 €</td><td class="n">≈1.500 €</td><td class="n">≈300 €</td></tr>
+      <tr><td><b>Base</b></td><td class="n">350</td><td class="n">≈11.400 €</td><td class="n">≈5.300 €</td><td class="n">≈2.900 €</td></tr>
+      <tr><td>Optimista</td><td class="n">1.000</td><td class="n">≈32.600 €</td><td class="n">≈15.100 €</td><td class="n">≈9.500 €</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout warn"><p><b>Lectura honesta:</b> OOTD necessita força usuaris per guanyar diners, perquè cada usuari costa (fotos) i el mercat paga poc. Les tres coses que ho canvien: el límit de fotos, el pla anual i una segona font (afiliats/Vinted) a la fase 3.</p></div>
+</section>
+
+<section id="beta">
+  <span class="eyebrow">6 · Beta</span>
+  <h2>Pla de beta</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Grup</th><th class="n">Testers</th><th>Perfil</th><th>Qui buscar</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td class="n">12</td><td>Només looks</td><td>Gent que vol "què em poso avui" i prou</td></tr>
+      <tr><td>B</td><td class="n">18</td><td>Armari</td><td>Tenen molta roba i volen treure-li partit</td></tr>
+      <tr><td>C</td><td class="n">10</td><td>Estilista</td><td>Interessats en moda, usuaris de Pinterest</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Mètrica</th><th>Definició</th><th class="n">Objectiu</th></tr></thead>
+    <tbody>
+      <tr><td>Activació</td><td>Armari mínim + primer look en menys de 3 minuts</td><td class="n">≥ 60 %</td></tr>
+      <tr><td>Retenció D1 / D7 / D30</td><td>Obre l'app aquell dia o després</td><td class="n">40 / 25 / 15 %</td></tr>
+      <tr><td>"Me'l poso" per setmana</td><td>Per usuari actiu</td><td class="n">≥ 3</td></tr>
+      <tr><td>Fotos per usuari</td><td>Per grup i setmana</td><td class="n">Referència de cost</td></tr>
+      <tr><td>Cost IA per usuari</td><td>Per grup</td><td class="n">A ≤ 1, B ≤ 2, C ≤ 4 €/mes</td></tr>
+      <tr><td>NPS i preu</td><td>Enquestes setmanes 2, 4 (Van Westendorp) i 6</td><td class="n">NPS ≥ 30, mitjana ≥ 5 €</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fonts">
+  <span class="eyebrow">Fonts i supòsits</span>
+  <h2>D'on surten les xifres</h2>
+  <ul class="check">
+    <li><b>Costos:</b> <code>lib/usage-cost.ts</code> i <code>lib/outfit-gen/config.ts</code> d'OOTD (Gemini 0,039 $/imatge, fins a 2 intents; Haiku per a l'estilista; Sonnet per analitzar; remove.bg 0,10 $). Cost de Haiku per missatge: ≈0,01 $ (mesurat).</li>
+    <li><b>Supòsits:</b> 1 $ = 0,92 €, IVA 21 %, 60 % de plans anuals, 4 usuaris gratuïts per subscriptor. Tot pendent de validar amb la beta.</li>
+    <li><b>Documents d'OOTD:</b> pressupost de llançament, campanya de màrqueting, competència, roadmap i pla de l'estilista.</li>
+  </ul>
+  <ol class="sources">
+    <li><a href="https://www.revenuecat.com/blog/growth/subscription-app-trends-benchmarks-2026">RevenueCat — Subscription app benchmarks 2026</a></li>
+    <li><a href="https://www.fits-app.com/knowledge/what-is-included-in-fits-pro">Fits — What is included in Fits Pro</a> · <a href="https://fits-app.com/fits-vs-whering">Fits vs Whering</a></li>
+    <li><a href="https://apps.apple.com/app/id1140550878">Cladwell (App Store)</a> · <a href="https://adapty.io/paywall-library/dwell/">Adapty paywall library</a></li>
+    <li><a href="https://apps.apple.com/app/id1358319821">Style DNA (App Store)</a> · <a href="https://www.starterstory.com/stories/your-personal-ai-stylist-app">Starter Story — Style DNA</a></li>
+    <li><a href="https://apps.apple.com/app/id628106373">Pureple (App Store)</a> · <a href="https://apps.apple.com/FR/app/id1198057728">Smart Closet (App Store)</a> · <a href="https://apps.appfollow.io/ios/stylebook/335709058?country=us">Stylebook (AppFollow)</a></li>
+    <li><a href="https://getwardrobe.com/compare/indyx/">getwardrobe — Indyx</a> · <a href="https://myindyx.com/how-it-works">Indyx — How it works</a></li>
+    <li><a href="https://apps.apple.com/app/id6481705400">Alta Daily (App Store)</a> · <a href="https://www.acloset.app/announcements/subscription-plans-overview-eb9fc8/">Acloset — plans</a></li>
+    <li><a href="https://pricepertoken.com/image/model/google-gemini-2-5-flash-image">Gemini 2.5 Flash Image pricing</a></li>
+    <li><a href="https://www.monetizemore.com/blog/how-much-ad-revenue-can-apps-generate/">MonetizeMore — app ad revenue</a></li>
+  </ol>
+  <p class="meta">Consultat el 5 d'octubre de 2026. Confirma els preus a les botigues abans de publicar res.</p>
+</section>
+</main>
+</div>
+</div>
+
+<!-- ───────────────────────── DOCUMENTS ───────────────────────── -->
+<link rel="stylesheet" href="../assets/docs.css">
+<div class="page" id="page-documents" hidden>
+<div class="page-simple">
+  <header class="hero">
+    <span class="eyebrow">Documents del projecte · copiats del repositori</span>
+    <h1>Documents</h1>
+    <p class="lede">Els documents de treball d'Outfit of the Day: negoci, llançament, pressupost, campanya, beta, roadmap, TODOs i proves, i la documentació tècnica. Els textos citats tenen un botó per copiar-los.</p>
+    <p class="meta" id="docsMeta"></p>
+  </header>
+  <div class="docs-layout">
+    <nav class="docs-nav" id="docsNav" aria-label="Documents"></nav>
+    <article class="md" id="docBody" aria-live="polite"><p class="meta">Carregant…</p></article>
+  </div>
+</div>
+</div>
+<script src="../assets/docs-viewer.js"></script>
+<script>
+(() => {
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim()
+  const NS = 'http://www.w3.org/2000/svg'
+  const el = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e }
+  const fmt = v => v.toLocaleString('ca-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+
+  // Horizontal bars; a row is either grouped values or a stack.
+  function hbars(host, rows, max, opts = {}) {
+    const W = 720, rowH = opts.rowH || 34, barH = opts.barH || 12, labelW = opts.labelW || 170, padR = 70
+    const H = rows.length * rowH + 28
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'presentation' })
+    const x = v => labelW + (v / max) * (W - labelW - padR)
+    const grid = css('--line'), muted = css('--muted'), ink = css('--ink')
+    ;(opts.ticks || [0, max / 2, max]).forEach(t => {
+      svg.append(el('line', { x1: x(t), x2: x(t), y1: 4, y2: H - 22, stroke: grid, 'stroke-width': 1 }))
+      svg.append(el('text', { x: x(t), y: H - 6, 'text-anchor': 'middle', 'font-size': 11, fill: muted, 'font-family': 'JetBrains Mono, monospace' }, t.toLocaleString('ca-ES') + ' €'))
+    })
+    rows.forEach((r, i) => {
+      const y0 = i * rowH + 8
+      svg.append(el('text', { x: labelW - 10, y: y0 + rowH / 2 - 2, 'text-anchor': 'end', 'font-size': 13, fill: r.strong ? ink : css('--body'), 'font-weight': r.strong ? 700 : 400, 'font-family': 'Instrument Sans, system-ui' }, r.label))
+      if (r.stack) {
+        let acc = 0
+        const y = y0 + (rowH - barH) / 2 - 3
+        r.stack.forEach((s, j) => {
+          const w = Math.max(1, x(acc + s.v) - x(acc) - (j < r.stack.length - 1 ? 2 : 0))
+          const rect = el('rect', { x: x(acc), y, width: w, height: barH, rx: 3, fill: s.color })
+          rect.append(el('title', {}, `${r.label} · ${s.name}: ${fmt(s.v)}`))
+          svg.append(rect); acc += s.v
+        })
+        svg.append(el('text', { x: x(acc) + 6, y: y + barH - 2, 'font-size': 11, fill: muted, 'font-family': 'JetBrains Mono, monospace' }, fmt(acc)))
+        return
+      }
+      const n = r.values.length
+      r.values.forEach((s, j) => {
+        const y = y0 + (rowH - n * barH - (n - 1) * 2) / 2 + j * (barH + 2) - 3
+        const w = Math.max(2, x(s.v) - labelW)
+        const rect = el('rect', { x: labelW, y, width: w, height: barH, rx: 3, fill: s.color })
+        rect.append(el('title', {}, `${r.label}${s.name ? ' · ' + s.name : ''}: ${fmt(s.v)}`))
+        svg.append(rect)
+        if (opts.labelAll || j === n - 1) svg.append(el('text', { x: labelW + w + 6, y: y + barH - 2, 'font-size': 11, fill: muted, 'font-family': 'JetBrains Mono, monospace' }, s.v === 0 ? 'gratis' : fmt(s.v)))
+      })
+    })
+    host.replaceChildren(svg)
+  }
+
+  function draw() {
+    const muted = css('--bar-muted'), main = css('--bar')
+    hbars(document.getElementById('chart-cost'), [
+      { label: 'Només looks', stack: [{ v: 0.87, color: muted, name: 'fotos' }, { v: 0.18, color: main, name: 'text' }] },
+      { label: 'Armari', stack: [{ v: 1.30, color: muted, name: 'fotos' }, { v: 0.50, color: main, name: 'text' }] },
+      { label: 'Estilista', stack: [{ v: 2.10, color: muted, name: 'fotos' }, { v: 1.40, color: main, name: 'text' }] },
+    ], 4, { rowH: 42, barH: 16, ticks: [0, 2, 4] })
+
+    const comp = [
+      ['Whering', 0], ['Alta Daily', 0], ['Smart Closet Pro', 0.91], ['OOTD · Només looks', 3.99, 1], ['Fits Pro', 4.59], ['Indyx Insider', 4.60], ['Cladwell', 4.59],
+      ['OOTD · Armari', 6.99, 1], ['Style DNA', 7.35], ['OOTD · Estilista', 11.99, 1], ['Pureple', 13.79], ['Indyx (estilista humà)', 13.80],
+    ]
+    hbars(document.getElementById('chart-market'), comp.map(([label, v, mine]) => ({ label, strong: !!mine, values: [{ v, color: mine ? main : muted }] })), 15, { rowH: 28, barH: 14, ticks: [0, 5, 10, 15], labelW: 190 })
+
+    hbars(document.getElementById('chart-margin'), [
+      { label: 'Només looks', values: [{ v: 0.93, color: muted, name: 'anual' }, { v: 1.9, color: main, name: 'mensual' }] },
+      { label: 'Armari', values: [{ v: 1.5, color: muted, name: 'anual' }, { v: 3.5, color: main, name: 'mensual' }] },
+      { label: 'Estilista', values: [{ v: 2.5, color: muted, name: 'anual' }, { v: 5.8, color: main, name: 'mensual' }] },
+    ], 6, { rowH: 42, labelAll: true, ticks: [0, 3, 6] })
+  }
+  draw()
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', draw)
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+})()
+</script>
+<script>
+// Pages: #pla, #docs, #tasques, #estudi. Any other hash that names an element
+// (the study's own index) opens the page that contains it.
+(() => {
+  const PAGES = ['pla', 'docs', 'tasques', 'estudi', 'documents']
+  function route() {
+    const h = decodeURIComponent(location.hash.slice(1))
+    let page = PAGES.includes(h) ? h : null
+    let target = null
+    if (!page && h) { target = document.getElementById(h); const p = target?.closest('.page'); page = p ? p.id.replace('page-', '') : null }
+    page = page || 'pla'
+    for (const p of PAGES) document.getElementById('page-' + p).hidden = p !== page
+    document.querySelectorAll('.tabs a').forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + page ? 'page' : 'false'))
+    if (target) target.scrollIntoView({ block: 'start' }); else window.scrollTo(0, 0)
+  }
+  addEventListener('hashchange', route)
+  route()
+})()
+
+// The task board: cards live in the artifact's shared store (collection "cards").
+;(() => {
+  const COLS = [['todo', 'Per fer'], ['doing', 'En curs'], ['done', 'Fet']]
+  const PHASE = { 0: 'Fase 0', 1: 'Fase 1', 2: 'Fase 2', 3: 'Fase 3' }
+  const $ = id => document.getElementById(id)
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+  let cards = [], filter = 'all', open = new Set(), db = null, dragId = null
+
+  function stepsHtml(steps) {
+    if (!steps) return ''
+    const list = Array.isArray(steps) ? steps : String(steps).split('\n').filter(Boolean)
+    return '<ol>' + list.map(s => '<li>' + esc(s).replace(/`([^`]+)`/g, '<code>$1</code>') + '</li>').join('') + '</ol>'
+  }
+
+  function render() {
+    const shown = cards.filter(c => filter === 'all' || String(c.phase) === filter)
+    $('board').innerHTML = COLS.map(([col, name]) => {
+      const list = shown.filter(c => (c.col || 'todo') === col).sort((a, b) => (a.phase - b.phase) || ((a.order ?? 0) - (b.order ?? 0)))
+      return `<section class="col" data-col="${col}" aria-labelledby="col-${col}">
+        <div class="col-head"><h3 id="col-${col}">${name}</h3><span>${list.length}</span></div>
+        ${list.length ? list.map(card).join('') : '<p class="empty-col">Cap tasca aquí.</p>'}
+      </section>`
+    }).join('')
+  }
+
+  function card(c) {
+    const isOpen = open.has(c.id)
+    const ci = COLS.findIndex(([k]) => k === (c.col || 'todo'))
+    return `<article class="cardt" draggable="true" data-id="${esc(c.id)}" aria-expanded="${isOpen}">
+      <div class="meta-row"><span class="badge">${PHASE[c.phase] ?? 'Fase ?'}</span>${c.who ? `<span class="badge who">${esc(c.who)}</span>` : ''}${c.urgent ? '<span class="badge urgent">Abans del push</span>' : ''}</div>
+      <button class="t" type="button" data-act="toggle" aria-expanded="${isOpen}">${esc(c.title)}</button>
+      ${isOpen ? `
+        ${c.why ? `<p class="why">${esc(c.why)}</p>` : ''}
+        ${stepsHtml(c.steps)}
+        ${c.link ? `<p class="why"><a href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.linkLabel || c.link)}</a></p>` : ''}
+        <label class="status-line" for="notes-${esc(c.id)}">Notes</label>
+        <textarea id="notes-${esc(c.id)}" rows="2" data-act="notes" placeholder="Apunta-hi el que vulguis…">${esc(c.notes || '')}</textarea>` : ''}
+      <div class="acts">
+        <button type="button" data-act="left" ${ci === 0 ? 'disabled' : ''} aria-label="Moure a ${ci > 0 ? COLS[ci - 1][1] : ''}">←</button>
+        <button type="button" data-act="right" ${ci === COLS.length - 1 ? 'disabled' : ''} aria-label="Moure a ${ci < COLS.length - 1 ? COLS[ci + 1][1] : ''}">→</button>
+        ${isOpen ? '' : '<button type="button" data-act="toggle">Detalls</button>'}
+      </div>
+    </article>`
+  }
+
+  async function save(id, patch) {
+    const c = cards.find(x => x.id === id); if (!c) return
+    Object.assign(c, patch); render()
+    if (!db) return
+    try { await db.doc('cards/' + id).update(patch); $('boardStatus').textContent = 'Desat.' }
+    catch { $('boardStatus').textContent = "No s'ha pogut desar. Torna-ho a provar." }
+  }
+
+  $('board').addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]'); if (!btn || btn.tagName === 'TEXTAREA') return
+    const id = btn.closest('.cardt')?.dataset.id; if (!id) return
+    const c = cards.find(x => x.id === id)
+    const ci = COLS.findIndex(([k]) => k === (c.col || 'todo'))
+    if (btn.dataset.act === 'toggle') { open.has(id) ? open.delete(id) : open.add(id); render() }
+    if (btn.dataset.act === 'left' && ci > 0) save(id, { col: COLS[ci - 1][0] })
+    if (btn.dataset.act === 'right' && ci < COLS.length - 1) save(id, { col: COLS[ci + 1][0] })
+  })
+  const noteTimers = {}
+  $('board').addEventListener('input', e => {
+    if (e.target.dataset.act !== 'notes') return
+    const id = e.target.closest('.cardt').dataset.id
+    const c = cards.find(x => x.id === id); if (c) c.notes = e.target.value
+    clearTimeout(noteTimers[id]); noteTimers[id] = setTimeout(async () => { if (db) { try { await db.doc('cards/' + id).update({ notes: e.target.value }); $('boardStatus').textContent = 'Nota desada.' } catch {} } }, 700)
+  })
+  $('board').addEventListener('dragstart', e => { const el = e.target.closest('.cardt'); if (el) { dragId = el.dataset.id; e.dataTransfer.effectAllowed = 'move' } })
+  $('board').addEventListener('dragover', e => { const col = e.target.closest('.col'); if (col && dragId) { e.preventDefault(); document.querySelectorAll('.col').forEach(c => c.classList.toggle('drop', c === col)) } })
+  $('board').addEventListener('dragleave', e => { if (!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget)) document.querySelectorAll('.col').forEach(c => c.classList.remove('drop')) })
+  $('board').addEventListener('drop', e => { const col = e.target.closest('.col'); document.querySelectorAll('.col').forEach(c => c.classList.remove('drop')); if (col && dragId) { e.preventDefault(); save(dragId, { col: col.dataset.col }); dragId = null } })
+
+  document.querySelector('.board-tools').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return
+    filter = b.dataset.phase
+    document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === b)))
+    render()
+  })
+  $('newBtn').addEventListener('click', () => { $('newForm').hidden = false; $('nf-title').focus() })
+  $('nf-cancel').addEventListener('click', () => { $('newForm').hidden = true })
+  $('newForm').addEventListener('submit', async e => {
+    e.preventDefault()
+    const data = { title: $('nf-title').value.trim(), why: $('nf-why').value.trim(), phase: Number($('nf-phase').value), who: $('nf-who').value.trim(), col: 'todo', order: Date.now() }
+    if (!data.title) return
+    if (!db) { $('boardStatus').textContent = 'Aquí no es pot desar.'; return }
+    try { await db.collection('cards').add(data); $('newForm').reset(); $('newForm').hidden = true; $('boardStatus').textContent = 'Tasca afegida.' }
+    catch (err) { $('boardStatus').textContent = err?.code === 'quota_exceeded' ? 'No hi caben més tasques: esborreu-ne alguna.' : "No s'ha pogut afegir." }
+  })
+
+  render()
+  ;(async () => {
+    try { db = await window.claude?.use?.('db') } catch { db = null }
+    if (!db) { $('boardStatus').textContent = 'El tauler només funciona obert a Claude, amb accés a aquesta pàgina.'; return }
+    db.collection('cards').limit(500).onSnapshot(snap => {
+      cards = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      $('boardStatus').textContent = cards.length ? `${cards.filter(c => c.col === 'done').length} de ${cards.length} tasques fetes.` : 'Encara no hi ha tasques.'
+      render()
+    }, () => { $('boardStatus').textContent = "No s'han pogut carregar les tasques." })
+  })()
+})()
+</script>
+
+</body></html>

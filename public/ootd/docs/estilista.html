@@ -1,0 +1,155 @@
+<h1>Pla: de generador d&#39;outfits a estilista conversacional</h1>
+<p>Branca: <code>feat/conversational-stylist</code>. Context: <code>ai/TRASPAS-model-conversacional.md</code> (el com) i <code>ai/phases/phase-2-outfit-engine/README.md</code> + <code>phase-3-onboarding/README.md</code> (el què).
+Prototip validat per l&#39;usuari: <a href="https://claude.ai/artifact/42Mu7SMHkpGWae3NsWJ1VB">https://claude.ai/artifact/42Mu7SMHkpGWae3NsWJ1VB</a> (3 pantalles, mode fosc Glass i mode clar Bone). <strong>No es canvia res del prototip.</strong></p>
+<h2>1. Decisions (ronda de preguntes, octubre 2026)</h2>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Decisió</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Quan es genera</td>
+<td><strong>Res es genera fins que l&#39;usuari ho demana.</strong> Obrir l&#39;app el primer cop del dia = petició: es genera el look amb text i foto. Les obertures següents el reutilitzen. «Per demà» és un xip a demanda. El push del matí només avisa, no genera. Si canvia el temps, surt un xip «refer?», no es regenera sol.</td>
+</tr>
+<tr>
+<td>Foto</td>
+<td>Només al look proposat i a l&#39;acceptat. Els refinaments mostren les peces a l&#39;instant; la foto surt amb «Mostra-me&#39;l» o «Me&#39;l poso». Mentre es genera: esquelet 3:4 amb el progrés real (Planificant → Vestint-te → Revelant).</td>
+</tr>
+<tr>
+<td>Alternatives</td>
+<td>Una proposta + «Un altre» + «Dona-me&#39;n 3» a demanda</td>
+</tr>
+<tr>
+<td>Paleta</td>
+<td><strong>Glass</strong> (fosc, per defecte) i <strong>Bone</strong> (clar), derivats de la landing. Tipus: Archivo (UI), Instrument Serif cursiva (veu de l&#39;estilista), JetBrains Mono (estat del sistema/IA). Lima: només acció principal i estat IA. La landing no es toca.</td>
+</tr>
+<tr>
+<td>Model</td>
+<td><strong>Haiku per a tot</strong> (<code>OUTFIT_TEXT_MODEL</code>, una constant). Cap límit per usuari durant el test; només topall tècnic de torns/hora i el saldo a l&#39;admin.</td>
+</tr>
+<tr>
+<td>Dades antigues</td>
+<td><strong>Començar de zero.</strong> S&#39;esborren <code>worn_outfits</code> i <code>saved_outfits</code> antics, només amb confirmació explícita i còpia JSON prèvia. Armari, referències, fotos i perfil no es toquen.</td>
+</tr>
+<tr>
+<td>Gust</td>
+<td>13 estils amb pesos (§2). Les 40 tendències (<code>STYLE_VIBES</code>) es queden com a xips d&#39;avui.</td>
+</tr>
+<tr>
+<td>Ocasions</td>
+<td>Feina · Sopar · Esport · Cita · Viatge · Entrevista · Festa de nit · Excursió · Esdeveniment (casament, inauguració, gala) · Celebració · Cap de setmana · Relax · Al voltant d&#39;una peça · Res especial</td>
+</tr>
+<tr>
+<td>Ocasió → conversa</td>
+<td>Tocar una ocasió obre la conversa amb l&#39;ocasió precarregada i una pregunta curta amb respostes ràpides + «Dona-m&#39;ho tot fet». El look es genera en respondre (no abans: no es paga una foto que es descarta).</td>
+</tr>
+<tr>
+<td>Armari curt</td>
+<td><strong>L&#39;estilista sempre mostra un look.</strong> Si falten peces, se les inventa (tendències triades + ocasió + learnings de l&#39;usuari) i <strong>ho avisa</strong>: «Tens 4 de 5 peces; et falta una americana fosca». Les peces que falten es marquen visualment i es poden afegir a una llista.</td>
+</tr>
+<tr>
+<td>Social / anuncis</td>
+<td>Perfil públic <code>/[username]</code>: s&#39;adapta al nou look i <strong>continua amagat</strong> (cap punt d&#39;entrada nou). Anuncis: dormits (només amb les variables <code>NEXT_PUBLIC_ADSENSE_*</code>), no es dissenyen.</td>
+</tr>
+<tr>
+<td>Consentiment</td>
+<td>Sense flux nou (usuaris actuals = amics). Push de T&amp;C abans del llançament oficial.</td>
+</tr>
+</tbody></table>
+<h2>2. Vocabulari de gust (13 estils)</h2>
+<p>Minimal · Clàssic · Elegant · Casual · Workwear · Streetwear · Sporty · Tècnic · Retro · Boho · Varsity · Grunge · Preppy.
+Cada estil es defineix per peces concretes (taula al document de decisions del prototip i a <code>lib/styling/styles.ts</code>). Els noms iguals als tres idiomes no es tradueixen; es tradueixen Clàssic/Clásico/Classic, Elegant/Elegante/Elegant, Tècnic/Técnico/Technical.
+Els antics <code>CLOTHING_STYLES</code> se sembren com a gust inicial amb una taula de correspondència fixa (streetwear→Streetwear, minimalist→Minimal, classic→Clàssic, sporty→Sporty, vintage→Retro, bohemian→Boho, formal→Elegant, preppy→Preppy, smart-casual→Clàssic, urban→Casual).</p>
+<h2>3. Fases</h2>
+<p>Cada fase acaba amb <code>npm test</code> en verd (el recompte de tests no baixa), <code>npm run build</code> i commit. <strong>Cap acció a producció sense el sí de l&#39;usuari</strong> (migracions, esborrats, buckets, push). Després de cada push es comprova <code>/api/version</code> i <code>/api/health</code> abans de dir «desplegat».</p>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Contingut</th>
+<th>Fet quan…</th>
+<th>Producció</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0. P0</strong> ✅</td>
+<td><code>prepare:false</code>, bucket, camins únics, Node 24, migracions a <code>lib/db/migrations.ts</code> + PGlite, <code>/api/health</code></td>
+<td>Fet i commitejat (<code>bec3dc5</code>)</td>
+<td>Pendent: dry-run, comprovar bucket, push</td>
+</tr>
+<tr>
+<td><strong>1. Preguntes + prototip</strong> ✅</td>
+<td>Ronda de preguntes, prototip validat</td>
+<td>Fet</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>2. Model de dades</strong></td>
+<td>Taules <code>stylist_threads</code>, <code>stylist_messages</code>, <code>stylist_proposals</code>, <code>looks</code>, <code>taste_versions</code>, <code>idempotency_keys</code>; columnes noves a <code>users</code> (<code>taste</code>, <code>taste_version</code>), <code>wardrobe_items</code> (<code>available</code>, <code>last_worn_at</code>, <code>warmth</code>, <code>formality</code>) i <code>worn_outfits</code> (<code>look_id</code>, <code>wardrobe_item_ids</code>); sembra del gust des de <code>styles</code>. Script <code>reset-outfit-history</code> (comptatge, còpia JSON, <code>--production --confirm</code>). Les taules antigues continuen funcionant fins a la fase 9.</td>
+<td>Tests PGlite de migracions + drift schema↔migracions; dry-run local</td>
+<td>Dry-run, apply i <strong>esborrat</strong> amb sí explícit</td>
+</tr>
+<tr>
+<td><strong>3. Lògica pura</strong></td>
+<td><code>lib/styling/*</code>: estils, ocasió→formalitat, temps→abric, rotació, no repetir, xips de context, senyals proactius, actualització del gust amb pesos</td>
+<td>Tests de cada mòdul</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>4. Estilista</strong></td>
+<td>Bucle de tool use amb Haiku (<code>propose_look</code>, <code>swap_piece</code>, <code>search_wardrobe</code>, <code>get_wear_history</code>, <code>propose_taste_update</code>, <code>propose_wardrobe_change</code>, <code>resolve_thread</code>), snapshot de context amb <code>cache_control</code>, propostes que s&#39;accepten una a una, torns en segon pla (Netlify Background Function) amb <code>live</code> i polling, detecció de torns encallats, topall de torns/hora. La imatge es genera amb el pipeline actual (<code>lib/outfit-gen</code>) adaptat a <code>looks</code>: només per al look proposat/acceptat.</td>
+<td>Un torn real es desa i es veu després de recarregar</td>
+<td>Prova a producció amb sí</td>
+</tr>
+<tr>
+<td><strong>5. Avui + «Me&#39;l poso»</strong></td>
+<td>Pantalla Avui (data, context, setmana, LookCard, PieceStrip amb peces que falten, ocasions → conversa, barra «Què tens avui?»), «Me&#39;l poso» (peces a <code>worn_outfits</code>), «M&#39;he posat una altra cosa», pantalla de conversa (CoachSheet/ChatComposer adaptats), Armari amb comptadors</td>
+<td>Recorreguts de cap a cap</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>6. Disseny global</strong></td>
+<td><code>ui.css</code> Glass/Bone a tota l&#39;app (no a la landing), navegació inferior Avui · Armari · Inspiració · Estilista · Perfil, escala de §6.3 del traspàs, mode clar/fosc (sistema + Perfil)</td>
+<td>Captures a 390×844 de cada pantalla</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>7. Proactiu</strong></td>
+<td>Senyals deterministes, xip «refer el look» pel temps, push «el teu look és a punt» (sense generar), finestra de petició</td>
+<td>El cron envia el push i la notificació obre la conversa</td>
+<td>Cron i push amb sí</td>
+</tr>
+<tr>
+<td><strong>8. Onboarding conversacional</strong></td>
+<td>Gust (13 estils → pesos) dins de la conversa; armari «core 10» amb escaneig múltiple; primer look en &lt; 3 min</td>
+<td>Primer look amb armari petit</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>9. Neteja</strong></td>
+<td>Esborrar generador antic, <code>outfit-parser</code>, collage canvas, admin collages/placeholders, remove.bg (<code>WARDROBE_RECONSTRUCTION_NEXT.md</code>), taules antigues</td>
+<td>Cap referència al codi antic</td>
+<td>Drop de taules amb sí</td>
+</tr>
+</tbody></table>
+<p>Transversal a totes: i18n ca/es/en (cap text al codi), prova a 390×844 i amb el teclat obert, interaccions d&#39;alt nivell (§6.5 del traspàs), offline per a l&#39;armari i el look d&#39;avui, avís de versió nova de la PWA, <code>Idempotency-Key</code> a «Me&#39;l poso», idioma automàtic del sistema, <code>loading.tsx</code> amb esquelet, comptar consultes per pàgina (<code>DB_LOG=1</code>).</p>
+<h2>4. Arquitectura resumida</h2>
+<ul>
+<li><code>lib/styling/*</code> — lògica pura i testejable (cap I/O).</li>
+<li><code>lib/stylist/*</code> — bucle de tool use, eines zod, snapshot, propostes, <code>live</code>.</li>
+<li><code>lib/outfit-gen/*</code> — pipeline d&#39;imatge existent (context, shortlist, imatges, prompt, Nano Banana), ara alimentat per <code>looks</code>.</li>
+<li><code>netlify/functions/stylist-turn-background.mts</code> — torns en segon pla.</li>
+<li>El client consulta <code>/api/stylist/threads/:id/live</code> cada segon i detecta torns encallats (3 min sense progrés).</li>
+<li><code>propose_look</code> retorna <code>{ title, vibe, rationale, context_chips[], items[{slot, wardrobe_id|null, name, why}], gaps[], image_brief }</code>. Un <code>wardrobe_id</code> s&#39;ha de validar contra la llista rebuda; una peça que no existeix va a <code>gaps</code> (i es marca a la UI).</li>
+</ul>
+<h2>5. Trampes a evitar (de mAI Fitness)</h2>
+<p>Programar UI sense maqueta · barrejar conceptes en una pantalla (look d&#39;avui / registrar / parlar) · escala de pantalla gran al mòbil · retocar valors en lloc del sistema (tokens) · suposar que producció es comporta com local · sobreescriure un fitxer sense llegir-lo · canvis persistents sense permís de l&#39;usuari · un xat que sembla una web.</p>
+<h2>6. Estat (4 d&#39;octubre de 2026)</h2>
+<p>Fet i commitejat a <code>feat/conversational-stylist</code>: fases 0–9 (model de dades, lògica pura, estilista, Avui, «M&#39;he posat una altra cosa», xat, disseny Glass/Bone, push del matí sense generar + senyals proactius, onboarding conversacional, neteja del generador antic, outbox offline, <code>loading.tsx</code>, disponibilitat a l&#39;Armari). L&#39;avís de versió de la PWA ja existia (<code>PwaUpdateBanner</code>).</p>
+<p><strong>Mantingut a propòsit:</strong> remove.bg (el seu substitut, <code>WARDROBE_RECONSTRUCTION_NEXT.md</code>, és una altra iteració) i les taules antigues (<code>saved_outfits</code>, etc.): només es poden esborrar amb una migració destructiva a producció, que cal aprovar.</p>
+<p><strong>Pendent, tot a producció i amb permís:</strong> aplicar les migracions 0013–0017 (el dry-run és net), push i verificació de <code>/api/health</code> i <code>/api/version</code>, <code>db:reset-history</code> (amb còpia), variables <code>CRON_SECRET</code>/<code>GEMINI_API_KEY</code> a Netlify.</p>
+<h2>7. Segona tanda: el que va venir de l&#39;altra app (octubre 2026)</h2>
+<p>Implementat a <code>main</code> (vegeu <code>ai/TRASPAS-model-conversacional.md</code> §11–§13): models per tasca (<code>lib/stylist/models.ts</code>), famílies de propostes, títols amb Haiku i canvi de nom, plans i drets (<code>lib/billing/*</code>), perfils d&#39;ús, passarel·la de pagaments amb Stripe (checkout, portal, webhooks idempotents, reconciliació diària), comunicacions (<code>lib/comms/*</code>, graella de preferències, correus en 3 idiomes, <code>notifications_log</code>), versió de termes (apagada fins a la revisió legal), kit de beta (codis, esdeveniments, mètriques, feedback i NPS), Admin → Users complet (accés complet, fitxa, auditoria), Admin → Beta, Admin → Health, resum setmanal i avisos, sistema de maquetació (<code>AppPage</code>), «Me&#39;l poso» amb desfer, canviar peça sense IA, «què t&#39;has posat» en text, dies passats, novetats, offline amb còpies guardades, migració <code>0018_operations</code>.</p>
+<p><strong>No fet (cal decisió o és fora d&#39;abast):</strong> els preus de la landing des del mòdul de plans (la landing no es toca), la vista dividida fils|conversa de l&#39;Estilista (només hi ha una conversa per dia), l&#39;artifact del pla de negoci i el tauler Trello (vegeu <code>ai/NEGOCI.md</code> com a base), l&#39;estudi de mercat, Admin en tres idiomes (les pantalles d&#39;admin són en anglès, com abans).</p>

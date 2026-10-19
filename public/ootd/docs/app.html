@@ -1,0 +1,148 @@
+<p>@ai/DESIGN.md</p>
+<!-- BEGIN:nextjs-agent-rules -->
+<h1>This is NOT the Next.js you know</h1>
+<p>This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in <code>node_modules/next/dist/docs/</code> before writing any code. Heed deprecation notices.</p>
+<!-- END:nextjs-agent-rules -->
+
+<!-- BEGIN:testing-rules -->
+<h1>Tests are mandatory — no exceptions</h1>
+<p>Every new feature, lib function, API route or bug fix <strong>must</strong> include Vitest tests.
+Tests must pass before any deploy. The Netlify build command is <code>npm test &amp;&amp; npm run build</code> — a failing test blocks deploy entirely.</p>
+<h2>Rules</h2>
+<ul>
+<li>Add tests in <code>tests/lib/&lt;module&gt;.test.ts</code> for every new file in <code>lib/</code></li>
+<li>Add proxy/auth tests in <code>tests/proxy.test.ts</code> for new protected routes</li>
+<li>Run <code>npm test</code> locally before considering any task done</li>
+<li><code>BCRYPT_ROUNDS=1</code> is set automatically in the test env (fast hashing)</li>
+<li>Never mock the file system — the setup patches <code>process.cwd()</code> to a temp dir</li>
+<li>Never call real Anthropic API or real web-push in tests — mock those modules with <code>vi.mock</code></li>
+<li>Test files live in <code>tests/</code> mirroring the <code>lib/</code> structure</li>
+</ul>
+<h2>Database tests (PGlite)</h2>
+<ul>
+<li>DB-layer and migration tests run against real Postgres in memory via <code>tests/helpers/db.ts</code> (<code>createTestDb()</code> applies the baseline, <code>createMigratedDrizzle()</code> also applies every migration).</li>
+<li>Prefer this over mocking Drizzle query chains. <code>tests/setup.ts</code> closes every PGlite after each test and <code>vitest.config.ts</code> caps workers at 2 on Netlify/CI: each instance is a WASM heap and the build runs out of memory otherwise.</li>
+</ul>
+<h2>Migrations</h2>
+<ul>
+<li>They live in <code>lib/db/migrations.ts</code> (<code>MIGRATIONS</code>): each has a <code>check</code> (SQL boolean or function) and <code>sql</code> statements and/or a <code>run(tx)</code> for data. Only pending ones run, each in its own transaction. Write them idempotently anyway.</li>
+<li><code>tests/lib/db/migrations.test.ts</code> also fails if a table/column of <code>lib/db/schema.ts</code> has no migration, or a table lacks row-level security. <strong>Adding a column to <code>schema.ts</code> without a migration breaks the build</strong> (it only blows up in production otherwise).</li>
+<li>Before applying to production: <code>DATABASE_URL=&lt;prod&gt; npm run db:dry-run</code> (runs everything in one transaction, prints row counts, rolls back). Apply with <code>npm run db:apply -- --production</code> or from <code>/api/admin/run-migrations</code>. Ask the user first.</li>
+<li>JSON parameters in raw SQL must be cast <code>$n::text::jsonb</code>; a bare <code>::jsonb</code> double-encodes with postgres-js and PGlite does not catch it.</li>
+<li><code>npm run db:dev</code> serves a local PGlite database on <code>127.0.0.1:5433</code> (<code>DEV_DB_PORT</code> to change it) with every migration applied. Never point local dev at production to try unreleased migrations.</li>
+</ul>
+<h2>Database connection</h2>
+<ul>
+<li>Production goes through Supabase&#39;s transaction pooler (:6543). The postgres client must not use prepared statements there (<code>prepare: false</code>, decided by <code>usesPooler()</code> in <code>lib/db/index.ts</code>, covered by <code>tests/lib/db/client.test.ts</code>). With prepared statements on, queries hang and writes are silently lost.</li>
+<li><code>/api/health</code> reports env presence, database round-trip times (first includes connecting) and pending migrations. Check it after every deploy.</li>
+</ul>
+<h2>Storage</h2>
+<ul>
+<li>Every upload uses a <strong>new path</strong> (<code>uniqueStoragePath()</code> in <code>lib/storage/supabase.ts</code>): the CDN keeps serving the old bytes for a reused path. <code>uploadFile</code> creates the bucket if it is missing.</li>
+</ul>
+<h2>Test framework</h2>
+<ul>
+<li><strong>Vitest</strong> (<code>npm test</code> = <code>vitest run</code>)</li>
+<li>Config: <code>vitest.config.ts</code></li>
+<li>Setup: <code>tests/setup.ts</code> (patches cwd, wipes data dir between tests)</li>
+</ul>
+<h2>End-to-end on a phone viewport</h2>
+<ul>
+<li><code>sh scripts/e2e/up.sh</code> starts fake storage (:9999), a local PGlite database (:5439) and <code>next dev</code> on <strong>:3110</strong> (never :3100: other projects use it). It seeds <code>e2e@local</code> (7 pieces, taste) and <code>new@local</code> (nothing yet, for onboarding). <code>sh scripts/e2e/down.sh</code> stops only what it started.</li>
+<li>The scripts in <code>scripts/e2e/</code> (<code>chat</code>, <code>today</code>, <code>other</code>, <code>profile</code>, <code>onboarding</code>, <code>shots</code>) drive headless Chrome at 390×844 with touch over the DevTools protocol and call the real Anthropic/Gemini APIs (cents per run). Open the screenshots they write: a passing script is not a visual check.</li>
+</ul>
+<!-- END:testing-rules -->
+
+<!-- BEGIN:operations-rules -->
+<h1>Operating rules (learned the hard way, in this project and in the sister one)</h1>
+<h2>Production</h2>
+<ul>
+<li><strong>Migrations first, code after.</strong> If the new code reads a table or column that does not exist yet, every screen breaks, and the admin banner to fix it cannot even load. Order: <code>db:dry-run</code> → the user applies the migration → only then push.</li>
+<li><strong>The user applies production migrations, not the agent.</strong> The auto-mode classifier blocks <code>db:apply --production</code> even with a clear instruction; do not try another route. Flow: the agent runs the dry-run and shows it; the user runs <code>! set -a; . ./.env.local; set +a; npm run db:apply -- --production</code>; then the agent pushes and checks <code>/api/version</code> and <code>/api/health</code>.</li>
+<li><strong>Never point <code>npm run dev</code> or tests at the production database.</strong> Local is PGlite (<code>scripts/e2e/up.sh</code>, port 3110).</li>
+<li>Production data is read only with explicit permission and only aggregates.</li>
+<li>Nobody commits or pushes the same checkout while an agent is working in it. Background agents never share files, ports or databases, and never touch another session&#39;s services.</li>
+<li>When &quot;a change does not show up&quot;: 1) <code>/api/version</code>, 2) Netlify → Deploys (a failed build keeps the old version live), 3) the PWA cache. Only then the code.</li>
+<li>The build is <code>npm test &amp;&amp; npm run build</code> on Netlify, <strong>with the real keys in its environment</strong>: tests must not depend on where they run (<code>tests/setup.ts</code> clears them; the baseline SQL lives in <code>tests/fixtures</code>, because <code>/drizzle</code> is gitignored).</li>
+</ul>
+<h2>Code</h2>
+<ul>
+<li>Environment numbers go through <code>lib/env.ts</code> (blank, 0, negative or text → the default).</li>
+<li>Every mutation that fails shows a notice; nothing leaves a list as if it had worked. Lists that change (wardrobe, calendar) are fetched again when mounted.</li>
+<li>Every route that costs money checks <code>lib/billing</code> (<code>gateTurn</code>, <code>photoAllowed</code>); hiding a button is not protection. A turn the plan refuses answers 403 with a reason.</li>
+<li>Side tasks on the cheap model (titles, matching what was worn) always have a plan B and their own <code>usage_events</code> feature.</li>
+<li>A proposal replaces only the pending ones of its own family (<code>proposalFamily</code>).</li>
+<li>Tests inject the Anthropic client (a fake with <code>messages.stream</code>/<code>create</code>), never <code>vi.mock</code> the whole SDK.</li>
+<li>Admin audit logs record field <strong>names</strong>, never values.</li>
+</ul>
+<!-- END:operations-rules -->
+
+<!-- BEGIN:a11y-rules -->
+<h1>Accessibility (a11y) — mandatory patterns</h1>
+<h2>Escape key on every modal</h2>
+<p>Every modal or overlay <strong>must</strong> close on <code>Escape</code>. Use this exact pattern:</p>
+<pre><code class="language-typescript">useEffect(() =&gt; {
+  if (!open) return                         // only attach when modal is visible
+  const onKey = (e: KeyboardEvent) =&gt; { if (e.key === &#39;Escape&#39;) onClose() }
+  document.addEventListener(&#39;keydown&#39;, onKey)
+  return () =&gt; document.removeEventListener(&#39;keydown&#39;, onKey)
+}, [open, onClose])
+</code></pre>
+<ul>
+<li>For always-mounted modals (no <code>open</code> toggle), omit the guard: attach on mount, clean up on unmount.</li>
+<li><code>onClose</code> must be stable (passed as prop or wrapped in <code>useCallback</code>) to avoid stale closures.</li>
+</ul>
+<h2>Images</h2>
+<p>All <code>&lt;img&gt;</code> elements must have <code>user-select: none</code> — enforced globally via <code>app/globals.css</code>.<br>Never add <code>draggable={true}</code> to images.</p>
+<h2>Focus rings</h2>
+<p>All interactive elements (buttons, links, inputs, selects) must have a visible focus ring. Use:</p>
+<ul>
+<li><code>focus:outline-none focus:ring-2 focus:ring-black/30</code> on light backgrounds</li>
+<li><code>focus:outline-none focus:ring-2 focus:ring-white/40</code> on dark backgrounds (e.g. sidebar)</li>
+</ul>
+<p>Never use bare <code>focus:outline-none</code> without a replacement ring.</p>
+<h2>Dropdown / popover pattern</h2>
+<p>Every dropdown must close on <strong>both</strong> outside click AND <code>Escape</code>. Use two <code>useEffect</code> calls:</p>
+<pre><code class="language-typescript">// Outside click
+useEffect(() =&gt; {
+  function handleClick(e: MouseEvent) {
+    if (ref.current &amp;&amp; !ref.current.contains(e.target as Node)) setOpen(false)
+  }
+  document.addEventListener(&#39;mousedown&#39;, handleClick)
+  return () =&gt; document.removeEventListener(&#39;mousedown&#39;, handleClick)
+}, [])
+
+// Escape key (only attach when open)
+useEffect(() =&gt; {
+  if (!open) return
+  const onKey = (e: KeyboardEvent) =&gt; { if (e.key === &#39;Escape&#39;) setOpen(false) }
+  document.addEventListener(&#39;keydown&#39;, onKey)
+  return () =&gt; document.removeEventListener(&#39;keydown&#39;, onKey)
+}, [open])
+</code></pre>
+<p>The trigger button must have <code>aria-expanded={open}</code> and <code>aria-haspopup=&quot;true&quot;</code>.</p>
+<h2>Dialogs / modals</h2>
+<p>Every modal overlay must have <code>role=&quot;dialog&quot;</code> and <code>aria-modal=&quot;true&quot;</code> on the outermost div, plus an <code>aria-label</code> describing its purpose:</p>
+<pre><code class="language-tsx">&lt;div role=&quot;dialog&quot; aria-modal=&quot;true&quot; aria-label=&quot;Modal title&quot; className=&quot;fixed inset-0 …&quot;&gt;
+</code></pre>
+<p>Non-blocking banners (e.g. cookie consent) use <code>aria-modal=&quot;false&quot;</code>.</p>
+<h2>Toolbars</h2>
+<p>Groups of action buttons that operate on a selection (e.g. bulk action bars) must have <code>role=&quot;toolbar&quot;</code> and <code>aria-label</code>:</p>
+<pre><code class="language-tsx">&lt;div role=&quot;toolbar&quot; aria-label=&quot;Bulk actions&quot; …&gt;
+</code></pre>
+<!-- END:a11y-rules -->
+
+<!-- BEGIN:css-gotchas -->
+<h1>CSS gotchas</h1>
+<h2>Images in cropping/canvas contexts</h2>
+<p>Tailwind&#39;s preflight and browser CSS reset apply <code>max-width: 100%</code> to all <code>&lt;img&gt;</code> elements.<br>When positioning images absolutely with an explicit pixel <code>width</code>, always add <code>maxWidth: &#39;none&#39;</code> and <code>maxHeight: &#39;none&#39;</code> to the inline style, or the image will be clamped to the container width and lose its aspect ratio.</p>
+<pre><code class="language-tsx">&lt;img style={{ width: dispW, height: dispH, maxWidth: &#39;none&#39;, maxHeight: &#39;none&#39; }} /&gt;
+</code></pre>
+<!-- END:css-gotchas -->
+
+<h2>Admin Analytics</h2>
+<ul>
+<li><code>/admin/analytics</code>: AI cost per month for the last 12 months (stacked by feature, forecast for the month in progress, the configured monthly budgets as a reference line) and a per-month detail (<code>/api/admin/analytics?month=YYYY-MM</code>).</li>
+<li>Derived from <code>usage_events</code> (aggregated in SQL by <code>getMonthlyCostRowsDb</code>), shaped by the pure <code>lib/analytics/cost-history.ts</code>. Months are Europe/Madrid calendar months. The same module and chart (<code>components/admin/CostHistoryChart.tsx</code>, colours via <code>.cost-chart</code> vars in <code>app/globals.css</code>) live in mAI Fitness; keep them in sync.</li>
+<li>Record every paid AI call with <code>addUsageEventDb</code> and a <code>feature</code> name, or it won&#39;t show up.</li>
+</ul>

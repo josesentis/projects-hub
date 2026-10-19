@@ -1,0 +1,425 @@
+<h1>Handoff: OOTD — AI Fashion Assistant landing page</h1>
+<h2>Overview</h2>
+<p>OOTD (&quot;Outfit of the Day&quot;) is an AI fashion assistant: it learns the user&#39;s wardrobe, references and taste, then suggests the perfect outfit for today&#39;s weather, calendar and mood. This package is the <strong>landing / marketing page</strong> — a dark, cinematic, scroll-driven editorial experience with a 3D hero, draggable carousels, a style-slider, an outfit lookbook, and a pricing section (Free is live, Premium is &quot;coming soon&quot;).</p>
+<h2>⚡️ Read this first — how to use this package</h2>
+<p>The files in this bundle (<code>OOTD.html</code>, <code>ootd.css</code>, <code>sections.jsx</code>, <code>app.jsx</code>) are a <strong>complete, working prototype</strong> built with React-via-Babel. Everything in it is final and intentional: layout, copy, colors, type, spacing, AND the interaction logic. <strong>Your job is to port it into the target codebase faithfully — not to redesign or reinterpret it.</strong></p>
+<p>Follow these rules so the result matches the prototype 1:1:</p>
+<ol>
+<li><strong>Keep the structure, copy, and CSS exactly.</strong> <code>ootd.css</code> is the source of truth — port it verbatim (as a global stylesheet, CSS modules, or Tailwind <code>@layer</code> — your call, but do not change values). Every measurement, token, gradient and breakpoint in it is deliberate.</li>
+<li><strong>Port the interaction logic almost verbatim.</strong> The hard parts — the hero 3D motion, the continuous-progress carousel, the inertia slider, the modal — are all plain <code>requestAnimationFrame</code> + pointer-event logic in <code>sections.jsx</code> / <code>app.jsx</code>. This logic is <strong>framework-agnostic</strong> and already correct. Lift it into your components mostly as-is (move per-frame state into <code>useRef</code>, run the rAF loop in <code>useEffect</code>, drive transforms imperatively). <strong>Do not rewrite these engines from scratch or swap them for a generic carousel library — you&#39;ll lose the exact feel the user approved.</strong> (Framer Motion / GSAP are fine <em>additions</em> for entrance reveals, but the carousel/slider/hero engines should stay as the rAF logic shown here.)</li>
+<li><strong>Componentize, don&#39;t reinvent.</strong> Split <code>sections.jsx</code> into one component per section (<code>Hero</code>, <code>Manifesto</code>, <code>Featured</code>, <code>Trends</code>, <code>Lookbook</code>, <code>Pricing</code>, <code>NotifyModal</code>, <code>Footer</code>) under e.g. <code>components/</code>. Convert to <code>.tsx</code> and add types. Keep the same DOM/class structure so <code>ootd.css</code> keeps working.</li>
+<li><strong>Drop ONLY this scaffolding:</strong> the in-browser Babel <code>&lt;script&gt;</code> tags, the <code>&lt;image-slot&gt;</code> web component (<code>image-slot.js</code>), and the Tweaks panel (<code>tweaks-panel.jsx</code> + <code>useTweaks</code> + the whole <code>&lt;TweaksPanel&gt;</code> block in <code>app.jsx</code>). These are prototype-only tools. Replace <code>&lt;image-slot&gt;</code>/<code>Slot</code> with real <code>&lt;img&gt;</code> / <code>next/image</code> (see Assets). For the Tweaks-driven options (theme, scroll-reveal variant, carousel style, accent), just hard-code the <strong>defaults</strong> listed in this doc — you don&#39;t need the panel.</li>
+</ol>
+<p>If you&#39;re unsure about any detail, the answer is &quot;match the prototype.&quot; Open <code>OOTD.html</code> in a browser to see/feel the target.</p>
+<h2>Fidelity</h2>
+<p><strong>High-fidelity.</strong> Colors, typography, spacing, layout and interactions are final and intentional. Recreate the UI faithfully. The one thing that is <em>placeholder</em> is imagery: every photo is an empty drop-slot. In production these become <code>&lt;img&gt;</code>/<code>next/image</code> elements fed real fashion photography (the user will generate vertical fashion photos; see Assets).</p>
+<hr>
+<h2>Global design system</h2>
+<h3>Color tokens (dark theme — default)</h3>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--bg</code></td>
+<td><code>#0a0a0a</code></td>
+<td>page background</td>
+</tr>
+<tr>
+<td><code>--bg-2</code></td>
+<td><code>#0d0d0c</code></td>
+<td>alt background</td>
+</tr>
+<tr>
+<td><code>--surface</code></td>
+<td><code>#141413</code></td>
+<td>cards, panels</td>
+</tr>
+<tr>
+<td><code>--surface-2</code></td>
+<td><code>#1b1b18</code></td>
+<td>raised surface</td>
+</tr>
+<tr>
+<td><code>--line</code></td>
+<td><code>rgba(244,244,240,.12)</code></td>
+<td>borders/hairlines</td>
+</tr>
+<tr>
+<td><code>--line-2</code></td>
+<td><code>rgba(244,244,240,.06)</code></td>
+<td>faint borders</td>
+</tr>
+<tr>
+<td><code>--text</code></td>
+<td><code>#f4f4f0</code></td>
+<td>primary text (warm off-white)</td>
+</tr>
+<tr>
+<td><code>--muted</code></td>
+<td><code>rgba(244,244,240,.56)</code></td>
+<td>secondary text</td>
+</tr>
+<tr>
+<td><code>--faint</code></td>
+<td><code>rgba(244,244,240,.34)</code></td>
+<td>mono labels, hints</td>
+</tr>
+<tr>
+<td><code>--accent</code></td>
+<td><code>#d6ff3f</code></td>
+<td>lime accent (CTAs, highlights)</td>
+</tr>
+<tr>
+<td><code>--accent-ink</code></td>
+<td><code>#0a0a0a</code></td>
+<td>text on accent surfaces</td>
+</tr>
+<tr>
+<td><code>--accent-soft</code></td>
+<td><code>color-mix(in srgb, var(--accent) 14%, transparent)</code></td>
+<td>glows</td>
+</tr>
+</tbody></table>
+<p>A <strong>light theme</strong> also exists (toggled in the prototype&#39;s Tweaks panel) overriding the same tokens — optional for production:
+<code>--bg:#f4f3ee; --surface:#fff; --surface-2:#e9e8e1; --text:#0f0f0d; --muted:rgba(15,15,13,.62); --faint:rgba(15,15,13,.42); --line:rgba(10,10,10,.14)</code>.</p>
+<h3>Typography</h3>
+<p>Three families, loaded from Google Fonts:</p>
+<ul>
+<li><strong>Instrument Serif</strong> (<code>--serif</code>) — editorial display headlines, used italic for emphasis. Weight 400 only; relies on optical size. This is the brand&#39;s &quot;voice&quot;.</li>
+<li><strong>Archivo</strong> (<code>--grotesk</code>) — UI, body, buttons, nav. Weights 400–900.</li>
+<li><strong>JetBrains Mono</strong> (<code>--mono</code>) — eyebrows, meta labels, tags, item codes. Uppercase, letter-spacing .14–.22em, ~10–11px.</li>
+</ul>
+<p>Key type patterns:</p>
+<ul>
+<li>Big serif headlines: <code>clamp(34px,4.4vw,72px)</code>, <code>line-height:.95–1.04</code>, <code>letter-spacing:-.015em</code>. Emphasis words wrapped in <code>&lt;em&gt;</code> are italic + lime.</li>
+<li>Hero H1: <code>clamp(46px,6.6vw,112px)</code>, serif, <code>line-height:.96</code>.</li>
+<li>Eyebrow label: mono 11px, uppercase, <code>.22em</code> tracking, preceded by a 6px lime dot with glow (<code>box-shadow:0 0 12px var(--accent)</code>).</li>
+</ul>
+<h3>Spacing / shape</h3>
+<ul>
+<li>Page max width: <code>1640px</code>; side gutter <code>clamp(20px,4vw,64px)</code> (<code>--gutter</code>).</li>
+<li>Section vertical padding: <code>clamp(90px,12vw,180px)</code>.</li>
+<li>Border radius: cards/frames <code>6px</code>; buttons/pills <code>100px</code>; modal <code>18px</code>; plan cards <code>14px</code>.</li>
+<li>Easing: <code>--ease: cubic-bezier(.22,.61,.36,1)</code>, <code>--ease-out: cubic-bezier(.16,1,.3,1)</code>.</li>
+<li>A subtle film-grain overlay (SVG fractal noise, opacity .045, <code>mix-blend-mode:overlay</code>) sits over the whole page (toggleable).</li>
+</ul>
+<h3>Buttons</h3>
+<ul>
+<li><code>.btn</code> base: inline-flex, gap 12px, font Archivo 600/14px, padding <code>15px 26px</code>, radius 100px. Contains a trailing arrow <code>→</code> that translates +4px on hover.</li>
+<li><code>.btn-primary</code>: bg lime, ink black; lifts <code>translateY(-2px)</code> on hover.</li>
+<li><code>.btn-ghost</code>: 1px <code>--line</code> border, faint bg; border brightens to <code>--text</code> on hover.</li>
+</ul>
+<hr>
+<h2>Sections (in scroll order)</h2>
+<h3>1. Nav (fixed)</h3>
+<ul>
+<li>Fixed top bar; transparent initially, gains <code>rgba(10,10,10,.72)</code> + <code>backdrop-filter:blur(18px)</code> + bottom hairline once <code>scrollY &gt; 40</code> (and shrinks padding).</li>
+<li>Left: brand — a 30px lime circle glyph (<code>◐</code>) + &quot;OOTD&quot; (Archivo 800, <code>-.04em</code>) with a small lime <code>™</code> superscript.</li>
+<li>Center links: How it works · Today&#39;s looks · Styles · Lookbook · Pricing (muted, brighten on hover). Hidden &lt; 900px.</li>
+<li>Right: &quot;Sign in&quot; (mono, muted) + primary button <strong>&quot;Start styling →&quot;</strong>.</li>
+</ul>
+<h3>2. Hero (full-viewport, <code>min-height:100svh</code>)</h3>
+<p>The signature moment: a <strong>3D floating-card gallery</strong>.</p>
+<ul>
+<li>Background <code>.hero-sweep</code>: layered radial gradients (a soft white top glow + a lime glow) over a vertical <code>#121211 → #070707</code> gradient. A reflective <code>.hero-floor</code> sits at the bottom (subtle white gradient, masked to fade up).</li>
+<li><code>.stage</code>: <code>perspective:1500px; perspective-origin:50% 42%</code>. Inside, <code>.rig</code> is <code>transform-style:preserve-3d</code>.</li>
+<li>7 <code>.card3d</code> elements positioned in 3D around center via <code>transform: translate(-50%,-50%) translateX(...) translateZ(...) rotateY(...) scale(...)</code>. The center card (<code>.center</code>) is largest (312×452) at <code>translateZ(60px)</code>; flanking cards recede in pairs (250×366 → 210×304 → 180×260) with increasing <code>-translateZ</code>, larger <code>rotateY</code> (±30→±38deg) and smaller scale. Each card has <code>box-shadow:0 30px 80px rgba(0,0,0,.6)</code>, a 1px inset white outline, radius 6px.</li>
+<li><strong>Intro choreography</strong> (runs once on load, a 3-phase state machine on the <code>.rig</code>):<ol>
+<li><strong><code>init</code></strong> — every card is stacked at dead centre (<code>translate(-50%, calc(-50% + var(--o)*3px)) translateZ(calc(var(--o)*-7px)) scale(.93)</code>, applied with <code>!important</code> to override the inline final transform) and <code>opacity:0</code>. <code>--o</code> = the card&#39;s index (0–6).</li>
+<li><strong><code>lit</code></strong> (≈260ms in) — cards fade in <strong>one by one</strong>, staggered <code>0.18s * --o</code>, so the viewer sees each look appear on the stack in turn.</li>
+<li><strong><code>spread</code></strong> (after the last reveal, ≈1.9s in) — the <code>.intro</code> override is dropped so each card animates to its inline final 3D transform (<code>transition: transform 1.2s var(--ease-out)</code>, tiny <code>0.045s * --o</code> stagger), fanning out into the coverflow. From here <code>useHeroMotion</code> (below) takes over with the live parallax.</li>
+</ol>
+<ul>
+<li>The <code>spread</code> state explicitly sets <code>opacity:1</code> and the final transforms so the resting state is correct even if the intro transition is interrupted. Honor <code>prefers-reduced-motion</code>: skip straight to <code>spread</code> (no stagger), which the prototype does by setting the phase to <code>spread</code> immediately.</li>
+</ul>
+</li>
+<li><strong>Motion</strong> (<code>useHeroMotion</code>): a rAF loop eases pointer position (lerp factor .06) and reads scroll progress <code>p = scrollY / heroHeight</code>. Applies to <code>.rig</code>: <code>translateY(${-p*70}px) rotateX(${my*-5 + p*4}deg) rotateY(${-12*p + mx*9}deg)</code>. The whole stage fades <code>opacity:1 → .15</code> as you scroll out. → mouse-follow parallax + scroll-driven tilt/lift. (Runs on the <code>.rig</code> group; the intro animates individual cards — they compose cleanly.)</li>
+<li>Foreground copy (bottom-left, <code>pointer-events</code> re-enabled): eyebrow &quot;● AI FASHION ASSISTANT&quot;; H1 <strong>&quot;What to wear, <em>solved</em> by morning.&quot;</strong> (serif, &quot;solved&quot; italic+lime); sub paragraph (max 440px, muted); CTA row: <strong>&quot;Start styling free →&quot;</strong> (primary) + &quot;See how it works&quot; (ghost).</li>
+<li>Bottom-right <code>.hero-side</code>: a big serif &quot;3&quot; + mono &quot;LOOKS READY FOR YOU TODAY&quot;, and a lime mono note &quot;Free to start · no card&quot;.</li>
+<li>Top-right: a vertical mono caption &quot;OOTD — 2026 · DAILY EDITION&quot; (<code>writing-mode:vertical-rl</code>), hidden &lt; 1100px.</li>
+<li>Bottom-left <code>.scrollcue</code>: a 54px hairline with a lime sweep animation + mono &quot;Scroll to explore&quot;.</li>
+</ul>
+<h3>3. Manifesto / How it works (<code>#how</code>)</h3>
+<ul>
+<li>Eyebrow &quot;● THE ASSISTANT&quot;; serif lead <code>clamp(30px,4.6vw,76px)</code>: &quot;A stylist that actually <em>knows you</em> — trained on your wardrobe, not a catalogue.&quot; (&quot;knows you&quot; italic+lime; second clause in <code>--faint</code>).</li>
+<li>Below: a 3-column grid (<code>.steps</code>) separated by 1px hairlines, top+bottom bordered. Each <code>.step</code> (min-height 230px) has a lime mono number (&quot;01 / WARDROBE&quot;), and at the bottom a serif <code>h3</code> + muted <code>p</code>. Background lightens to <code>--surface</code> on hover. Collapses to 1 column &lt; 860px.<ol>
+<li><strong>It learns your closet.</strong> — Snap your pieces once. OOTD remembers every item — fabric, cut, colour, how you wear it.</li>
+<li><strong>It reads your references.</strong> — Drop the looks you save and screenshot. It learns your taste — not a generic trend report.</li>
+<li><strong>It dresses you daily.</strong> — Weather, calendar, mood. One outfit assembled from what you already own, before coffee.</li>
+</ol>
+</li>
+</ul>
+<h3>4. Today&#39;s Looks — continuous-progress carousel (<code>#looks</code>)</h3>
+<ul>
+<li>Header: eyebrow &quot;● TODAY&#39;S LOOKS&quot;; serif title &quot;Your best fits, <em>one tap</em> away.&quot;; right side controls = two 54px circular buttons (← →, fill lime on hover) + a mono counter <code>01 / 05</code>.</li>
+<li><code>.car-stage</code> (height 600px, <code>perspective:1800px</code>). Five <code>.slide</code>s (380px wide, 520px tall frames) absolutely positioned in 3D.</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>THIS IS THE TRICKIEST COMPONENT — READ THIS WHOLE BLOCK BEFORE CODING IT.</strong> It is NOT a normal carousel and must NOT be built with a carousel library, CSS scroll-snap, or index-based slide swapping. If you build it from <code>activeIndex</code> state + CSS transitions, the smooth fractional motion is lost and it will feel &quot;jumpy&quot; — that&#39;s the #1 failure mode. Port the reference code below almost verbatim.</p>
+</blockquote>
+<h4>How it works (the model)</h4>
+<p>A <strong>single continuous fractional position</strong> <code>pos</code> ∈ <code>[0, n-1]</code> drives everything. <code>pos = 0</code> → card 0 centred; <code>pos = 1</code> → card 1 centred; <code>pos = 1.5</code> → halfway between cards 1 and 2, with <strong>both</strong> rendered in symmetric mid-perspective. There is <strong>no integer &quot;active index&quot;</strong> as the source of truth — the centred card is merely <code>Math.round(pos)</code>.</p>
+<p>Two numbers, both kept in a <strong>ref</strong> (never React state, to avoid per-frame re-renders):</p>
+<ul>
+<li><code>pos</code> — where the carousel <em>is</em> right now (what you render).</li>
+<li><code>target</code> — where it&#39;s <em>heading</em> (set by drag/buttons/scrub).</li>
+</ul>
+<p><strong>One <code>requestAnimationFrame</code> loop runs for the lifetime of the component.</strong> Every frame:</p>
+<ol>
+<li>If not dragging, ease <code>pos</code> toward <code>target</code>: <code>pos += (target - pos) * 0.12</code> (the lerp — THIS is the smoothing; snap <code>pos = target</code> when within <code>0.0008</code>).</li>
+<li>Call <code>apply()</code>, which positions <strong>every</strong> card from its continuous offset <code>off = idx - pos</code>.</li>
+</ol>
+<p><code>apply()</code> reads <code>pos</code> and, for each card, sets inline styles directly (no transitions):</p>
+<pre><code>off = idx - pos;  a = Math.abs(off);
+// coverflow (default):
+transform = `translateX(${off * W*0.62}px) translateZ(${-Math.min(a,3)*130}px) `
+          + `rotateY(${clamp(off*-22, -46, 46)}deg) scale(${Math.max(0.68, 1 - a*0.14)})`;
+opacity   = a &gt; 2.4 ? 0 : Math.max(0.32, 1 - a*0.4);
+zIndex    = 100 - Math.round(a*10);
+metaOpacity = Math.max(0, 1 - a*1.4);   // only the near-centre look shows its name/weather
+</code></pre>
+<p><code>W</code> = slide width (≈380). <code>step</code> = px per one card-step = <code>W*0.62</code> (≈235) for coverflow. Because <code>off</code> is continuous, the cards interpolate <strong>smoothly and fractionally</strong> as <code>pos</code> changes — that&#39;s the whole point.</p>
+<h4>Interactions (all just set <code>pos</code>/<code>target</code>)</h4>
+<ul>
+<li><strong>Drag the stage</strong> (pointer events on <code>.car-stage</code>): on down, store <code>startPos = pos</code>, <code>dragging = true</code>. On move, <code>pos = target = clamp(startPos - dx/step, 0, max)</code> — 1:1 finger tracking, fully fractional (you literally watch cards rotate through the in-between states). Track velocity. On up, <code>dragging = false</code> and apply flick inertia: <code>target = round(target - (vel/step)*4)</code>; the lerp then eases there. A <code>moved</code> flag (|dx|&gt;5px) suppresses the click so a drag doesn&#39;t also &quot;select&quot; a card.</li>
+<li><strong>← / → buttons:</strong> <code>target = round(target) ± 1</code> (clamped to <code>[0, max]</code>).</li>
+<li><strong>Click a card:</strong> <code>if (!moved) target = idx</code>.</li>
+<li><strong>Progress bar = scrubber:</strong> pointer-down/drag anywhere on <code>.progress</code> sets <code>pos = target = fraction * max</code> (continuous); on release <code>target = round(target)</code> to settle on a card. The fill is a continuous readout: <code>progressFill.style.transform = scaleX(pos / max)</code> updated every frame inside <code>apply()</code>.</li>
+<li><strong>Counter</strong> text = <code>round(pos)+1</code>, zero-padded; the centred card also toggles an <code>.active</code> class.</li>
+</ul>
+<h4>Reference implementation (port this closely)</h4>
+<pre><code class="language-jsx">function Featured({ n }) {                  // n = number of looks
+  const trackRef = useRef(null), fillRef = useRef(null), countRef = useRef(null), progRef = useRef(null);
+  const eng = useRef({ pos:0, target:0, max:n-1, step:235, dragging:false, startX:0, startPos:0, vel:0, lastX:0, moved:false });
+  const clamp = (v,a,b) =&gt; Math.max(a, Math.min(b, v));
+
+  const apply = () =&gt; {
+    const track = trackRef.current; if (!track) return;
+    const slides = track.querySelectorAll(&#39;.slide&#39;);
+    const W = slides[0]?.offsetWidth || 380;
+    const e = eng.current; e.step = W * 0.62;
+    slides.forEach((s, idx) =&gt; {
+      const off = idx - e.pos, a = Math.abs(off);
+      s.style.transform = `translateX(${off*W*0.62}px) translateZ(${-Math.min(a,3)*130}px) rotateY(${clamp(off*-22,-46,46)}deg) scale(${Math.max(0.68,1-a*0.14)})`;
+      s.style.opacity = a &gt; 2.4 ? 0 : Math.max(0.32, 1 - a*0.4);
+      s.style.zIndex = 100 - Math.round(a*10);
+      s.classList.toggle(&#39;active&#39;, Math.round(e.pos) === idx);
+      const meta = s.querySelector(&#39;.meta&#39;); if (meta) meta.style.opacity = Math.max(0, 1 - a*1.4);
+    });
+    if (fillRef.current) fillRef.current.style.transform = `scaleX(${clamp(e.pos/e.max,0,1)})`;
+    if (countRef.current) countRef.current.textContent = String(Math.round(e.pos)+1).padStart(2,&#39;0&#39;);
+  };
+
+  useEffect(() =&gt; {                          // ONE loop for the component&#39;s life
+    const e = eng.current; let raf;
+    const loop = () =&gt; {
+      if (!e.dragging) { e.pos += (e.target - e.pos) * 0.12; if (Math.abs(e.target - e.pos) &lt; 0.0008) e.pos = e.target; }
+      apply();
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    const onResize = () =&gt; apply(); window.addEventListener(&#39;resize&#39;, onResize);
+    return () =&gt; { cancelAnimationFrame(raf); window.removeEventListener(&#39;resize&#39;, onResize); };
+  }, []);
+
+  const setTarget = v =&gt; { eng.current.target = clamp(v, 0, eng.current.max); };
+  const go = d =&gt; setTarget(Math.round(eng.current.target) + d);
+
+  const onDown = ev =&gt; { const e = eng.current; e.dragging = true; e.startX = e.lastX = ev.clientX; e.startPos = e.pos; e.vel = 0; e.moved = false; ev.currentTarget.setPointerCapture?.(ev.pointerId); };
+  const onMove = ev =&gt; { const e = eng.current; if (!e.dragging) return; const dx = ev.clientX - e.startX; if (Math.abs(dx) &gt; 5) e.moved = true; e.vel = ev.clientX - e.lastX; e.lastX = ev.clientX; const v = clamp(e.startPos - dx/e.step, 0, e.max); e.pos = v; e.target = v; };
+  const onUp = () =&gt; { const e = eng.current; if (!e.dragging) return; e.dragging = false; setTarget(Math.round(e.target - (e.vel/e.step)*4)); };
+
+  const scrub = x =&gt; { const e = eng.current, r = progRef.current.getBoundingClientRect(); const f = clamp((x-r.left)/r.width, 0, 1); e.pos = f*e.max; e.target = e.pos; };
+  const pDown = ev =&gt; { ev.preventDefault(); ev.stopPropagation(); scrub(ev.clientX); const mv = e2 =&gt; scrub(e2.clientX); const up = () =&gt; { window.removeEventListener(&#39;pointermove&#39;, mv); window.removeEventListener(&#39;pointerup&#39;, up); setTarget(Math.round(eng.current.target)); }; window.addEventListener(&#39;pointermove&#39;, mv); window.addEventListener(&#39;pointerup&#39;, up); };
+  // JSX: &lt;div class=&quot;car-stage&quot; onPointerDown/Move/Up/Cancel/Leave={...}&gt;
+  //        &lt;div class=&quot;car-track&quot; ref={trackRef}&gt; {looks.map =&gt; &lt;div class=&quot;slide&quot; onClick={() =&gt; { if (!eng.current.moved) setTarget(idx); }}&gt;…&lt;/div&gt;} &lt;/div&gt;
+  //      &lt;/div&gt;
+  //      &lt;div class=&quot;slider-bar&quot;&gt;&lt;div class=&quot;progress&quot; ref={progRef} onPointerDown={pDown}&gt;&lt;div class=&quot;progress-fill&quot; ref={fillRef}/&gt;&lt;/div&gt;&lt;span class=&quot;slider-hint&quot;&gt;Drag to explore&lt;/span&gt;&lt;/div&gt;
+}
+</code></pre>
+<h4>Required CSS / DOM (or the math breaks)</h4>
+<ul>
+<li><code>.car-stage{ position:relative; height:600px; perspective:1800px; cursor:grab; touch-action:pan-y; }</code></li>
+<li><code>.car-track{ position:absolute; left:50%; top:0; width:0; height:100%; transform-style:preserve-3d; }</code> — width 0 + <code>left:50%</code> makes each absolutely-positioned slide&#39;s <code>translateX(0)</code> land dead-centre.</li>
+<li><code>.slide{ position:absolute; left:-190px; width:380px; }</code> (left = −W/2 to centre it on the track origin). The frame inside is <code>height:520px</code>.</li>
+<li><strong>No <code>transition</code> on <code>.slide</code>.</strong> The rAF lerp is the animation; a CSS transition fights it and causes lag/jank. (You may transition <code>box-shadow</code> only.)</li>
+<li><code>.progress{ position:relative; height:3px; background:var(--line); cursor:pointer; touch-action:none; }</code> with <code>.progress-fill{ position:absolute; inset:0; transform-origin:left; transform:scaleX(0); background:var(--accent); }</code>.</li>
+</ul>
+<h4>Common failure modes (the bugs to avoid)</h4>
+<ol>
+<li><strong>Built with <code>activeIndex</code> + CSS transitions</strong> → snaps between integer slides, no fractional in-between. ✗ Use continuous <code>pos</code> + rAF lerp.</li>
+<li><strong><code>setState</code> inside the loop</strong> → React re-renders 60×/s, stutters. ✗ Keep <code>pos</code>/<code>target</code> in a ref; mutate DOM directly in <code>apply()</code>.</li>
+<li><strong>No persistent rAF loop</strong> (e.g. only animating on events) → drag works but release/inertia/scrub don&#39;t ease. ✗ One loop runs always.</li>
+<li><strong>A CSS <code>transition</code> left on <code>.slide</code></strong> → double-animates, feels laggy. ✗ Remove it.</li>
+<li><strong>Track not <code>width:0; left:50%</code></strong> → cards offset wrong / first card not centred.</li>
+<li>Driving <code>pos</code> from scroll instead of pointer — this is a <strong>drag/scrub</strong> control, independent of page scroll.</li>
+</ol>
+<ul>
+<li>Slide data (name / weather tag): The Commute / MON·14°DRIZZLE · Studio Day / TUE·19°CLEAR · Gallery Opening / WED·16°CLOUD · Dinner, 8pm / THU·12°CRISP · Slow Sunday / SUN·22°SUN.</li>
+<li>Two other visual styles exist in the prototype (<code>flat</code>, <code>spotlight</code>) as Tweaks; <strong>ship <code>coverflow</code> (above) as default</strong> — the others are optional.</li>
+</ul>
+<h3>5. Tell it a vibe — style slider (<code>#styles</code>)</h3>
+<p>A horizontal, <strong>inertia-based draggable slider with a scrubable progress bar</strong> (this is the &quot;premium scroll animation, inside a slider&quot; the user asked for).</p>
+<ul>
+<li>Header: eyebrow &quot;● STYLE UNIVERSES&quot;; serif title &quot;Tell it a <em>vibe</em>.&quot;; right paragraph &quot;Steer the assistant toward an aesthetic and it re-styles your wardrobe to match.&quot;</li>
+<li><code>.slider-vp</code> is <code>overflow:hidden</code>, full-bleed (cards extend to the right edge); <code>.slider-track</code> is a flex row (<code>gap:16px</code>, <code>padding-inline:var(--gutter)</code>) of equal vertical cards <code>.trend</code> (<code>width:clamp(260px,23vw,360px)</code>, <code>aspect-ratio:3/4.3</code>).</li>
+<li>Each card: an absolutely-positioned <code>.timg</code> (image, scaled 1.14 and parallaxed, <strong><code>object-position: top</code></strong> so portraits show the face/upper body — a &quot;plano americano&quot; framing — not a centre crop), a bottom gradient overlay (<code>linear-gradient(180deg, rgba(10,10,10,.05) 35%, rgba(10,10,10,.82))</code>), and a <code>.tlabel</code> with lime mono number + serif name. (In the prototype the <code>Slot</code>/<code>&lt;image-slot&gt;</code> for these cards is passed <code>position=&quot;50% 0%&quot;</code>; in production set <code>object-position:50% 0%</code> / <code>top</code> on these <code>&lt;img&gt;</code>s.)</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>SAME RULES AS THE CAROUSEL — this is a drag/scrub slider driven by ONE persistent rAF lerp loop, NOT CSS scroll, scroll-snap, or a slider library.</strong> Port the exact code below.</p>
+</blockquote>
+<h4>How it works (the model)</h4>
+<p>The track is translated horizontally by a single number <code>current</code> (a negative px offset, <code>0</code> = start, <code>-max</code> = fully scrolled, where <code>max = trackScrollWidth − viewportWidth</code>). Two numbers live in a <strong>ref</strong>:</p>
+<ul>
+<li><code>current</code> — where the track <em>is</em> (what you render each frame).</li>
+<li><code>target</code> — where it&#39;s heading (set by drag / wheel / scrub).</li>
+</ul>
+<p><strong>One <code>requestAnimationFrame</code> loop runs for the component&#39;s whole life.</strong> Every frame:</p>
+<ol>
+<li><code>current += (target - current) * 0.085</code> (the lerp — buttery easing; snap when within <code>0.08</code>).</li>
+<li><code>track.style.transform = translate3d(${current}px,0,0)</code>.</li>
+<li>Update the progress fill: <code>scaleX(-current / max)</code> → continuous 0→1.</li>
+<li>Parallax each image: shift it by its distance from viewport centre (subtle depth).</li>
+</ol>
+<h4>Exact implementation (port verbatim)</h4>
+<pre><code class="language-jsx">function Trends({ items }) {                 // items = the 9 vibes
+  const vpRef = useRef(null), trackRef = useRef(null), fillRef = useRef(null), progRef = useRef(null);
+  const st = useRef({ target:0, current:0, max:1, dragging:false, startX:0, startTarget:0, vel:0, lastX:0 });
+  const clamp = v =&gt; Math.max(-st.current.max, Math.min(0, v));   // current/target ∈ [-max, 0]
+
+  useEffect(() =&gt; {
+    const vp = vpRef.current, track = trackRef.current; if (!vp || !track) return;
+    const s = st.current; let raf;
+    const measure = () =&gt; { s.max = Math.max(1, track.scrollWidth - vp.clientWidth); s.target = clamp(s.target); };
+    measure();
+    const ro = new ResizeObserver(measure); ro.observe(track); ro.observe(vp);   // recompute max on layout/img load
+    const loop = () =&gt; {
+      s.current += (s.target - s.current) * 0.085;
+      if (Math.abs(s.target - s.current) &lt; 0.08) s.current = s.target;
+      track.style.transform = `translate3d(${s.current}px,0,0)`;
+      const p = s.max &gt; 0 ? -s.current / s.max : 0;
+      if (fillRef.current) fillRef.current.style.transform = `scaleX(${Math.max(0, Math.min(1, p))})`;
+      const vr = vp.getBoundingClientRect();
+      track.querySelectorAll(&#39;.timg&#39;).forEach(img =&gt; {                            // subtle parallax
+        const r = img.getBoundingClientRect();
+        const rel = (r.left + r.width/2 - vr.left) / vr.width - 0.5;              // −.5 … .5
+        img.style.transform = `translateX(${rel * -26}px) scale(1.14)`;
+      });
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () =&gt; { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, []);
+
+  // DRAG (pointer events on .slider-vp): track follows the finger 1:1, release adds inertia
+  const onDown = e =&gt; { const s = st.current; s.dragging = true; s.startX = s.lastX = e.clientX; s.startTarget = s.target; s.vel = 0; e.currentTarget.setPointerCapture?.(e.pointerId); };
+  const onMove = e =&gt; { const s = st.current; if (!s.dragging) return; s.target = clamp(s.startTarget + (e.clientX - s.startX)); s.vel = e.clientX - s.lastX; s.lastX = e.clientX; };
+  const onUp   = () =&gt; { const s = st.current; if (!s.dragging) return; s.dragging = false; s.target = clamp(s.target + s.vel * 14); };
+  // WHEEL (horizontal / shift+wheel)
+  const onWheel = e =&gt; { const s = st.current; const d = Math.abs(e.deltaX) &gt; Math.abs(e.deltaY) ? e.deltaX : e.deltaY; if (Math.abs(e.deltaX) &gt; 4 || e.shiftKey) { e.preventDefault(); s.target = clamp(s.target - d); } };
+  // SCRUB the progress bar (pointer-down/drag anywhere on it)
+  const scrub = x =&gt; { const s = st.current, r = progRef.current.getBoundingClientRect(); const f = Math.max(0, Math.min(1, (x - r.left)/r.width)); s.target = -f * s.max; };
+  const pDown = e =&gt; { e.preventDefault(); scrub(e.clientX); const mv = ev =&gt; scrub(ev.clientX); const up = () =&gt; { window.removeEventListener(&#39;pointermove&#39;, mv); window.removeEventListener(&#39;pointerup&#39;, up); }; window.addEventListener(&#39;pointermove&#39;, mv); window.addEventListener(&#39;pointerup&#39;, up); };
+
+  // JSX:
+  // &lt;div class=&quot;slider-vp&quot; ref={vpRef} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onWheel={onWheel}&gt;
+  //   &lt;div class=&quot;slider-track&quot; ref={trackRef}&gt;
+  //     {items.map(t =&gt; &lt;div class=&quot;trend&quot;&gt;&lt;div class=&quot;timg&quot;&gt;&lt;img object-position:top .../&gt;&lt;/div&gt;&lt;div class=&quot;tlabel&quot;&gt;…&lt;/div&gt;&lt;/div&gt;)}
+  //   &lt;/div&gt;
+  // &lt;/div&gt;
+  // &lt;div class=&quot;slider-bar&quot;&gt;&lt;div class=&quot;progress&quot; ref={progRef} onPointerDown={pDown}&gt;&lt;div class=&quot;progress-fill&quot; ref={fillRef}/&gt;&lt;/div&gt;&lt;span&gt;Drag to explore&lt;/span&gt;&lt;/div&gt;
+}
+</code></pre>
+<h4>Required CSS / DOM (or it breaks)</h4>
+<ul>
+<li><code>.slider-vp{ overflow:hidden; cursor:grab; touch-action:pan-y; user-select:none; }</code> — the <strong>viewport</strong> (clips the row).</li>
+<li><code>.slider-track{ display:flex; gap:16px; padding-inline:var(--gutter); will-change:transform; }</code> — the moving row; <strong>no <code>transition</code> on it</strong> (the rAF lerp is the animation).</li>
+<li><code>.trend{ flex:none; width:clamp(260px,23vw,360px); aspect-ratio:3/4.3; position:relative; overflow:hidden; }</code> — <code>flex:none</code> so cards keep width and the row overflows (giving a real <code>scrollWidth</code>).</li>
+<li><code>.timg img{ width:100%; height:100%; object-fit:cover; object-position:50% 0%; }</code> (top-anchored).</li>
+<li><code>.progress{ position:relative; height:3px; background:var(--line); cursor:pointer; touch-action:none; }</code> + <code>.progress-fill{ position:absolute; inset:0; transform-origin:left; transform:scaleX(0); background:var(--accent); }</code>.</li>
+</ul>
+<h4>Common failure modes (the bugs to avoid)</h4>
+<ol>
+<li><strong>No persistent rAF loop</strong> (animating only inside pointermove) → drag drags but <strong>release inertia and scrub don&#39;t ease</strong> — feels dead/stuttery. ✗ One loop runs always; pointer handlers only set <code>target</code>.</li>
+<li><strong><code>setState</code> per frame / animating via React state</strong> → 60 re-renders/s, jank. ✗ Keep <code>current</code>/<code>target</code> in a ref; mutate <code>track.style.transform</code> directly.</li>
+<li><strong>A CSS <code>transition: transform</code> on <code>.slider-track</code></strong> → fights the lerp, lag/rubber-banding. ✗ Remove it.</li>
+<li><strong><code>max</code> measured once before images load / not recomputed</strong> → wrong range, can&#39;t reach the end, or fill never hits 1. ✗ Use a <code>ResizeObserver</code> on track + viewport (as above).</li>
+<li><strong><code>.trend</code> without <code>flex:none</code></strong> → cards shrink to fit, row never overflows, <code>scrollWidth==clientWidth</code>, <code>max=1</code>, nothing scrolls. ✗ <code>flex:none</code> + fixed width.</li>
+<li><strong>Clamp sign flipped</strong> — <code>current</code>/<code>target</code> are <strong>negative</strong> (<code>[-max, 0]</code>); <code>0</code> = start. Don&#39;t clamp to <code>[0, max]</code>.</li>
+<li>Driving it from page scroll — it&#39;s an independent <strong>drag/scrub</strong>, not scroll-linked.</li>
+</ol>
+<ul>
+<li>9 styles (number / name): 01 Quiet Luxury · 02 Clean Minimal · 03 Streetcore · 04 Sporty · 05 Office · 06 Wedding Guest · 07 Old Money · 08 Y2K Revival · 09 Gorpcore. (No counts, no links — repository of looks doesn&#39;t exist yet.)</li>
+</ul>
+<h3>6. The Lookbook (<code>#lookbook</code>)</h3>
+<ul>
+<li>Eyebrow &quot;● THE LOOKBOOK&quot;; serif title &quot;Every outfit, <em>archived</em>.&quot;</li>
+<li><code>.bento</code>: a <strong>uniform grid</strong> — <code>grid-template-columns:repeat(4,1fr)</code>, gap 14px; each <code>.cell</code> is <code>aspect-ratio:3/4</code> (vertical), radius 6px, 1px inset outline. → 4 columns desktop, 3 &lt; 1000px, 2 &lt; 680px. (Built uniform on purpose because real outfit photos are vertical and should be consistent.)</li>
+<li>8 cells, each an image + a bottom <code>.clabel</code> (gradient) with serif italic &quot;Look 0N&quot; + lime mono item code &quot;W—00N&quot;. Looks 01–08, mids: full look / tailoring / layered / evening / editorial / weekend / minimal / monochrome.</li>
+</ul>
+<h3>7. Pricing (<code>#pricing</code>)</h3>
+<ul>
+<li>Centered header: eyebrow &quot;● PRICING&quot;; serif title &quot;Start <em>free</em>, today.&quot; (note: forced two-line break so it never overlaps the sub during font swap); sub &quot;OOTD is live and free to use right now. Premium is on the way — be first to know.&quot; A radial lime glow (<code>.cta-glow</code>) sits behind.</li>
+<li>Two plan cards (<code>.plans</code>, 2-col grid → 1-col &lt; 760px), radius 14px, padding <code>clamp(26px,2.6vw,40px)</code>:<ul>
+<li><strong>Free</strong> (<code>.plan-free</code>, subtle dark gradient): name &quot;Free&quot; (serif <code>clamp(28px,2.6vw,40px)</code>) + badge <strong>&quot;● Available now&quot;</strong> (lime, the dot pulses). Tagline &quot;Your daily stylist, on the house.&quot; Price <strong>€0</strong> / forever. Features (each prefixed with a lime mono <code>↳</code>): 1 outfit suggestion every morning · Up to 40 wardrobe items · Weather + calendar aware · 3 style universes. CTA: <strong>&quot;Get started free →&quot;</strong> (primary, full-width).</li>
+<li><strong>Premium</strong> (<code>.plan-soon</code>, lime-tinted bg, lime border): name &quot;Premium&quot; + badge &quot;● Coming soon&quot; (muted). Tagline &quot;The full atelier. Coming soon.&quot; Price <strong>€–</strong> / &quot;pricing TBA&quot; (price intentionally unknown). Features: Unlimited daily looks &amp; re-styles · Unlimited wardrobe + references · All style universes + custom vibes · Early access to new drops. CTA: <strong>&quot;Notify me →&quot;</strong> (ghost) → opens the Notify modal.</li>
+</ul>
+</li>
+</ul>
+<h3>8. Notify modal</h3>
+<ul>
+<li>Opens from Premium&#39;s &quot;Notify me&quot;. Scrim: <code>rgba(5,5,5,.62)</code> + <code>backdrop-filter:blur(8px)</code>, fades in; modal scales/slides in (<code>.45s var(--ease-out)</code>). Closeable via ✕ button, scrim click, or Escape.</li>
+<li>Content: eyebrow &quot;● PREMIUM · COMING SOON&quot;; serif title &quot;Be first to get <em>OOTD Premium</em>.&quot;; sub; an email input in a pill field; a privacy checkbox (&quot;I agree to the Privacy Policy and to receive a launch email.&quot; — custom lime checkbox); a full-width primary submit <strong>&quot;Notify me →&quot;</strong> that is <strong>disabled until</strong> the email matches <code>/\S+@\S+\.\S+/</code> AND the checkbox is ticked.</li>
+<li>On submit: swaps to a success state — a 64px lime circle with ✓, &quot;You&#39;re on the list.&quot;, &quot;We&#39;ll email <email> the moment Premium opens.&quot;, and a &quot;Done&quot; button. State resets when reopened.</li>
+</ul>
+<h3>9. Footer</h3>
+<ul>
+<li>Two-column top (<code>1.5fr 2fr</code>, stacks &lt; 860px). Left: big serif brand &quot;Outfit <em>of the Day</em>&quot; (<code>em</code> = italic lime), a muted blurb, and a primary &quot;Start styling free →&quot; button. Right: three link columns:<ul>
+<li><strong>Explore</strong>: How it works · Today&#39;s looks · Styles · Lookbook</li>
+<li><strong>Company</strong>: About · Pricing · Privacy · Terms</li>
+<li><strong>Follow</strong>: Instagram ↗ · TikTok ↗ (open in new tab)</li>
+</ul>
+</li>
+<li>Bottom bar (top hairline): left mono &quot;Outfit of the Day © 2026 · Made with ♥ (lime) in Barcelona by josesentis.com&quot; (the credit link underlined, → lime on hover); right legal mono links: Privacy · Terms · Cookies · Cookie preferences.</li>
+</ul>
+<hr>
+<h2>Interactions &amp; behavior summary</h2>
+<ul>
+<li><strong>Scroll reveals</strong>: elements with <code>.reveal</code> start hidden (opacity 0 + a transform) and animate in when they enter the viewport. Four variants exist (a Tweak): <code>fade</code> / <code>up</code> (translateY 46px) / <code>scale</code> (.92) / <code>blur</code> (blur 14px). <strong>Default = <code>up</code>.</strong> Transition <code>.9s var(--ease-out)</code>, staggered via <code>data-delay</code> (.08s steps). In production, prefer IntersectionObserver or Framer Motion <code>whileInView</code>. (The prototype uses a scroll-position rАF check because IO is unreliable in the preview iframe — not needed in a real app.)</li>
+<li><strong>Hero</strong>: pointer-parallax + scroll tilt/fade (see §2).</li>
+<li><strong>Carousel</strong>: click / arrows / drag (see §4).</li>
+<li><strong>Style slider</strong>: drag + inertia + progress scrub + wheel + image parallax (see §5).</li>
+<li><strong>Modal</strong>: validation-gated submit, success state, Esc/scrim/✕ close (see §8).</li>
+<li><strong>Reduced motion</strong>: <code>@media (prefers-reduced-motion:reduce)</code> collapses reveal transition durations — honor this in production.</li>
+</ul>
+<h2>State management</h2>
+<ul>
+<li><code>activeIndex</code> for the Today&#39;s Looks carousel.</li>
+<li>Style-slider engine state (<code>target</code>/<code>current</code>/<code>max</code>/drag velocity) — keep in a ref, not React state, and drive via rAF (don&#39;t setState per frame).</li>
+<li>Modal: <code>open</code>, <code>email</code>, <code>agree</code>, <code>sent</code>.</li>
+<li>(Prototype-only Tweaks: theme dark/light, scroll-reveal variant, carousel style, accent color, grain on/off. These are exploration knobs — in production pick the defaults stated above; you don&#39;t need a Tweaks panel.)</li>
+</ul>
+<h2>Design tokens</h2>
+<p>See the &quot;Global design system&quot; tables above. All live in <code>:root</code> in <code>ootd.css</code> — lift them into your app&#39;s CSS variables / theme config / Tailwind config as appropriate.</p>
+<h2>Assets</h2>
+<ul>
+<li><strong>No real images yet</strong> — every image position is an empty drop-slot in the prototype. In production use real photography: <strong>vertical (3:4) editorial fashion photos on dark/neutral backgrounds</strong>, one consistent color grade across the set. Needed: ~7 hero looks, 5 &quot;today&#39;s looks&quot;, 6 style-universe portraits, 8 lookbook outfits. (The user is generating these with an AI image tool; prompts were provided separately.)</li>
+<li><strong>Fonts</strong>: Instrument Serif, Archivo, JetBrains Mono (Google Fonts). Load with <code>font-display:swap</code> and ideally preload the serif to avoid the headline reflow noted in Pricing.</li>
+<li><strong>Icons</strong>: none required — arrows are literal <code>→ ← ↗ ↳ ✕ ✓</code> glyphs; the brand glyph is <code>◐</code>. Replace with your icon system if preferred.</li>
+<li>No third-party/brand assets are used; everything is original.</li>
+</ul>
+<h2>Files in this bundle (design references)</h2>
+<ul>
+<li><code>OOTD.html</code> — entry; load order + font links.</li>
+<li><code>ootd.css</code> — the full design system + all section styles (source of truth for tokens/measurements).</li>
+<li><code>sections.jsx</code> — all section components (Nav, Hero, Manifesto, Featured carousel, Trends slider, Lookbook, Pricing, NotifyModal, Footer) + the <code>Slot</code>/<code>Ph</code> placeholder helpers.</li>
+<li><code>app.jsx</code> — root, the motion hooks (<code>useReveal</code>, <code>useHeroMotion</code>), accent/theme application, and the prototype Tweaks panel wiring.</li>
+<li><code>image-slot.js</code>, <code>tweaks-panel.jsx</code> — <strong>prototype scaffolding only; do not port.</strong> <code>&lt;image-slot&gt;</code> is a drag-to-fill placeholder; replace with real <code>&lt;img&gt;</code>/<code>next/image</code>. The Tweaks panel is a design-exploration tool.</li>
+</ul>
+<h2>Recommended production stack</h2>
+<p>A Next.js (App Router) + TypeScript app: section components under <code>components/</code>, tokens in CSS variables or a Tailwind theme, <strong>Lenis</strong> for smooth scroll, <strong>Framer Motion</strong> (reveals, modal) and a small rAF lerp util or GSAP for the hero 3D + style-slider. Keep the exact tokens, copy, and layout from this README.</p>

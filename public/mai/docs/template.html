@@ -1,0 +1,248 @@
+<h1>TEMPLATE.md — Guia de sincronització template ↔ app</h1>
+<p>Aquest document explica la relació entre el <strong>template</strong> i l&#39;<strong>app</strong> que n&#39;ha derivat, i defineix el procés per sincronitzar millores genèriques de l&#39;app cap al template.</p>
+<hr>
+<h2>Contexte</h2>
+<p>El template (<code>app-template</code>) és un esquelet genèric per construir web apps amb Next.js, Supabase, autenticació completa, i un sistema de referències (imatges + Pinterest). Conté tot el que és reutilitzable entre apps però <strong>res que sigui específic d&#39;un producte concret</strong>.</p>
+<p>L&#39;app real ha evolucionat des d&#39;aquest template, afegint funcionalitats pròpies del producte. Cada cert temps, convé identificar quines d&#39;aquestes millores son prou genèriques per tornar al template.</p>
+<hr>
+<h2>Anatomia del template: el que hi ha</h2>
+<h3>Infraestructura</h3>
+<ul>
+<li><strong>Auth completa</strong> — email/password, OAuth (Google + Apple), verificació d&#39;email, reset de password, sessions JWT amb renovació sliding-window</li>
+<li><strong>Base de dades</strong> — Drizzle ORM + PostgreSQL (Supabase). Schema: <code>users</code>, <code>images</code>, <code>imageFolders</code>, <code>pinterestBoards</code>, <code>pinterestPins</code>, <code>leads</code>, <code>usageTokens</code>, <code>usageEvents</code>, <code>pushSubscriptions</code></li>
+<li><strong>Emmagatzematge</strong> — Supabase Storage (bucket <code>uploads</code>)</li>
+<li><strong>Email</strong> — Resend per emails transaccionals (verificació, reset de password)</li>
+<li><strong>Deploy</strong> — Netlify + <code>@netlify/plugin-nextjs</code></li>
+</ul>
+<h3>Dashboard shell</h3>
+<ul>
+<li><strong>Sidebar</strong> col·lapsable (desktop) amb navegació i settings</li>
+<li><strong>TopBar</strong> per a mòbil</li>
+<li><strong>MobileNav</strong> — navegació inferior per a mòbil</li>
+<li><strong>SettingsPanel</strong> — tauler lateral de configuració</li>
+</ul>
+<h3>Pàgines</h3>
+<table>
+<thead>
+<tr>
+<th>Ruta</th>
+<th>Descripció</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/</code></td>
+<td>Landing page (Nav + seccions + Pricing + Footer)</td>
+</tr>
+<tr>
+<td><code>/app</code></td>
+<td>Dashboard — calendari + onboarding</td>
+</tr>
+<tr>
+<td><code>/calendar</code></td>
+<td>Calendari mensual</td>
+</tr>
+<tr>
+<td><code>/references</code></td>
+<td>Gestió d&#39;imatges i Pinterest (veure sota)</td>
+</tr>
+<tr>
+<td><code>/references/[folderId]</code></td>
+<td>Vista d&#39;una carpeta</td>
+</tr>
+<tr>
+<td><code>/profile</code></td>
+<td>Perfil d&#39;usuari</td>
+</tr>
+<tr>
+<td><code>/settings</code></td>
+<td>Ajustos</td>
+</tr>
+<tr>
+<td><code>/admin/users</code></td>
+<td>Panell admin — llistat d&#39;usuaris</td>
+</tr>
+<tr>
+<td><code>/admin/analytics</code></td>
+<td>Panell admin — ús i costos d&#39;IA</td>
+</tr>
+<tr>
+<td><code>/login</code>, <code>/register</code>, etc.</td>
+<td>Auth pages</td>
+</tr>
+<tr>
+<td><code>/legal/*</code></td>
+<td>Cookies, Privacy, Terms</td>
+</tr>
+<tr>
+<td><code>/about</code></td>
+<td>Pàgina about</td>
+</tr>
+</tbody></table>
+<h3>Sistema de References</h3>
+<p>La funcionalitat core del template és la gestió de referències visuals:</p>
+<ul>
+<li><strong>Upload d&#39;imatges</strong> — seleccionador de fitxers, camera (mòbil)</li>
+<li><strong>Import de Pinterest</strong> — scraping de boards públics → crea carpeta + importa imatges</li>
+<li><strong>Organització</strong> — carpetes, drag &amp; drop per reordenar, moure entre carpetes</li>
+<li><strong>Favorites</strong> — toggle per marcar imatges favorites</li>
+<li><strong>AI Analysis</strong> — analitza imatges amb Claude (<code>POST /api/analyze/[id]</code>)</li>
+<li><strong>Visualització</strong> — masonry grid, modal de detall</li>
+</ul>
+<h3>Components genèrics</h3>
+<p><code>Skeleton</code>, <code>EmptyState</code>, <code>ErrorModal</code>, <code>ImageCard</code>, <code>ImageDetailModal</code>, <code>AvatarCropModal</code>, <code>CookieBanner</code>, <code>I18nProvider</code>, <code>OnboardingController</code>, <code>OnboardingWizard</code>, <code>OnboardingWidget</code>, <code>WaitlistButton/Modal</code>, <code>AdBanner/Detector</code>, <code>PwaInstallBanner</code>, <code>ImpersonationBanner</code>, <code>NotificationSettings</code>, <code>AnalyzingOverlay</code></p>
+<h3>Lib genèrica</h3>
+<p><code>lib/ai.ts</code> (Claude wrapper), <code>lib/auth.ts</code>, <code>lib/auth-oauth.ts</code>, <code>lib/email.ts</code>, <code>lib/push.ts</code>, <code>lib/storage.ts</code>, <code>lib/compress-image.ts</code>, <code>lib/image-resize.ts</code>, <code>lib/fetcher.ts</code>, <code>lib/timezones.ts</code>, <code>lib/usage-cost.ts</code>, <code>lib/cron-helpers.ts</code>, <code>lib/i18n/</code></p>
+<h3>Funcionalitats opcionals (desactivades per defecte)</h3>
+<ul>
+<li><strong>Notificacions push</strong> (VAPID, generat automàticament)</li>
+<li><strong>Cron diari</strong> (<code>POST /api/cron/daily</code>)</li>
+<li><strong>Impersonació</strong> (admin pot entrar com a un altre usuari)</li>
+<li><strong>Waitlist</strong> (emails de leads)</li>
+<li><strong>AdSense</strong> / <strong>AdBlock detector</strong></li>
+</ul>
+<h3>i18n</h3>
+<p>Tres idiomes: <code>en</code>, <code>es</code>, <code>ca</code>. Fitxer: <code>lib/i18n/translations.ts</code>.</p>
+<hr>
+<h2>Regla per decidir si algo va al template</h2>
+<p>Fes-te aquestes preguntes:</p>
+<blockquote>
+<p><strong>&quot;Funcionaria exactament igual en una app completament diferent (e.g. una app de receptes, una app de gestió de tasques, una app de portfolio)?&quot;</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Sí → va al template</th>
+<th>No → queda a l&#39;app</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sistema de carpetes d&#39;imatges</td>
+<td>Funcionalitat específica del producte</td>
+</tr>
+<tr>
+<td>Nou mètode d&#39;autenticació</td>
+<td>Lògica de negoci de l&#39;app</td>
+</tr>
+<tr>
+<td>Millora de la UI del sidebar</td>
+<td>Pàgines específiques de l&#39;app</td>
+</tr>
+<tr>
+<td>Nou camp genèric al perfil d&#39;usuari</td>
+<td>Taules de DB específiques del producte</td>
+</tr>
+<tr>
+<td>Millora al sistema de notificacions push</td>
+<td>Integracions externes específiques</td>
+</tr>
+<tr>
+<td>Nou component UI genèric (toast, modal...)</td>
+<td>Components que depenen de dades del producte</td>
+</tr>
+<tr>
+<td>Millora de rendiment / accessibilitat</td>
+<td></td>
+</tr>
+<tr>
+<td>Nova secció de landing page genèrica</td>
+<td></td>
+</tr>
+<tr>
+<td>Millora al sistema d&#39;anàlisi d&#39;imatges</td>
+<td></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Procés de sincronització app → template</h2>
+<p>Quan l&#39;app ha implementat alguna cosa que sembla prou genèrica per al template, segueix aquest procés:</p>
+<h3>Pas 1: Identificar el que cal sincronitzar</h3>
+<p>A l&#39;app, demana a Claude:</p>
+<pre><code>Revisa els canvis des de [data/commit] i diga&#39;m quines implementacions son prou 
+genèriques per actualitzar el template. Classifica-les com:
+- TEMPLATE: va al template sense modificació
+- TEMPLATE-ADAPT: va al template però adaptant-lo per fer-lo genèric
+- APP-ONLY: específic d&#39;aquesta app, no va al template
+</code></pre>
+<h3>Pas 2: Documentar cada millora</h3>
+<p>Per cada cosa a sincronitzar, prepara una fitxa:</p>
+<pre><code class="language-markdown">## [Nom de la funcionalitat]
+
+**Tipus:** TEMPLATE / TEMPLATE-ADAPT
+**Fitxers afectats a l&#39;app:** 
+- `path/al/fitxer.ts` (descripció del canvi)
+
+**Descripció:**
+Explica QUÈ fa i PER QUÈ és genèric.
+
+**Canvis necessaris per adaptar al template:**
+(Si cal treure referències específiques de l&#39;app, adaptar noms, etc.)
+
+**Dependències noves:** (packages, env vars, etc.)
+</code></pre>
+<h3>Pas 3: Venir al template</h3>
+<p>Obre una sessió al projecte <code>app-template</code> i explica:</p>
+<pre><code>Vull sincronitzar les seguents funcionalitats de l&#39;app cap al template:
+
+[Pega les fitxes del pas 2]
+
+Implementa-les seguint el mateix estil i convencions del template.
+</code></pre>
+<p>Claude del template tindrà en compte:</p>
+<ul>
+<li>Les convencions de codi del template (sense comentaris innecessaris, sense mocks)</li>
+<li>Que els tests siguin obligatoris per cada canvi</li>
+<li>La compatibilitat amb les 3 llengues d&#39;i18n</li>
+<li>L&#39;accessibilitat (escape key, focus rings, aria labels)</li>
+</ul>
+<hr>
+<h2>Inventari complet: template vs app-específic</h2>
+<h3>Pertany al TEMPLATE (genèric)</h3>
+<ul>
+<li>Auth (email + OAuth + reset + verificació)</li>
+<li>Dashboard shell + navegació</li>
+<li>References (imatges + Pinterest + carpetes + AI analysis)</li>
+<li>Perfil d&#39;usuari (nom, avatar, timezone, idioma, notificacions)</li>
+<li>Settings</li>
+<li>Admin (users, analytics, impersonació, run-migrations)</li>
+<li>Landing shell (Nav, Pricing, Footer, Manifesto, seccions genèriques)</li>
+<li>i18n (en/es/ca)</li>
+<li>Notificacions push</li>
+<li>Cron diari</li>
+<li>Waitlist / leads</li>
+<li>AdSense + AdBlock</li>
+<li>PWA (install banner, update banner)</li>
+<li>Legal (cookies, privacy, terms)</li>
+<li>About page</li>
+<li>Onboarding (3 passos genèrics)</li>
+<li>Cookie consent</li>
+<li>Emmagatzematge Supabase</li>
+<li>Usage tracking (tokens Anthropic)</li>
+<li>Tots els components UI genèrics</li>
+</ul>
+<h3>NO pertany al template (app-específic)</h3>
+<p><em>(Exemples del que quedaria a l&#39;app original &quot;Outfit of the Day&quot;)</em></p>
+<ul>
+<li>Wardrobe (gestió de roba)</li>
+<li>Outfit generation (generar outfits amb Claude)</li>
+<li>Worn outfits (registre de outfits portats)</li>
+<li>Saved outfits</li>
+<li>Follows / sistema social</li>
+<li>Pinterest per a referencies de moda (però l&#39;import genèric de Pinterest SÍ)</li>
+<li>Collages d&#39;outfits</li>
+<li>Background removal</li>
+<li>Clothing styles / categories</li>
+<li>Panells d&#39;admin específics (placeholders de roba, collages)</li>
+<li>Qualsevol lògica de negoci del producte</li>
+</ul>
+<hr>
+<h2>Notes tècniques per al Claude del template</h2>
+<p>Quan implementis alguna cosa al template, tingues en compte:</p>
+<ol>
+<li><strong>Tests obligatoris</strong> — cada nou fitxer a <code>lib/</code> necessita test a <code>tests/lib/</code>. Cada nova ruta protegida necessita test a <code>tests/proxy.test.ts</code></li>
+<li><strong>i18n complet</strong> — cada string visible a l&#39;usuari ha d&#39;estar a les 3 llengues del fitxer <code>lib/i18n/translations.ts</code></li>
+<li><strong>Accessibilitat</strong> — escape key als modals, focus rings, aria labels (segueix les regles d&#39;<code>ai/AGENTS.md</code>)</li>
+<li><strong>No AI sense <code>ANTHROPIC_API_KEY</code></strong> — les funcions d&#39;IA han de fallar graciosament si no hi ha clau configurada</li>
+<li><strong>Schema DB</strong> — qualsevol canvi al schema necessita actualitzar <code>app/api/admin/run-migrations/route.ts</code> amb la migració corresponent</li>
+<li><strong>Proxy</strong> — noves rutes protegides han d&#39;afegir-se a <code>AUTH_REQUIRED</code> a <code>proxy.ts</code></li>
+<li><strong>Variables d&#39;entorn</strong> — noves env vars han de documentar-se a <code>SETUP.md</code></li>
+</ol>

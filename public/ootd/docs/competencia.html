@@ -1,0 +1,327 @@
+<h1>Competition Analysis</h1>
+<blockquote>
+<p>Living document. Update when new competitors are discovered or when existing apps ship major features.</p>
+</blockquote>
+<hr>
+<h2>Yafa (<code>yafafits.com</code>)</h2>
+<p><strong>Source:</strong> <a href="https://x.com/YaelBienenstock/status/2053808661605003490">https://x.com/YaelBienenstock/status/2053808661605003490</a><br><strong>Founder:</strong> Yael Bienenstock (@YaelBienenstock)<br><strong>Status:</strong> Waitlist / early access (as of May 2026) — not yet publicly available on App Store<br><strong>Platform:</strong> Mobile-first (iOS, likely)<br><strong>Website:</strong> <a href="https://yafafits.com">https://yafafits.com</a>  </p>
+<h3>What it does</h3>
+<p>Yafa is an outfit-logging app built around a social feed and a 3D avatar. Core features:</p>
+<ol>
+<li><strong>Outfit logging</strong> — one photo logs the full fit. Auto-detects and tags every clothing item automatically (no manual tagging).</li>
+<li><strong>3D mini-avatar</strong> — builds a personalised 3D representation of the user wearing the outfit. The avatar remembers context: clothes, weather, activity, date.</li>
+<li><strong>Social feed</strong> — Instagram-style feed where users share outfits. Followers can like and comment. Discovery of other people&#39;s looks.</li>
+<li><strong>Shareable outfit cards</strong> — generates a styled card from the outfit photo, shareable on social media or via direct message.</li>
+<li><strong>Shoppable closet</strong> — auto-tagged items make the closet browsable and shoppable (find similar items to buy).</li>
+</ol>
+<h3>Strengths (features we should learn from)</h3>
+<ul>
+<li><strong>3D avatar</strong> — highly visual and differentiated. Makes logging feel like a game rather than a chore.</li>
+<li><strong>Auto-tagging</strong> — zero friction. One photo and the entire outfit is catalogued. We require manual upload and AI analysis triggered by the user.</li>
+<li><strong>Social layer</strong> — community/social feed is a strong retention mechanism. Turns a private tool into a shared experience.</li>
+<li><strong>Shareable cards</strong> — a viral loop built in. Every shared card is organic marketing.</li>
+<li><strong>Shoppable closet</strong> — monetisation angle + utility combined.</li>
+</ul>
+<h3>Weaknesses / gaps (our opportunities)</h3>
+<ul>
+<li><strong>No AI outfit suggestions</strong> — Yafa logs what you wore; it does not suggest what to wear. We generate daily outfit ideas based on wardrobe + weather + preferences.</li>
+<li><strong>No wardrobe planning</strong> — focused on logging the past, not planning the future.</li>
+<li><strong>Mobile only</strong> — no web app. We work on any device.</li>
+<li><strong>No Pinterest/reference board integration</strong> — we let users import style inspiration directly from Pinterest boards.</li>
+<li><strong>Waitlist / not launched</strong> — we are already live. First-mover advantage in the AI suggestions space.</li>
+<li><strong>No daily reminder / cron</strong> — we have push notifications and a daily outfit suggestion email infrastructure.</li>
+<li><strong>No privacy focus mentioned</strong> — we keep data in the user&#39;s own account, no public sharing required.</li>
+</ul>
+<hr>
+<hr>
+<h2>cv.nan.builders (ATSKiller by Manfred)</h2>
+<p><strong>Source:</strong> Tweet by @nan_builders (Manfred)
+<strong>Status:</strong> Live / public beta (May 2026)
+<strong>Platform:</strong> Web
+<strong>Website:</strong> <a href="https://cv.nan.builders">https://cv.nan.builders</a></p>
+<blockquote>
+<p>Nota: no és competència directa en fashion. S&#39;analitza com a referència d&#39;UX, negoci i decisió tècnica per a una app AI de nicho.</p>
+</blockquote>
+<h3>What it does</h3>
+<p>Suite de 3 eines gratuïtes per optimitzar el CV per a sistemes ATS:</p>
+<ol>
+<li><strong>CV Analyser</strong> — puja CV (PDF/DOCX/TXT/MD, màx 3 MB), anàlisi instantàni amb puntuació en 6 dimensions, recomanacions concretes, export a PDF.</li>
+<li><strong>CV Editor</strong> — editor estructurat basat en una plantilla d&#39;un influencer conegut (@DanielBlancoSWE). Editor intencionalment restrictiu per no deixar que l&#39;usuari trenqui l&#39;optimització ATS. Traducció AI integrada. Màx 202 paraules.</li>
+<li><strong>CV vs Job Offer Matcher</strong> — compara CV amb una oferta concreta, detecta keywords que falten, calcula % de match. Puja CV + oferta (PDF/DOCX).</li>
+</ol>
+<h3>Business model</h3>
+<ul>
+<li><strong>Completament gratuït</strong> — &quot;Herramienta gratuita para la comunidad&quot;</li>
+<li><strong>Lead magnet per Manfred</strong> — Manfred és una agència de reclutament tech. L&#39;eina genera tràfic i credibilitat; la conversió és cap als seus serveis de reclutament.</li>
+<li><strong>Software com a màrqueting</strong> — l&#39;autor ho diu explícitament: &quot;constatar que se puede hacer software como marketing y, a la vez, seguir haciendo un marketing honesto&quot;</li>
+<li><strong>Cap registre necessari</strong> — zero friction, zero email capture en el punt d&#39;entrada</li>
+<li><strong>API spending cap</strong> — límit de despesa explícit per no arruïnar-se: &quot;La API tiene un límite de gasto para que no me arruinéis&quot;</li>
+</ul>
+<h3>Tech stack</h3>
+<ul>
+<li><strong>AI:</strong> Google Gemini (no Claude, no GPT)</li>
+<li><strong>Storage:</strong> Zero — &quot;Tu CV solo se almacena en tu local storage&quot; — cap dada al servidor</li>
+<li><strong>Feedback:</strong> botó de feedback que crea issues directament (probablement GitHub Issues o Linear)</li>
+<li><strong>Stack web:</strong> desconegut, però sembla SPA lleugera (respon ràpid, sense autenticació)</li>
+</ul>
+<h3>Key UX decisions (aprendre-ne)</h3>
+<table>
+<thead>
+<tr>
+<th>Decisió</th>
+<th>Per què</th>
+<th>Aprenentatge per nosaltres</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Sin registro</strong></td>
+<td>Elimina la barrera d&#39;entrada. L&#39;usuari obté valor abans de donar res.</td>
+<td>Considerar un mode &quot;prova sense registre&quot; per l&#39;anàlisi inicial de wardrobe</td>
+</tr>
+<tr>
+<td><strong>Dades en localStorage</strong></td>
+<td>Privacitat com a feature. Sense GDPR headaches.</td>
+<td>Bones pràctiques de privacitat com a argument de màrqueting</td>
+</tr>
+<tr>
+<td><strong>Editor restrictiu</strong></td>
+<td>L&#39;usuari no pot &quot;trencar&quot; el producte. Protegeix la qualitat del output.</td>
+<td>El nostre AI outfit podria ser igual de prescriptiu — no deixar editar massa</td>
+</tr>
+<tr>
+<td><strong>Template d&#39;influencer</strong></td>
+<td>Credibilitat instantànea + distribució orgànica del influencer</td>
+<td>Buscar col·laboració amb un influencer de moda per a plantilla de wardrobe</td>
+</tr>
+<tr>
+<td><strong>Feedback → issues</strong></td>
+<td>Gestió de backlog pública i transparent</td>
+<td>Implementar botó de feedback que creï issues (Linear/GitHub)</td>
+</tr>
+<tr>
+<td><strong>API spending cap</strong></td>
+<td>Sostenibilitat de la beta sense model de pagament</td>
+<td>Ja ho tenim planificat (crèdits); implementar-ho aviat</td>
+</tr>
+<tr>
+<td><strong>Límit de fitxer (3 MB)</strong></td>
+<td>Controla la despesa de tokens d&#39;AI</td>
+<td>Per a nosaltres: límit de mida d&#39;imatge en wardrobe upload</td>
+</tr>
+<tr>
+<td><strong>Múltiples eines en suite</strong></td>
+<td>Retenció: l&#39;usuari torna per eines diferents. Cross-selling intern.</td>
+<td>Roadmap de suite: analyze → suggest → track → share</td>
+</tr>
+</tbody></table>
+<h3>Weaknesses / gaps</h3>
+<ul>
+<li>Cap model de monetització directe — depèn 100% del negoci principal de Manfred</li>
+<li>No té retenció pròpia (sense compte, sense historial)</li>
+<li>L&#39;eina pot desaparèixer si Manfred decideix deixar-la</li>
+<li>No té loop viral propi (no genera contingut compartible)</li>
+</ul>
+<hr>
+<hr>
+<h2>claude.com/pricing (referència de disseny — pàgina de preus)</h2>
+<p><strong>Font:</strong> claude.com/pricing<br><strong>Propòsit:</strong> Referència de disseny per a la nostra pàgina de preus/crèdits</p>
+<h3>Stack tècnic</h3>
+<ul>
+<li><strong>Next.js + React</strong> — routing a <code>/pricing/pro</code>, <code>/pricing/team</code>, patterns de client-side routing</li>
+<li>Probablement <strong>Tailwind CSS</strong> per les classes utilitàries</li>
+<li><strong>Stripe</strong> al backend per gestionar subscripcions mensuals i anuals</li>
+</ul>
+<h3>Patrons de disseny a replicar</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Descripció</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Toggle mensual/anual</strong></td>
+<td><code>useState</code> pur al frontend. Preu anual mostra <code>€X/mes</code> + <code>&quot;billed €Y up front&quot;</code> en lletra petita</td>
+</tr>
+<tr>
+<td><strong>Cards de pla</strong></td>
+<td>2-3 columnes. El pla recomanat destacat amb <code>border</code> diferent i badge &quot;Most popular&quot;</td>
+</tr>
+<tr>
+<td><strong>Feature list</strong></td>
+<td>Taula de features amb <code>✓</code> / <code>—</code> per columna de cada pla</td>
+</tr>
+<tr>
+<td><strong>CTA</strong></td>
+<td>Un sol botó per pla. Color diferent per al pla destacat</td>
+</tr>
+<tr>
+<td><strong>Wizard de recomanació</strong></td>
+<td>5 preguntes per recomanar el pla adequat (optional, no l&#39;implementem)</td>
+</tr>
+</tbody></table>
+<h3>Implementació Stripe (quan toqui)</h3>
+<ul>
+<li><code>Price</code> amb <code>recurring.interval: &#39;month&#39;</code> o <code>&#39;year&#39;</code></li>
+<li>Stripe Checkout o Stripe Elements + webhooks per gestionar crèdits</li>
+<li>Estimació: 1-2 dies de feina</li>
+</ul>
+<hr>
+<h2>Other competitors to research</h2>
+<table>
+<thead>
+<tr>
+<th>App</th>
+<th>Notes</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Whering</td>
+<td>Outfit planning + wardrobe management, London-based. Funded.</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Stylebook</td>
+<td>Long-running wardrobe app (iOS). No AI suggestions.</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Smart Closet</td>
+<td>AI outfit suggestions, large user base.</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Combyne</td>
+<td>Social outfit builder. Strong community.</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Cladwell</td>
+<td>Capsule wardrobe focus. Subscription.</td>
+<td>Low</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>TODO: analyse each of these with the same format as Yafa above.</p>
+</blockquote>
+<hr>
+<h2>Reference products to study (pricing / landing / UX)</h2>
+<p>Not direct competitors — saved as references for pricing models, landing design and product info.</p>
+<table>
+<thead>
+<tr>
+<th>Product</th>
+<th>URL</th>
+<th>Why saved</th>
+<th>Reviewed?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Grainient</td>
+<td><a href="https://grainient.supply/">https://grainient.supply/</a></td>
+<td>AI product — compare pricing, landing &amp; info (added by user 2026-07-07)</td>
+<td>⬜ pending</td>
+</tr>
+</tbody></table>
+<h2>AI look-generation references</h2>
+<p>References for how others do AI outfit/look generation &amp; visualisation — directly relevant to our image pipeline (see <code>ai/IMAGE_PIPELINE_TODO.md</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>URL</th>
+<th>Why saved</th>
+<th>Reviewed?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Brunello Cucinelli — AI</td>
+<td><a href="https://shop.brunellocucinelli.com/en-gb/ai">https://shop.brunellocucinelli.com/en-gb/ai</a></td>
+<td>Luxury brand&#39;s AI look-generation / styling experience — reference for outfit generation UX &amp; quality (added by user 2026-07-09)</td>
+<td>⬜ pending</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Our differentiators (summary)</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Us</th>
+<th>Yafa</th>
+<th>Smart Closet</th>
+<th>Whering</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AI outfit suggestions</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>Partial</td>
+</tr>
+<tr>
+<td>Pinterest integration</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Daily reminder (push + email)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Web app (no install)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Social / feed</td>
+<td>❌ (planned)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>3D avatar</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Auto item tagging</td>
+<td>Partial</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Wear history / calendar</td>
+<td>✅</td>
+<td>✅</td>
+<td>Partial</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Shoppable closet</td>
+<td>Planned</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Vinted resale integration</td>
+<td>Planned</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+</tbody></table>

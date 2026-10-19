@@ -1,0 +1,123 @@
+<h1>Negoci: plans, costos i tasques (borrador)</h1>
+<blockquote>
+<p><strong>Estat:</strong> els preus són una <strong>proposta calculada del cost</strong>, no una decisió. No hi ha estudi de mercat ni de competència fet (no es pot fer amb dades inventades): cal fer-lo abans de decidir. Aquest document és la base per a l&#39;artifact per al soci.</p>
+</blockquote>
+<h2>1. Què costa servir una persona</h2>
+<table>
+<thead>
+<tr>
+<th>Cosa</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Foto d&#39;un look (Gemini 2.5 Flash Image)</td>
+<td>≈ 0,039 $</td>
+</tr>
+<tr>
+<td>Un torn de l&#39;estilista (Haiku, amb memòria cau)</td>
+<td>≈ 0,01–0,02 $</td>
+</tr>
+<tr>
+<td>Un torn amb el model fort (gust, onboarding, auditoria)</td>
+<td>≈ 0,05–0,09 $</td>
+</tr>
+<tr>
+<td>Títol d&#39;una conversa / «què t&#39;has posat» (Haiku)</td>
+<td>≈ 0,002 $</td>
+</tr>
+</tbody></table>
+<p>Les fotos pesen més que el text. Per això els plans limiten fotos.</p>
+<h2>2. Plans proposats (IVA inclòs) — <code>lib/billing/plans.ts</code></h2>
+<table>
+<thead>
+<tr>
+<th>Pla</th>
+<th>Perfil d&#39;ús</th>
+<th>Mensual</th>
+<th>Anual</th>
+<th>Fotos/mes</th>
+<th>Torns/mes</th>
+<th>Conversa/mes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gratuït</td>
+<td>—</td>
+<td>0 €</td>
+<td>—</td>
+<td>4</td>
+<td>40</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Looks</td>
+<td>Només looks</td>
+<td>4,99 €</td>
+<td>49,99 €</td>
+<td>30</td>
+<td>90</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Armari</td>
+<td>Armari</td>
+<td>8,99 €</td>
+<td>89,99 €</td>
+<td>60</td>
+<td>150</td>
+<td>20</td>
+</tr>
+<tr>
+<td>Estilista</td>
+<td>Estilista</td>
+<td>14,99 €</td>
+<td>149,99 €</td>
+<td>120</td>
+<td>400</td>
+<td>300</td>
+</tr>
+</tbody></table>
+<p>Cost màxim teòric per pla amb tot el límit gastat: Looks ≈ 1,2 $ (fotos) + 1,4 $ (torns) ≈ 2,6 $; Armari ≈ 2,3 $ + 2,2 $ ≈ 4,5 $; Estilista ≈ 4,7 $ + 6 $ + conversa forta ≈ 11–13 $. <strong>L&#39;Estilista al límit podria costar més del que es cobra</strong>: els límits són el parany; s&#39;han de revisar amb l&#39;ús real de la beta (Admin → Beta → cost per persona).</p>
+<p>Altres decisions que venen de l&#39;altra app: <strong>14 dies de prova</strong> amb tot obert i sense targeta; anual destacat («2 mesos gratis»); <strong>preu fundador</strong> −30 % per sempre per als testers; el pla gratuït sense conversa (5 missatges); anuncis només al gratuït i només quan hi hagi un gestor de consentiment certificat (de moment apagats).</p>
+<h2>3. Fases</h2>
+<ol>
+<li><strong>Beta tancada</strong> (6 setmanes, 40 persones): tot obert, sense Stripe. Objectiu: retenció, cost real, preu (<code>ai/BETA.md</code>).</li>
+<li><strong>Beta de pagament</strong> (Stripe en mode de prova → real amb els testers com a fundadors).</li>
+<li><strong>Obertura</strong>: landing amb els preus del mateix mòdul de plans, anuncis al gratuït (CMP), revisió legal feta.
+Criteri per passar d&#39;una fase a la següent: D30 ≥ el que decidiu, cost per persona dins del marge del pla, NPS ≥ 30, cap bloquejant tècnic.</li>
+</ol>
+<h2>4. Tasques per al soci (no tècniques)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Crear el compte de <strong>Stripe</strong> (comerç a Espanya), mode de prova primer.</li>
+<li><input disabled="" type="checkbox"> Alta a l&#39;<strong>OSS de l&#39;IVA europeu</strong> i activar <strong>Stripe Tax</strong>.</li>
+<li><input disabled="" type="checkbox"> Posar les claus a Netlify (<code>ai/ENV.md</code>) amb qui té l&#39;accés.</li>
+<li><input disabled="" type="checkbox"> <strong>Resend</strong>: verificar el domini d&#39;enviament.</li>
+<li><input disabled="" type="checkbox"> <strong>Revisió legal</strong> de termes, privacitat, desistiment de 14 dies i tractament de fotos (RGPD art. 9).</li>
+<li><input disabled="" type="checkbox"> <strong>CMP</strong> certificat per Google (IAB TCF 2.2 + Consent Mode v2) abans d&#39;activar anuncis.</li>
+<li><input disabled="" type="checkbox"> Preparar les 3 enquestes de <strong>Tally</strong> i les preguntes de preu.</li>
+<li><input disabled="" type="checkbox"> <strong>Llançament</strong> (<code>ai/LAUNCH.md</code>): confirmar o comprar el domini, crear els comptes (Instagram, TikTok, Pinterest, X, pàgina de LinkedIn), un correu de contacte que no sigui el personal, i portar el registre de canals (codi per lloc, registres, activats).</li>
+<li><input disabled="" type="checkbox"> Revisió mensual dels serveis (&gt;80 % del pla = preocupar-se): Netlify (minuts de build, ample de banda), Supabase (base de dades, Storage), Anthropic, Google AI, Resend, Stripe.</li>
+</ul>
+<h2>5. Captació i llançament — detall a <code>ai/LAUNCH.md</code></h2>
+<p>Ve de mAI Fitness (octubre 2026), adaptat a la moda.</p>
+<ul>
+<li><strong>Objectiu de la beta:</strong> 40 testers bons, no &quot;fer-se viral&quot;. Entrada lliure; <strong>un codi d&#39;invitació per lloc</strong> on surt l&#39;enllaç, per saber quin canal porta gent que s&#39;activa.</li>
+<li><strong>Canals que es poden repetir</strong> (cada setmana, 3–4 h): amics un a un, estilistes i botigues de barri (accés complet gratis), Reels/TikTok de pantalla amb un sol missatge, Pinterest, X #buildinpublic, LinkedIn, Indie Hackers, Reddit (demanar opinió, no anunciar).</li>
+<li><strong>Canals d&#39;un sol tret</strong> (Product Hunt, Show HN, premsa de tecnologia i de moda, mitjans catalans): no es gasten fins que l&#39;app retingui.</li>
+<li><strong>Portes per passar de fase</strong>, a Admin → Beta: activació ≥ 60 % → construir en públic; D7 ≥ 25 % → directoris; D30 ≥ 15 %, NPS ≥ 30 i Stripe → un sol tret. Proposta per al dia gran: <strong>març</strong> (canvi d&#39;armari de primavera).</li>
+<li><strong>Publicació dia a dia</strong> (com la pestanya &quot;Publicar&quot; de mAI Fitness): preparar (domini, comptes d&#39;empresa o creador, un codi per canal, captures) i tres setmanes amb cada post al dia i l&#39;hora de més interacció del seu lloc (LinkedIn dimecres 9:00 amb l&#39;enllaç al primer comentari, X dimarts, Instagram dijous 19:00, TikTok i Shorts diumenge 20:00, Reddit dilluns 14:00, Product Hunt dimarts 9:01). A la setmana 3, mirar quin canal porta gent que es queda i repetir només aquells.</li>
+<li><strong>No trepitjar mAI Fitness:</strong> les dues apps surten del mateix perfil de LinkedIn i X. mAI Fitness publica del 3/11 al 3/12/2026 i fa Product Hunt el 12/1/2027. OOTD, com a mínim dues setmanes lluny de cada presentació, i mai dos Product Hunt el mateix mes.</li>
+<li><strong>El dia gran costa diners en fotos</strong> (≈0,04 $ cadascuna): abans, comprovar els límits del pla gratuït i els pressupostos mensuals d&#39;IA.</li>
+<li><strong>Mercats:</strong> català → castellà → anglès (Europa). Textos preparats per a WhatsApp, LinkedIn (ca/es), X, Product Hunt, Show HN i Reddit.</li>
+<li><strong>Teasers promocionals</strong> (~40 s, ca/es/en, vertical i horitzontal), fets amb tocs reals sobre una build local com a mAI Fitness. <strong>Pendents: no es graven fins que l&#39;app estigui provada.</strong></li>
+<li><strong>Cost:</strong> gairebé zero en diners (domini ≈ 12–20 €/any); el cost és temps. La publicitat pagada (<code>ai/LAUNCH_BUDGET.md</code>, Meta Ads a <code>ai/MARKETING_CAMPAIGN.md</code>) només quan hi hagi dades de conversió.</li>
+</ul>
+<h2>6. Per decidir (amb dades de la beta)</h2>
+<ul>
+<li>Preus i límits definitius.</li>
+<li>Si l&#39;Estilista necessita un límit de fotos més baix.</li>
+<li>Substituir remove.bg per la reconstrucció de peces amb Gemini (<code>ai/WARDROBE_RECONSTRUCTION_NEXT.md</code>).</li>
+<li>Si el social (perfil públic) té sentit: està amagat.</li>
+<li>Quins canals es repeteixen: els que porten gent que s&#39;activa, no els que porten més registres.</li>
+</ul>

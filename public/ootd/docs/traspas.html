@@ -1,0 +1,1407 @@
+<h1>Traspàs: d&#39;un generador d&#39;outfits a un estilista conversacional (model &quot;Her&quot;)</h1>
+<blockquote>
+<p><strong>Per a Claude Code.</strong> Aquest document trasllada a <em>Outfit of the Day</em> (OOTD) el model d&#39;app que es va construir i provar a <strong>mAI Fitness</strong> (<code>../mAI_fitness</code>): una app <strong>conversacional</strong>, centrada en <strong>l&#39;avui</strong>, on la IA <strong>proposa</strong> i l&#39;usuari <strong>reacciona</strong>. També hi trasllada l&#39;estètica <strong>&quot;Her&quot;</strong> (càlida, calmada i de paper) i el nivell d&#39;acabat d&#39;una app nativa.
+Està escrit a partir del codi actual d&#39;OOTD (octubre 2026) i de tot el que va funcionar i va fallar a mAI Fitness.
+Es complementa amb <code>ai/phases/phase-2-outfit-engine/README.md</code> (el viatge conversacional) i <code>ai/phases/phase-3-onboarding/README.md</code>. Aquests briefs són el <strong>què</strong>; aquest document és el <strong>com</strong>, amb les decisions ja preses i les trampes ja trepitjades.</p>
+</blockquote>
+<hr>
+<h2>0. Com fer servir aquest document</h2>
+<ol>
+<li><strong>Llegeix-lo sencer abans de tocar res.</strong> Després llegeix, en aquest ordre:<ul>
+<li><code>ai/AGENTS.md</code>, <code>ai/DESIGN.md</code>, <code>ai/OUTFIT_IMAGE_PIPELINE.md</code> i <code>ai/ROADMAP.md</code> (aquest projecte);</li>
+<li><code>../mAI_fitness/ai/TRASPAS-iteracio-v2.md</code>: la història completa, sobretot §1, §4, §8 i §9;</li>
+<li><code>../mAI_fitness/ai/DESIGN.md</code> §4–§5 i <code>../mAI_fitness/ai/AGENTS.md</code>: les normes que van funcionar.</li>
+</ul>
+</li>
+<li><strong>No comencis a programar.</strong> El primer pas és sempre una <strong>ronda de preguntes</strong> a l&#39;usuari (§9 d&#39;aquest document) i, per a la UI, un <strong>prototip visual navegable validat</strong> (§6.6). A mAI Fitness, cada pantalla programada a partir d&#39;una interpretació en text va fallar, i cada maqueta validada abans va funcionar a la primera.</li>
+<li><strong>Normes no negociables</strong> (les mateixes que a mAI Fitness):<ul>
+<li>Tests a cada canvi (<code>npm test &amp;&amp; npm run build</code> bloqueja el desplegament).</li>
+<li><strong>Interaccions d&#39;alt nivell.</strong> Res no pot semblar una web a mig fer: cada pantalla es prova a 390×844, també amb el teclat obert (§6.5).</li>
+<li><strong>La landing no es toca.</strong> Té el seu sistema propi (<code>.ootd-dash</code> no hi entra; els estils de l&#39;app no hi entren).</li>
+<li>Tots els textos van a les traduccions, en ca/es/en.</li>
+<li>Desplegar sovint i <strong>comprovar en producció</strong> (§7.8), no suposar.</li>
+</ul>
+</li>
+<li>L&#39;usuari treballa en català. Les decisions de producte les pren ell. Quan alguna cosa no estigui clara, <strong>pregunta amb opcions visuals</strong> (maquetes ASCII) en lloc de suposar.</li>
+</ol>
+<hr>
+<h2>1. El canvi de model en una pàgina</h2>
+<h3>1.1 Què va canviar a mAI Fitness</h3>
+<table>
+<thead>
+<tr>
+<th>Abans (generador)</th>
+<th>Després (conversacional)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Formulari → &quot;Genera&quot; → resultat rígid</td>
+<td>L&#39;app <strong>obre amb la proposta ja feta</strong>; l&#39;usuari reacciona</td>
+</tr>
+<tr>
+<td>La IA retorna text que es parseja (<code>&lt;routine&gt;…</code>)</td>
+<td>La IA fa servir <strong>eines</strong> (tool use) i retorna <strong>propostes estructurades</strong></td>
+</tr>
+<tr>
+<td>La IA canvia coses directament</td>
+<td>La IA <strong>proposa</strong>; l&#39;usuari <strong>accepta o rebutja cada canvi</strong></td>
+</tr>
+<tr>
+<td>El xat és una secció a part</td>
+<td>El xat és una <strong>extensió de les opcions del dia</strong> (barra flotant a Avui + pantalla pròpia)</td>
+</tr>
+<tr>
+<td>L&#39;usuari configura</td>
+<td>L&#39;app <strong>ja sap</strong> el context (setmana, historial, lesions) i ho <strong>mostra</strong></td>
+</tr>
+<tr>
+<td>Estètica de plantilla SaaS</td>
+<td><strong>&quot;Her&quot;</strong>: crema, paper, coral, serif cursiva per a la veu de l&#39;agent, i navegació Nike</td>
+</tr>
+<tr>
+<td>Funciona a l&#39;escriptori</td>
+<td>Funciona <strong>com una app nativa</strong> al mòbil: teclat, gestos, offline, actualitzacions</td>
+</tr>
+</tbody></table>
+<h3>1.2 Equivalències mAI Fitness → OOTD</h3>
+<table>
+<thead>
+<tr>
+<th>mAI Fitness</th>
+<th>OOTD</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Avui: &quot;Et toca&quot; (una sessió)</td>
+<td>Avui: <strong>&quot;El teu look d&#39;avui&quot;</strong> (un look, amb la imatge com a protagonista)</td>
+</tr>
+<tr>
+<td>&quot;Ja l&#39;he fet&quot; → formulari de registre</td>
+<td><strong>&quot;Me&#39;l poso&quot;</strong> → queda com a portat (historial de roba portada, comptador per peça)</td>
+</tr>
+<tr>
+<td>&quot;Avui fas una altra cosa?&quot; (activitats)</td>
+<td><strong>&quot;Avui tens un pla diferent?&quot;</strong>: ocasions (Feina, Sopar, Esport, Esdeveniment, Relax) + &quot;Construeix-lo al voltant d&#39;una peça&quot;</td>
+</tr>
+<tr>
+<td>La setmana com a llista de pendents</td>
+<td><strong>La setmana com a fila de looks portats</strong> (cercles amb miniatura), més el que no has portat fa temps</td>
+</tr>
+<tr>
+<td>Programa versionat + propostes del coach</td>
+<td><strong>Perfil d&#39;estil versionat (gust en 3 capes)</strong> + propostes de l&#39;estilista</td>
+</tr>
+<tr>
+<td>Coach: barra flotant &quot;Explica&#39;m com estàs…&quot;</td>
+<td>Estilista: barra flotant <strong>&quot;Què tens avui?&quot;</strong></td>
+</tr>
+<tr>
+<td>Coach proactiu (senyals diaris)</td>
+<td>Estilista proactiu: <strong>look del matí ja preparat</strong> i avisos (&quot;demà plou&quot;, &quot;fa un mes que no et poses X&quot;)</td>
+</tr>
+<tr>
+<td>Catàleg d&#39;exercicis i activitats</td>
+<td>Armari (peces reals analitzades) + inspiració (referències)</td>
+</tr>
+<tr>
+<td>Registre &quot;una altra activitat&quot;</td>
+<td><strong>&quot;M&#39;he posat una altra cosa&quot;</strong>: triar peces de l&#39;armari amb tocs, o fer una foto</td>
+</tr>
+<tr>
+<td>Lògica pura: proposta del dia, calories…</td>
+<td>Lògica pura: context (temps, estació), selecció de l&#39;armari, rotació, sense repetir, ocasió → formalitat</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>2. Què hi ha avui a OOTD (inventari)</h2>
+<ul>
+<li><strong>Pantalles:</strong><ul>
+<li><code>/app</code>: un generador amb formulari (<code>app/(dashboard)/app/page.tsx</code>, 781 línies): prompt, llista de vibes, categories, carpetes de referències i &quot;Genera&quot;.</li>
+<li><code>/calendar</code>: outfits portats.</li>
+<li><code>/references</code> (+ <code>/references/[folderId]</code>): carpetes d&#39;inspiració i Pinterest.</li>
+<li><code>/wardrobe</code>: l&#39;armari.</li>
+<li><code>/profile</code>, <code>/settings</code> i l&#39;admin (usuaris, analytics, placeholders, collages).</li>
+</ul>
+</li>
+<li><strong>Generació</strong> (<code>lib/outfit-gen/*</code>, <code>lib/ai.ts › generateOutfit</code>):<ul>
+<li>Claude Haiku escriu un brief en text i Nano Banana (<code>lib/gemini.ts</code>) en fa la foto.</li>
+<li>Corre amb <code>after()</code> + <code>maxDuration 60</code> i el client consulta l&#39;estat (<code>saved_outfits.status</code>).</li>
+<li>El context (estació, moment del dia i temps d&#39;Open-Meteo) es calcula al codi (<code>lib/outfit-gen/context.ts</code>): <strong>perfecte, es manté</strong>.</li>
+<li>L&#39;armari es preselecciona al codi (<code>wardrobe-select.ts</code>): <strong>es manté</strong>.</li>
+<li>El resultat és text amb seccions (<code>PIECES USED</code>, <code>IMAGE BRIEF</code>, <code>OUTFIT</code>…) que es parseja a <code>lib/outfit-parser.ts</code>. <strong>Aquest és el punt que s&#39;ha de canviar</strong> (vegeu §4.3).</li>
+</ul>
+</li>
+<li><strong>Dades:</strong><ul>
+<li><code>users</code>: <code>styles</code> és un JSON pla (sense pesos); també gènere, alçada, pes, constitució, cabell i to de pell, <code>location</code>, <code>timezone</code>, <code>language</code>, notificacions.</li>
+<li><code>wardrobe_items</code>: categoria, descripció de la IA, favorit, <code>usage_count</code>.</li>
+<li><code>images</code> / <code>image_folders</code>: referències.</li>
+<li><code>saved_outfits</code>: el darrer suggeriment i l&#39;estat del job.</li>
+<li><code>worn_outfits</code>: <strong>text</strong>, sense enllaç a les peces.</li>
+<li>També <code>user_photos</code>, <code>usage_events</code>, <code>push_subscriptions</code> i <code>follows</code>.</li>
+</ul>
+</li>
+<li><strong>Infraestructura:</strong> Netlify (<code>netlify.toml</code> amb Node 20), Supabase (Postgres pel <strong>pooler <code>:6543</code></strong> + Storage), Resend, web-push, cron diari, i18n en/es/ca, PWA i AdSense.</li>
+<li><strong>Disseny actual</strong> (<code>ai/DESIGN.md</code>): &quot;editorial fashion software&quot;. Barra lateral fosca, llenç clar, Instrument Serif per als títols, Archivo, JetBrains Mono en majúscules per a les etiquetes i accent llima.</li>
+</ul>
+<hr>
+<h2>3. P0: errors latents d&#39;infraestructura (arreglar primer, abans de res)</h2>
+<p>Són els mateixos errors que a mAI Fitness es van trobar <strong>a producció</strong>, després de perdre dades. OOTD té exactament la mateixa configuració.</p>
+<ol>
+<li><strong>Sentències preparades a través del pooler de Supabase.</strong><ul>
+<li><code>lib/db/index.ts</code> crea <code>postgres(url, { max: 3, ssl: &#39;require&#39;, … })</code> <strong>sense <code>prepare: false</code></strong>, i <code>DATABASE_URL</code> apunta a <code>aws-0-eu-west-1.pooler.supabase.com:6543</code> (mode transacció).</li>
+<li>A mAI Fitness això feia que les consultes es pengessin i que <strong>les escriptures es perdessin sense cap error</strong>: les respostes del coach no es desaven mai.</li>
+<li><strong>Solució:</strong> copiar <code>usesPooler()</code> i <code>prepare: !usesPooler(url)</code> de <code>../mAI_fitness/lib/db/index.ts</code>, amb el seu test (<code>tests/lib/db/client.test.ts</code>).</li>
+<li>Probablement explica el &quot;Pool poisoning&quot; del ROADMAP §2.4.</li>
+</ul>
+</li>
+<li><strong>Treballs llargs dins d&#39;una petició.</strong><ul>
+<li>La generació es fa amb <code>after()</code> + <code>maxDuration = 60</code>, però Netlify talla qualsevol funció de petició als <strong>10 s</strong> (26 s amb el pla Pro), i un look en triga ~10–11.</li>
+<li>A mAI Fitness es va arreglar amb una <strong>Netlify Background Function</strong> (fins a 15 min), una columna <code>live</code> de progrés i consultes del client cada segon. Vegeu:<ul>
+<li><code>../mAI_fitness/netlify/functions/coach-turn-background.mts</code>;</li>
+<li><code>lib/coach/background.ts</code>, <code>lib/coach/live.ts</code>;</li>
+<li><code>components/coach/stream.ts</code> (detecta torns encallats: 3 min sense progrés → error amb reintent).</li>
+</ul>
+</li>
+<li><strong>Fer el mateix per als torns de l&#39;estilista i per a la imatge.</strong> <code>runOutfitGeneration</code> ja no depèn del host; només canvia com es llança.</li>
+</ul>
+</li>
+<li><strong>Storage.</strong> Comprovar que el bucket existeix. A mAI Fitness no n&#39;hi havia cap i totes les pujades fallaven. Copiar <code>ensureBucket()</code> + el reintent de <code>../mAI_fitness/lib/storage/supabase.ts</code>, i posar noms nous a cada fitxer pujat (el CDN serveix l&#39;antic si el nom es repeteix).</li>
+<li><strong>Regió.</strong> Funcions i base de dades a la mateixa regió (la base de dades és a <code>eu-west-1</code>; a Netlify Pro, regió de funcions <code>dub</code>). Comprovar-ho amb un <code>/api/health</code> que retorni el temps d&#39;anada i tornada de la base de dades (<code>../mAI_fitness/app/api/health/route.ts</code>).</li>
+<li><strong>Node 24</strong> a <code>netlify.toml</code> (mAI Fitness ja hi és) i <strong>tests a Netlify</strong>: tancar PGlite després de cada test i com a màxim 2 processos alhora (<code>../mAI_fitness/vitest.config.ts</code>, <code>tests/setup.ts</code>), o el build es queda sense memòria.</li>
+<li><strong>Migracions:</strong> treure-les de <code>app/api/admin/run-migrations/route.ts</code> cap a <code>lib/db/migrations.ts</code>, amb tests PGlite, <code>npm run db:dry-run</code> (en una transacció que es desfà al final) i <code>db:apply</code>. Copiar l&#39;estructura de mAI Fitness (<code>lib/db/migrations.ts</code>, <code>scripts/db-*.ts</code>, <code>tests/helpers/db.ts</code>).</li>
+</ol>
+<hr>
+<h2>4. El producte objectiu</h2>
+<h3>4.1 La pantalla Avui (substitueix el generador de <code>/app</code>)</h3>
+<p>Igual que a mAI Fitness, <strong>com la vista &quot;Avui&quot; d&#39;una app de tasques</strong>. De dalt a baix:</p>
+<ol>
+<li><strong>La data</strong> (petita) i el títol <strong>&quot;Avui&quot;</strong>. A sota, una línia de context que demostri que l&#39;app ho sap: <em>&quot;14° i plugim · Barcelona&quot;</em>. La calcula <code>context.ts</code>; no la paga cap model.</li>
+<li><strong>La setmana en una fila</strong>: un cercle per dia, amb la miniatura del look portat; avui, destacat. Si en toques un, et diu què et vas posar.</li>
+<li><strong>&quot;El teu look d&#39;avui&quot;</strong>: UNA targeta gran amb la <strong>foto generada com a protagonista</strong> i, a sota:<ul>
+<li>el títol del look (&quot;Estudi → sopar&quot;) i una línia de <strong>per què</strong> amb la veu de l&#39;estilista (serif cursiva);</li>
+<li><strong>xips de context</strong> honestos (<code>14° · plugim</code>, <code>fa 3 setmanes que no te la poses</code>);</li>
+<li><strong>una acció principal: &quot;Me&#39;l poso&quot;</strong>, i una secundària: &quot;Un altre&quot;.</li>
+<li>Un toc a la foto obre les peces (fotos reals de l&#39;armari), cadascuna amb &quot;Canvia&quot;.</li>
+</ul>
+</li>
+<li><strong>&quot;Avui tens un pla diferent?&quot;</strong>: pastilles. Feina · Sopar · Esport · Esdeveniment · Relax · <em>Construeix-lo al voltant d&#39;una peça</em> · <em>Avui no em vesteixo per a res especial</em>.<ul>
+<li>Un toc reestila el look <strong>només per avui</strong> (capa 2 del gust, §4.4).</li>
+</ul>
+</li>
+<li><strong>L&#39;estilista, discret</strong>: una barra flotant <strong>&quot;Què tens avui?&quot;</strong> que obre la conversa en un full (el mateix component que el coach de mAI Fitness: <code>CoachSheet</code> + <code>ChatComposer</code>).</li>
+</ol>
+<p>Normes que van funcionar a mAI Fitness:</p>
+<ul>
+<li><strong>Una sola tasca a la vista.</strong> No s&#39;ofereixen tres looks d&#39;entrada: &quot;Un altre&quot; o &quot;Dona-me&#39;n 3&quot; els demana.</li>
+<li><strong>Accions directes.</strong> &quot;Me&#39;l poso&quot; no obre cap menú: marca el look com a portat, amb un toc. &quot;M&#39;he posat una altra cosa&quot; porta directament a triar peces.</li>
+<li><strong>Mai un dia &quot;buit&quot;.</strong> Si l&#39;armari és petit, l&#39;estilista ho diu amb honestedat (&quot;et faltaria una jaqueta lleugera de pluja&quot;) i proposa la peça més propera.</li>
+</ul>
+<h3>4.2 L&#39;estilista (la conversa)</h3>
+<ul>
+<li><strong>Obre amb la proposta ja feta</strong>, en forma de missatge (brief de fase 2, §3A). L&#39;usuari hi entra amb <strong>una conversa ja començada</strong>, no amb una pàgina en blanc.</li>
+<li><strong>Dreceres</strong> a sobre de la caixa de text: <em>M&#39;encanta · Més abrigat · Més esportiu · Canvia una peça · Un altre</em>. També es pot escriure lliurement (&quot;vull posar-me les botes noves&quot;).</li>
+<li><strong>Cada refinament és un torn</strong> que retorna un look actualitzat amb una línia de per què. Es reestila <strong>només el que cal</strong>: canviar les sabates no regenera tot el look.</li>
+<li><strong>No canvia res persistent sense permís.</strong> Com el coach de mAI Fitness, l&#39;estilista <strong>proposa</strong> i l&#39;usuari accepta o rebutja <strong>cada canvi per separat</strong>, quan són:<ul>
+<li>canvis al perfil d&#39;estil (&quot;sembla que ara t&#39;agrada més el workwear&quot;);</li>
+<li>marcar una peça com a no disponible (&quot;la camisa és a rentar&quot;);</li>
+<li>&quot;afegeix aquesta peça a l&#39;armari&quot;.</li>
+<li>Els looks del dia no necessiten aprovació: són efímers.</li>
+</ul>
+</li>
+<li><strong>Proactiu:</strong><ul>
+<li>el <strong>look del matí</strong> es genera en segon pla a l&#39;hora de la notificació i arriba un push: &quot;El teu look d&#39;avui és a punt&quot;.</li>
+<li><strong>Senyals deterministes</strong>: canvi d&#39;estació amb l&#39;armari curt de peces d&#39;abric, peces que fa setmanes que no et poses, pluja demà, molts &quot;Un altre&quot; seguits (no l&#39;encerta).</li>
+<li>Obren una conversa &quot;demanada&quot;, com <code>lib/coach/proactive.ts</code>.</li>
+</ul>
+</li>
+</ul>
+<h3>4.3 Sortida estructurada en lloc de text parsejat</h3>
+<p>El canvi tècnic més important. <code>generateOutfit</code> retorna text amb seccions que es parsegen (<code>outfit-parser.ts</code>). Passar a <strong>tool use</strong> amb esquemes zod (com <code>../mAI_fitness/lib/coach/tools.ts</code>):</p>
+<ul>
+<li><code>propose_look</code> (la sortida principal; correspon al JSON del brief de fase 2, §5):<ul>
+<li><code>{ title, vibe, rationale, context_chips[], items[{ slot, wardrobe_id | null, name, why }], gaps[], image_brief }</code>.</li>
+<li>Un <code>wardrobe_id</code> ha de <strong>ser real</strong> (es valida contra la llista que ha rebut).</li>
+<li>Una peça que no tens va a <code>gaps</code>, no s&#39;inventa.</li>
+</ul>
+</li>
+<li><code>swap_piece</code>: <code>{ look_id, slot, wardrobe_id, why }</code>. Reemplaça una peça, regenera la imatge només si la peça és visible i actualitza la línia de per què.</li>
+<li><code>search_wardrobe</code>: <code>{ category?, colour?, warmth?, formality?, query? }</code>. Torna peces amb la descripció curta.</li>
+<li><code>get_wear_history</code>: què s&#39;ha portat, quan i què fa temps que no es porta.</li>
+<li><code>propose_taste_update</code>, <code>propose_wardrobe_change</code> (no disponible, afegir peça…): creen propostes que s&#39;accepten per separat.</li>
+<li><code>resolve_thread</code>.</li>
+</ul>
+<p>El <strong>snapshot del context</strong> (perfil d&#39;estil, temps, ocasió d&#39;avui, armari preseleccionat, historial recent i looks rebutjats) s&#39;envia com un missatge de sistema <strong>només quan canvia</strong>, després del prompt estàtic memoritzat (<code>cache_control</code>). És exactament el patró de <code>../mAI_fitness/lib/coach/{run,context,prompt}.ts</code>.</p>
+<h3>4.4 El gust en tres capes (ja dissenyat a fase 2 §4b; aquí, com guardar-lo)</h3>
+<ol>
+<li><strong>Identitat (persistent):</strong><ul>
+<li><code>users.taste</code> JSON <strong>amb pesos</strong>: <code>{ vibes: { workwear: 0.7, minimal: 0.2 }, avoidColours: [], fit: &#39;mix&#39;, noGo: [] }</code>. Substitueix <code>users.styles</code> (pla).</li>
+<li>Evoluciona amb les propostes acceptades i amb els senyals d&#39;acceptar o rebutjar, <strong>mai en silenci</strong>.</li>
+<li>Es versiona (com les versions de programa de mAI Fitness: mai no es reescriu, s&#39;afegeix una versió nova).</li>
+</ul>
+</li>
+<li><strong>Intenció d&#39;avui (efímera):</strong> xips i el que s&#39;ha dit a la conversa. Viu al fil del dia i demà desapareix.</li>
+<li><strong>Ocasió:</strong> xip, conversa o, en el futur, el calendari del dispositiu.</li>
+</ol>
+<p><strong>Regla d&#39;or:</strong> l&#39;ocasió mana en la formalitat i el gust mana en l&#39;estètica. Si avui va contra el perfil, l&#39;estilista <strong>ho diu</strong> (&quot;Més arreglat que de costum perquè és un casament; ho mantinc minimal perquè siguis tu&quot;).</p>
+<h3>4.5 Registrar = el que t&#39;has posat</h3>
+<ul>
+<li><strong>&quot;Me&#39;l poso&quot;</strong> sobre el look d&#39;avui: <code>worn_outfits</code> amb <code>look_id</code> i <strong>les peces</strong> (<code>wardrobe_item_ids</code>), no només text. Així existeixen per a cada peça &quot;portada X cops&quot; i &quot;no portada des de…&quot;.</li>
+<li><strong>&quot;M&#39;he posat una altra cosa&quot;</strong>: una graella de l&#39;armari amb tocs (o una foto que detecta les peces amb <code>detectGarments</code>). És l&#39;equivalent al &quot;registre lliure&quot; de mAI Fitness.</li>
+<li>Mai es registra un &quot;dia sense outfit&quot;.</li>
+</ul>
+<h3>4.6 Lògica pura primer, IA només per conversar</h3>
+<p>A <code>lib/styling/*</code> (o mantenint <code>lib/outfit-gen/*</code>), sense I/O i amb tests, com <code>../mAI_fitness/lib/training/*</code>:</p>
+<ul>
+<li><strong>Context:</strong> ja existeix (<code>seasonFor</code>, <code>partOfDay</code>, <code>fetchWeather</code>, <code>buildContextLine</code>).</li>
+<li><strong>Preselecció de l&#39;armari:</strong> ja existeix (<code>selectWardrobeCandidates</code>). S&#39;hi afegeix: rotació (menys portades primer), disponibilitat i peces vetades.</li>
+<li><strong>Ocasió → formalitat:</strong> una taula. <strong>Temps → abric</strong>: llindars de temperatura, pluja i vent.</li>
+<li><strong>No repetir:</strong> la mateixa combinació en N dies, i la mateixa peça principal dos dies seguits.</li>
+<li><strong>Xips de context:</strong> generats al codi a partir de les dades, no pel model.</li>
+<li><strong>Senyals proactius</strong>, amb deduplicació i període de refredament (<code>../mAI_fitness/lib/training/signals.ts</code>).</li>
+</ul>
+<h3>4.7 Imatges i cost</h3>
+<ul>
+<li><strong>Cost:</strong><ul>
+<li>el text amb Haiku costa ~0,003 $ per look;</li>
+<li>la imatge amb Nano Banana ~0,039 $;</li>
+<li><strong>en un model conversacional, la imatge és el que s&#39;enfila</strong>.</li>
+</ul>
+</li>
+<li><strong>Decisions recomanades</strong> (s&#39;han de confirmar amb l&#39;usuari, §9):<ul>
+<li>La <strong>imatge només per al look proposat i el que s&#39;accepta</strong>. Els refinaments mostren al moment la <strong>graella de peces reals</strong> i la imatge s&#39;actualitza en segon pla amb un indicador de progrés.</li>
+<li>Un canvi de sabates o d&#39;accessoris <strong>no regenera la foto</strong> fins que l&#39;usuari diu &quot;Me&#39;l poso&quot; o &quot;Mostra-me&#39;l&quot;.</li>
+<li>Límit mensual de cost per usuari, com el pressupost de tokens de mAI Fitness (<code>checkBudget</code>), registrat a <code>usage_events</code>.</li>
+</ul>
+</li>
+<li><strong>Model de la conversa:</strong> l&#39;usuari ja ho ha decidit a mAI Fitness: s&#39;<strong>enruta per tasca</strong>. El model barat fa la feina rutinària i el fort només defineix objectius. Detall i equivalències per a OOTD a §12.3.</li>
+</ul>
+<hr>
+<h2>5. Arquitectura objectiu (dades i codi)</h2>
+<h3>5.1 Taules (migracions incrementals, mai amb <code>drizzle-kit push</code> a producció)</h3>
+<ul>
+<li><code>stylist_threads</code>:<ul>
+<li><code>id, user_id, trigger (user|morning|signal|onboarding), status (requested|open|resolved), reason jsonb, live jsonb, created_at, updated_at</code>;</li>
+<li><code>live</code> és el progrés del torn en segon pla.</li>
+</ul>
+</li>
+<li><code>stylist_messages</code>: <code>id, thread_id, seq, role, content jsonb</code>. Es guarden <strong>els blocs d&#39;Anthropic sense tocar</strong>: thinking i tool_use/tool_result, només s&#39;hi afegeix.</li>
+<li><code>stylist_proposals</code>: <code>id, thread_id, kind (taste|wardrobe|…), payload jsonb, status (pending|applied|rejected)</code>.</li>
+<li><code>looks</code> (evolució de <code>saved_outfits</code>):<ul>
+<li><code>id, user_id, thread_id, parent_look_id, date, title, vibe, rationale, chips jsonb, items jsonb [{slot, wardrobe_id, name}], gaps jsonb, image_brief, image_status, image_url, created_at</code>;</li>
+<li>un refinament crea un look fill, de manera que l&#39;historial dels canvis es veu.</li>
+</ul>
+</li>
+<li><code>worn_outfits</code>: afegir <code>look_id</code> i <code>wardrobe_item_ids jsonb</code>, i deixar <code>outfit_text</code> per als registres antics.</li>
+<li><code>taste_versions</code> (o <code>users.taste</code> + <code>users.taste_version</code>): el gust amb pesos, versionat.</li>
+<li><code>wardrobe_items</code>: afegir <code>available boolean</code>, <code>last_worn_at</code> i, opcionalment, <code>warmth</code> / <code>formality</code> (els pot omplir l&#39;anàlisi).</li>
+<li><code>idempotency_keys</code>: per a l&#39;outbox offline (§7.3).</li>
+<li><strong>No hi ha claus foranes entre aquestes taules</strong> (igual que a mAI Fitness): els esborrats es fan a mà, en una transacció (vegeu <code>deleteThread</code>, que no esborra les propostes aplicades).</li>
+</ul>
+<h3>5.2 Peces de codi per copiar o adaptar de mAI Fitness</h3>
+<table>
+<thead>
+<tr>
+<th>Necessitat</th>
+<th>Origen a <code>../mAI_fitness</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bucle de tool use amb streaming, pressupost, ús de tokens, reintents</td>
+<td><code>lib/coach/run.ts</code></td>
+</tr>
+<tr>
+<td>Eines zod → JSON Schema</td>
+<td><code>lib/coach/tools.ts</code></td>
+</tr>
+<tr>
+<td>Snapshot de context per torn</td>
+<td><code>lib/coach/context.ts</code>, <code>prompt.ts</code></td>
+</tr>
+<tr>
+<td>Propostes acceptades per separat</td>
+<td><code>lib/coach/proposals.ts</code>, <code>components/coach/ProposalCard.tsx</code></td>
+</tr>
+<tr>
+<td>Torns en segon pla a Netlify + progrés</td>
+<td><code>netlify/functions/coach-turn-background.mts</code>, <code>lib/coach/{background,live}.ts</code>, <code>components/coach/stream.ts</code></td>
+</tr>
+<tr>
+<td>Proactiu (senyals → fils &quot;demanats&quot; + finestra)</td>
+<td><code>lib/coach/proactive.ts</code>, <code>components/CoachRequestModal.tsx</code></td>
+</tr>
+<tr>
+<td>Pantalla de xat nativa</td>
+<td><code>components/coach/CoachClient.tsx</code>, <code>components/chat/*</code> (ChatComposer, useVisualViewport, useStickToBottom, TypingDots, SwipeRow)</td>
+</tr>
+<tr>
+<td>Full inferior que respecta el teclat</td>
+<td><code>components/ui/Sheet.tsx</code>, <code>ConfirmDialog.tsx</code></td>
+</tr>
+<tr>
+<td>Capa de components i tokens</td>
+<td><code>app/ui.css</code>, <code>app/globals.css</code> (paleta &quot;Her&quot;)</td>
+</tr>
+<tr>
+<td>Offline + cua d&#39;escriptures idempotent</td>
+<td><code>public/sw.js</code>, <code>lib/offline/*</code>, <code>lib/idempotency.ts</code>, <code>components/OfflineSync.tsx</code></td>
+</tr>
+<tr>
+<td>Avís de versió nova + recàrrega</td>
+<td><code>lib/app-version.ts</code>, <code>app/api/version</code>, <code>components/pwa/*</code>, <code>components/PwaUpdateBanner.tsx</code></td>
+</tr>
+<tr>
+<td>Idioma del sistema + preferència</td>
+<td><code>lib/i18n/preference.ts</code>, <code>lib/api.ts › requireUser</code></td>
+</tr>
+<tr>
+<td>Rutes primes</td>
+<td><code>lib/api.ts</code> (<code>requireUser</code>, <code>parseBody</code>), <code>lib/services/*</code></td>
+</tr>
+<tr>
+<td>Proves de cap a cap amb Chrome sense finestra</td>
+<td><code>scripts/e2e/{journeys,coach,offline}.mjs</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>6. Sistema de disseny: &quot;Her&quot; adaptat a la moda</h2>
+<h3>6.1 Principis (els mateixos de mAI Fitness)</h3>
+<ul>
+<li><strong>Càlid, calmat, de paper.</strong> Que no sembli una plantilla:<ul>
+<li>sense vores grises ni etiquetes en majúscules;</li>
+<li>sense xips idèntics ni emojis decoratius;</li>
+<li>sense negres ni blancs purs.</li>
+</ul>
+</li>
+<li><strong>La veu de l&#39;agent és serif cursiva</strong> (Instrument Serif, que OOTD ja carrega): només per a l&#39;estilista (la primera frase de cada resposta, els estats buits on parla ell, el per què del look). <strong>Deixa de ser la tipografia dels títols.</strong></li>
+<li><strong>La foto és la protagonista.</strong> Les targetes de look són gairebé només imatge; la UI s&#39;aparta.</li>
+<li><strong>Navegació Nike:</strong><ul>
+<li>al mòbil, barra inferior: <strong>Avui · Armari · Inspiració · Estilista · Perfil</strong>, sense capçalera superior i amb un títol a cada pantalla;</li>
+<li>el Calendari (looks portats) entra a Avui (la setmana) i al Perfil (l&#39;historial).</li>
+</ul>
+</li>
+</ul>
+<h3>6.2 Decisió oberta: paleta</h3>
+<p>El sistema actual d&#39;OOTD (barra lateral fosca, accent llima i mono en majúscules) és el contrari de &quot;Her&quot;. Recomanació:</p>
+<ul>
+<li><strong>Opció A (recomanada):</strong> la paleta &quot;Her&quot; de mAI Fitness gairebé tal qual: crema <code>#F6EFE8</code>, paper <code>#FFFAF5</code>, sorra <code>#F0E6DC</code>, tinta <code>#2B2320</code>, i un sol accent càlid. Les fotos de roba hi queden molt bé (to de revista).</li>
+<li><strong>Opció B:</strong> la mateixa base càlida, però mantenint el <strong>llima</strong> com a accent de marca, perquè lligui amb la landing. El llima sobre crema pot quedar estrident: <strong>validar-ho al prototip</strong>.</li>
+<li>La landing es queda com està en tots dos casos.</li>
+</ul>
+<h3>6.3 Escala (la de mAI Fitness després de dues passades; vegeu <code>../mAI_fitness/ai/DESIGN.md</code> §4)</h3>
+<ul>
+<li><strong>Tokens de ritme:</strong><ul>
+<li><code>--gutter</code>: 16 px al mòbil;</li>
+<li><code>--gap-section</code>: 20 px;</li>
+<li><code>--gap-item</code>: 10 px.</li>
+</ul>
+</li>
+<li><strong>Tipus:</strong><ul>
+<li>títol de pantalla 28 px;</li>
+<li><code>ui-display</code> (el nom del look) 26 px;</li>
+<li>h2 17, h3 15, files 15 i etiquetes 12.</li>
+</ul>
+</li>
+<li><strong>Controls:</strong><ul>
+<li>botons de 40 px (46 només per a l&#39;acció principal, 32 els petits);</li>
+<li>pastilles de 36 px, camps de 42 px amb text de 16 px (perquè iOS no faci zoom).</li>
+</ul>
+</li>
+<li><strong>Radis:</strong> targetes 18 px, targeta destacada 22 px, camps 12 px, fulls 24 px.</li>
+<li><strong>Regles:</strong><ul>
+<li>un radi no supera el padding del costat en més de ~4 px;</li>
+<li>dos botons al costat millor que apilats;</li>
+<li>el contingut dels fulls posa el marge (el full no n&#39;hi posa).</li>
+</ul>
+</li>
+</ul>
+<h3>6.4 Components</h3>
+<p>Portar <code>app/ui.css</code> de mAI Fitness (card, card-peach → <strong>card-look</strong>, list/row, btn, icon-btn, pill, seg, field, scroller, voice, coach-voice, rise, stack, group) i substituir progressivament <code>lib/ui.ts</code> + <code>.ootd-dash</code> a l&#39;interior de l&#39;app. Components nous:</p>
+<ul>
+<li><strong>LookCard</strong>: foto 3:4, títol, per què en serif, xips, &quot;Me&#39;l poso&quot; i &quot;Un altre&quot;.</li>
+<li><strong>PieceStrip</strong>: les peces reals en una fila amb desplaçament horitzontal; un toc obre el canvi.</li>
+<li><strong>SwapSheet</strong>: 2–3 alternatives de l&#39;armari per a una franja.</li>
+<li><strong>TasteMeter</strong>: la confiança (&quot;Et conec un 70 %&quot;), discret.</li>
+<li>Alternatives en targetes que es poden lliscar (&quot;Dona-me&#39;n 3&quot;): el <em>Tinder-like</em> del ROADMAP §3.8 encaixa aquí.</li>
+</ul>
+<h3>6.5 Interaccions d&#39;alt nivell (requisit indispensable)</h3>
+<p>Copiar-les i provar-les com a mAI Fitness (<code>../mAI_fitness/ai/DESIGN.md</code> §5):</p>
+<ul>
+<li><strong>Xat:</strong><ul>
+<li>un panell a pantalla completa de la mida del <em>visual viewport</em>;</li>
+<li>la capçalera i la caixa de text no es mouen i només fa scroll la conversa;</li>
+<li>el teclat empeny la caixa cap amunt;</li>
+<li>segueix els missatges nous només si ets a baix, i si no, mostra &quot;últim missatge&quot;;</li>
+<li>la caixa de text creix de manera animada;</li>
+<li>Retorn fa salt de línia als dispositius tàctils;</li>
+<li>el botó d&#39;enviar no tanca el teclat.</li>
+</ul>
+</li>
+<li><strong>Fulls:</strong> pugen des de baix, queden sobre el teclat i bloquegen la pàgina. Esborrar es fa <strong>lliscant</strong> (<code>SwipeRow</code>).</li>
+<li><strong>Moviment:</strong> estats de pressió a tot el que es pot tocar, entrades suaus, esquelets amb la forma del contingut, <code>prefers-reduced-motion</code>.</li>
+<li><strong>La imatge del look mai salta:</strong> l&#39;espai està reservat (3:4) i la foto apareix amb un fos quan arriba. Mentre es genera, un esquelet amb el <strong>progrés real</strong> (planificant → vestint → revelant), no una barra falsa.</li>
+<li><strong>Prova:</strong> a 390×844, amb tocs simulats (<code>Input.dispatchTouchEvent</code>) i el teclat obert.</li>
+</ul>
+<h3>6.6 El prototip abans del codi (obligatori)</h3>
+<p>Abans de programar la UI, un prototip navegable de <strong>3 pantalles de mòbil</strong> (Avui amb el look, la conversa amb un refinament, l&#39;armari), amb la paleta triada (A o B) i contingut realista: fotos de la landing i peces de l&#39;armari d&#39;exemple. Validar-lo amb l&#39;usuari i només després aplicar-lo a tota l&#39;app. A mAI Fitness, aquest pas va ser el que va desencallar el redisseny.</p>
+<hr>
+<h2>7. Infraestructura i qualitat (des del primer dia)</h2>
+<ol>
+<li><strong>Els P0 de §3.</strong></li>
+<li><strong>Rendiment:</strong><ul>
+<li>comptar les consultes per pàgina (<code>DB_LOG=1</code>);</li>
+<li>React <code>cache</code> per a l&#39;usuari i el perfil per petició;</li>
+<li><code>Promise.all</code> per a les consultes independents;</li>
+<li><code>loading.tsx</code> amb esquelet;</li>
+<li><code>experimental.staleTimes</code> perquè canviar de pestanya sigui instantani.</li>
+</ul>
+</li>
+<li><strong>Offline:</strong> l&#39;armari i el look d&#39;avui s&#39;han de poder obrir sense cobertura; &quot;Me&#39;l poso&quot; passa per la cua (<code>sendOrQueue</code>) amb idempotència.</li>
+<li><strong>Actualitzacions de la PWA:</strong> <code>/api/version</code> + avís &quot;Nova versió a punt&quot; + Perfil → App → Recarregar + <code>sw.js?v=&lt;build&gt;</code> + recàrrega automàtica si hi ha un <code>ChunkLoadError</code>. La targeta de versió del Perfil <strong>només surt a la PWA instal·lada</strong> (<code>display-mode: standalone</code> o <code>navigator.standalone</code>); al navegador no té sentit i l&#39;usuari la va demanar treure (<code>../mAI_fitness/components/pwa/AppVersionCard.tsx</code>).</li>
+<li><strong>Idiomes:</strong><ul>
+<li>l&#39;idioma del sistema per defecte, que es pot canviar al Perfil (&quot;Automàtic · …&quot;), i el mateix idioma per a la pantalla, les APIs i l&#39;estilista;</li>
+<li>la imatge sempre amb el brief en anglès.</li>
+</ul>
+</li>
+<li><strong>Proves de cap a cap:</strong> scripts amb Chrome sense finestra per als recorreguts. Cal provar:<ul>
+<li>obrir Avui amb el look → &quot;Me&#39;l poso&quot; → queda a la setmana;</li>
+<li>refinar (&quot;més abrigat&quot;) → look fill;</li>
+<li>canviar una peça;</li>
+<li>lliscar per esborrar un fil;</li>
+<li>offline.</li>
+</ul>
+</li>
+<li><strong>Seguretat i privadesa:</strong> les fotos de l&#39;usuari van a Google (Nano Banana). Abans del llançament cal la finestra d&#39;acceptació dels termes nous (ROADMAP).</li>
+<li><strong>Desplegar = comprovar:</strong> després de cada push, consultar <code>/api/version</code> fins que surti el commit nou. Mai dir &quot;desplegat&quot; sense haver-ho vist.</li>
+</ol>
+<hr>
+<h2>8. Pla per fases (cadascuna amb tests i desplegament)</h2>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Contingut</th>
+<th>Fet quan…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0. P0</strong></td>
+<td><code>prepare:false</code>, bucket, Node 24, migracions a <code>lib/db/migrations.ts</code> + PGlite, <code>/api/health</code> amb el temps de la base de dades</td>
+<td>Els tests passen; a producció la base de dades respon en &lt; 15 ms i no hi ha escriptures perdudes</td>
+</tr>
+<tr>
+<td><strong>1. Preguntes + prototip</strong></td>
+<td>Ronda de preguntes (§9), prototip de 3 pantalles, paleta</td>
+<td>L&#39;usuari ha validat el prototip</td>
+</tr>
+<tr>
+<td><strong>2. Model de dades</strong></td>
+<td>Taules de §5.1, migració de <code>saved_outfits</code> / <code>worn_outfits</code> / <code>users.styles</code> → les noves, sense perdre res (dry-run abans)</td>
+<td>El dry-run quadra els recomptes; el codi antic continua funcionant</td>
+</tr>
+<tr>
+<td><strong>3. Lògica pura</strong></td>
+<td>Ocasió → formalitat, abric, rotació, no repetir, xips i senyals</td>
+<td>Tests de cada mòdul</td>
+</tr>
+<tr>
+<td><strong>4. Estilista</strong></td>
+<td>Bucle de tool use, eines zod, snapshot, propostes, background function + <code>live</code>, pressupost</td>
+<td>Un torn real es desa i es veu després de recarregar (prova a producció)</td>
+</tr>
+<tr>
+<td><strong>5. Avui + &quot;Me&#39;l poso&quot;</strong></td>
+<td>Pantalla Avui, LookCard, PieceStrip, SwapSheet, &quot;M&#39;he posat una altra cosa&quot;, setmana</td>
+<td>Recorreguts de cap a cap en verd</td>
+</tr>
+<tr>
+<td><strong>6. Disseny global</strong></td>
+<td><code>ui.css</code> &quot;Her&quot; a tota l&#39;app (no a la landing), navegació inferior, escala de §6.3</td>
+<td>Captures a 390×844 de cada pantalla, sense res de &quot;plantilla&quot;</td>
+</tr>
+<tr>
+<td><strong>7. Proactiu + matí</strong></td>
+<td>Look del matí en segon pla + push, senyals, finestra de petició</td>
+<td>El cron genera el look i la notificació obre la conversa</td>
+</tr>
+<tr>
+<td><strong>8. Onboarding conversacional</strong></td>
+<td>Fase 3 (gust → swipe → armari &quot;core 10&quot;) dins de la conversa amb l&#39;estilista</td>
+<td>Primer look en &lt; 3 min amb un armari petit</td>
+</tr>
+<tr>
+<td><strong>9. Neteja</strong></td>
+<td>Esborrar el generador antic, <code>outfit-parser</code>, collage canvas, admin collages/placeholders, remove.bg (vegeu <code>WARDROBE_RECONSTRUCTION_NEXT.md</code>)</td>
+<td>No queda cap referència al codi antic</td>
+</tr>
+</tbody></table>
+<p>L&#39;usuari va preferir <strong>fer-ho tot seguit i iterar en directe</strong> en lloc de validar fase a fase, però sempre <strong>preguntant abans de qualsevol acció a producció</strong> (migracions, esborrats, buckets).</p>
+<hr>
+<h2>9. Preguntes per fer a l&#39;usuari abans de començar</h2>
+<p>Fes-les <strong>d&#39;una en una</strong>, amb opcions (l&#39;usuari ho va demanar així a mAI Fitness: cada resposta canvia la pregunta següent):</p>
+<ol>
+<li><strong>Moment d&#39;ús real:</strong><ul>
+<li>a quina hora obre l&#39;app (al matí, abans de vestir-se? la nit abans?);</li>
+<li>si la fa servir davant de l&#39;armari, amb el mòbil a la mà.</li>
+</ul>
+</li>
+<li><strong>Proactivitat:</strong> look del matí ja generat (cost d&#39;una imatge al dia per usuari actiu) o generat quan s&#39;obre l&#39;app.</li>
+<li><strong>Imatge:</strong><ul>
+<li>per cada refinament o només per a la proposta i l&#39;acceptat (§4.7);</li>
+<li>què es mostra mentre es genera.</li>
+</ul>
+</li>
+<li><strong>Alternatives:</strong> una proposta i &quot;Un altre&quot; (recomanat), o 3 looks per lliscar d&#39;entrada.</li>
+<li><strong>Paleta:</strong> A (Her pura) o B (Her + llima), amb el prototip davant.</li>
+<li><strong>Model i cost:</strong> confirmar la taula d&#39;enrutament de §12.3 (quines tasques van al model barat i quines al fort) i el pressupost mensual per pla.</li>
+<li><strong>Dades:</strong> què es fa amb <code>worn_outfits</code> en text i amb els <code>saved_outfits</code> antics (migrar o arxivar), i si hi ha usuaris reals a producció.</li>
+<li><strong>Gust:</strong> si els vibes actuals (<code>STYLE_VIBES</code>) són el vocabulari del perfil amb pesos o si se&#39;n defineix un de més curt.</li>
+<li><strong>Ocasions:</strong> la llista de xips (Feina, Sopar, Esport, Esdeveniment, Relax…) i si es vol connectar el calendari del dispositiu més endavant.</li>
+<li><strong>Social i monetització:</strong> el social, fora d&#39;abast. La monetització ja té mètode i model decidits a mAI Fitness (§12.2). Només cal confirmar els preus d&#39;OOTD amb les dades de cost pròpies, sobretot el de les imatges.</li>
+</ol>
+<hr>
+<h2>10. Errors a no repetir (de mAI Fitness)</h2>
+<ol>
+<li><strong>Programar la UI a partir d&#39;una descripció</strong>, sense maqueta → quatre iteracions fallides. Primer, el prototip.</li>
+<li><strong>Barrejar conceptes</strong> en una pantalla (planificar, registrar, parlar). Han de quedar separats: <strong>el look d&#39;avui</strong>, <strong>registrar el que t&#39;has posat</strong> i <strong>parlar amb l&#39;estilista</strong>.</li>
+<li><strong>Fer servir a tot arreu l&#39;escala de pantalla gran</strong> → paddings enormes i desplegables que no hi caben. Cal l&#39;escala de l&#39;app per a mòbil (§6.3) des del principi.</li>
+<li><strong>Fer retocs als valors sense canviar el sistema.</strong> Si &quot;segueix sent massa gran&quot;, es canvien els tokens i es busquen els valors fets a mà.</li>
+<li><strong>Suposar que producció es comporta com local</strong> (temps límit de Netlify, pooler, buckets, regió). Mirar les dades de producció <strong>només llegint</strong> abans de teoritzar.</li>
+<li><strong>Sobreescriure un fitxer existent</strong> (un test nou en va trepitjar un altre). Cal llegir abans d&#39;escriure i vigilar el recompte de tests.</li>
+<li><strong>Que l&#39;agent faci canvis persistents sense permís.</strong> Sempre amb proposta i acceptació per canvi.</li>
+<li><strong>Un xat que sembla una web:</strong> el teclat tapa la caixa, la pàgina es mou, la caixa de text no creix… L&#39;usuari ho va detectar al primer minut. §6.5 és obligatori.</li>
+<li><strong>Una llista genèrica que l&#39;usuari no seguirà.</strong> El primer receptari del coach de menjar eren plats inventats per la IA, correctes però aliens. L&#39;usuari ho va descriure com &quot;el llistat de la nutricionista que mai seguiré&quot;. Es va haver de refer sencer a partir dels seus hàbits reals (vegeu §11.4).</li>
+</ol>
+<hr>
+<h2>11. Aprenentatges recents de mAI Fitness (octubre 2026)</h2>
+<p>Aquests punts no surten a les seccions anteriors. Cada un diu què va passar, per què i com aplicar-ho a OOTD.</p>
+<h3>11.1 Producció: migracions i desplegament</h3>
+<ul>
+<li><strong>Ordre de desplegament.</strong> Si el codi nou llegeix taules o columnes noves, primer s&#39;aplica la migració i després es puja el codi. A mAI Fitness els commits es van quedar en local fins que la migració era a producció. Si es puja abans, les pantalles noves peten amb <code>relation does not exist</code>.</li>
+<li><strong>Les migracions de producció les aplica l&#39;usuari, no l&#39;agent.</strong><ul>
+<li>El classificador del mode automàtic de Claude Code <strong>bloqueja</strong> que l&#39;agent apliqui migracions a producció (<code>db:apply -- --production</code>), encara que l&#39;usuari hagi dit &quot;continua&quot;.</li>
+<li>No s&#39;ha d&#39;intentar saltar per cap altra via.</li>
+<li><strong>Flux:</strong> l&#39;agent fa el <code>db:dry-run</code> (en una transacció amb ROLLBACK, amb recomptes) i ensenya el resultat. L&#39;usuari aplica la migració des del banner d&#39;admin o amb <code>! DATABASE_URL=… npm run db:apply -- --production</code>. Després l&#39;agent puja i comprova <code>/api/version</code>.</li>
+</ul>
+</li>
+<li><strong>Numeració.</strong> Quan s&#39;afegeix una migració nova, l&#39;esborrat de taules antigues (sempre l&#39;última, i només amb confirmació) es renumera, i també la nota del ROADMAP.</li>
+</ul>
+<h3>11.2 API d&#39;Anthropic</h3>
+<ul>
+<li><strong>Cada proposta substitueix només les de la seva família.</strong><ul>
+<li>A mAI Fitness, una proposta nova marcava com a <code>superseded</code> totes les pendents del fil, i proposar uns objectius de menjar esborrava un canvi de rutina pendent.</li>
+<li>Ara cada tipus té una família (<code>PROPOSAL_FAMILY</code> a <code>lib/db/coach.ts</code>).</li>
+<li><strong>A OOTD:</strong> famílies separades per al gust (<code>propose_taste_update</code>), per a l&#39;armari (<code>propose_wardrobe_change</code>) i per als looks.</li>
+</ul>
+</li>
+<li><strong>Tasques laterals amb Haiku, sempre amb un pla B.</strong><ul>
+<li>Exemple: el títol automàtic dels xats (<code>lib/coach/title.ts</code>). Es crida Haiku amb <code>max_tokens: 30</code> només al primer missatge d&#39;un fil sense nom. Si falla, el títol és la primera frase de la pregunta (<code>fallbackTitle</code>).</li>
+<li>L&#39;ús es registra amb la seva pròpia <code>feature</code> (<code>coach_title</code>), perquè <code>/admin/analytics</code> en separi el cost.</li>
+<li>Un títol que l&#39;usuari ha posat no es reescriu mai: es torna a llegir el fil just abans de desar, i <code>resolve_thread</code> ja no sobreescriu el títol.</li>
+<li><strong>A OOTD:</strong> el nom del look, els xips llargs o el resum d&#39;una conversa poden anar a Haiku amb el mateix patró.</li>
+</ul>
+</li>
+<li><strong>Tests sense l&#39;API real.</strong><ul>
+<li><code>runCoachTurn</code> rep el client com a paràmetre. Els tests injecten un client fals amb <code>messages.stream</code> / <code>messages.create</code> que retorna blocs preparats (text, tool_use…), i comproven els esdeveniments (<code>[&#39;text&#39;,&#39;tool&#39;,&#39;text&#39;,&#39;changed&#39;,&#39;done&#39;]</code>) i el que queda a la base de dades.</li>
+<li>Mai <code>vi.mock</code> de tot el SDK per provar el bucle: el client injectat és més simple i no es trenca.</li>
+</ul>
+</li>
+<li><strong>L&#39;eina que cal a l&#39;ordre que toca.</strong><ul>
+<li>Les eines es concatenen per famílies (entrenament i després nutrició). El <code>cache_control</code> va a <strong>l&#39;última eina</strong> de la llista.</li>
+<li>Si s&#39;hi afegeix un bloc d&#39;eines nou, el punt de memòria cau i el cost es dispara sense cap error. Cal revisar l&#39;ús de tokens de cache després d&#39;afegir eines.</li>
+</ul>
+</li>
+</ul>
+<h3>11.3 UI i mides</h3>
+<ul>
+<li><strong>L&#39;app no és la landing.</strong> El primer repàs de mides a mAI Fitness va fallar perquè s&#39;aplicaven els mateixos estils dins i fora de l&#39;app: paddings de landing i textos que no cabien als desplegables. Han de ser <strong>dos sistemes separats</strong>: la landing intacta i una escala fina de mòbil per a l&#39;app (<code>--gutter</code>, <code>--gap-section</code>, <code>--gap-item</code>, <code>ui-stack</code>, <code>ui-group</code>; §6.3).</li>
+<li><strong>Accés directe, sense entrar al detall.</strong><ul>
+<li>L&#39;usuari ho va demanar explícitament: marcar &quot;fet&quot; un àpat d&#39;Avui ha de ser un sol toc a la mateixa fila, i no obrir la recepta per acceptar-lo. A la fila hi ha una icona d&#39;ull per veure el detall.</li>
+<li><strong>A OOTD:</strong> &quot;Me&#39;l poso&quot; ha de ser un sol toc des de la targeta del look d&#39;Avui, i també s&#39;ha de poder desfer amb un toc. El detall del look és opcional.</li>
+</ul>
+</li>
+<li><strong>Canviar el nom d&#39;un xat</strong> es fa tocant el títol de la capçalera (amb una icona de llapis), que obre un full amb un camp. No es fa amb un menú.</li>
+<li><strong>Captures sempre en seqüència.</strong> Les captures amb Chrome sense finestra en paral·lel fallen. A més, un <code>next-server</code> antic al port de proves serveix el build vell: cal matar-lo amb <code>lsof -i :3100</code> abans de provar.</li>
+</ul>
+<h3>11.4 Procés d&#39;iteració amb l&#39;usuari</h3>
+<ul>
+<li><strong>Preguntes d&#39;una en una</strong> abans de cada funcionalitat gran (§9). Al final, un prototip validat i només després codi.</li>
+<li><strong>Fer-ho tot i iterar.</strong> L&#39;usuari prefereix que es construeixin totes les fases seguides i revisar-ho en directe, en lloc d&#39;aturar-se a cada fase. L&#39;excepció és qualsevol acció a producció, que sempre es pregunta abans.</li>
+<li><strong>Agents en segon pla per a la feina paral·lela</strong>, mentre l&#39;agent principal continua parlant amb l&#39;usuari (per exemple, fent-li preguntes del tema següent).<ul>
+<li><strong>Regla:</strong> mai dos agents sobre els mateixos fitxers.</li>
+<li>Si arriba una petició que toca la mateixa zona que un agent en marxa, s&#39;envia a aquell agent (SendMessage) en lloc d&#39;obrir-ne un altre.</li>
+<li>Cada agent fa commits locals, sense pujar res.</li>
+</ul>
+</li>
+<li><strong>Pàgines de votació per recollir preferències en bloc.</strong><ul>
+<li>Per al receptari es va publicar un artifact amb base de dades (capacitat <code>db</code>) amb 110 plats i tres botons cadascun (Sí / ≈ &quot;ho faig diferent&quot;, amb una nota / No), més un camp de text lliure per a &quot;el que fas tu i no hi és&quot;.</li>
+<li>En una sola sessió l&#39;usuari en va marcar 107 i l&#39;agent els va llegir directament amb <code>ArtifactData</code>. És molt més ràpid que fer preguntes, i dona dades estructurades.</li>
+<li><strong>A OOTD:</strong> serveix per al vocabulari d&#39;estil, per a l&#39;onboarding (&quot;et posaries això?&quot;) i per validar una tanda de looks.</li>
+</ul>
+</li>
+<li><strong>Aprendre els hàbits reals, no generar contingut genèric.</strong><ul>
+<li>La lliçó de la &quot;llista de la nutricionista&quot;: l&#39;app ha d&#39;aprendre com menja la persona. Això vol dir un llibre base curat, les seves receptes, una memòria de gust visible i editable (&quot;Com menjo&quot;), i aprendre de cada canvi i de cada rebuig. A més, el coach <strong>només tria</strong> del que hi ha, i ajusta.</li>
+<li><strong>A OOTD és el mateix principi, i encara més fort:</strong><ul>
+<li>l&#39;estilista treballa amb <strong>l&#39;armari real</strong> i amb el que la persona <strong>es posa de debò</strong> (<code>worn_outfits</code>);</li>
+<li>els rebuigs i els &quot;m&#39;he posat una altra cosa&quot; són senyals;</li>
+<li>una fitxa &quot;Com vesteixo&quot; mostra el que ha après, i es pot corregir;</li>
+<li>mai looks d&#39;aparador amb peces que no té.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Les notes de l&#39;usuari són or.</strong> Als vots hi havia notes com &quot;jo no me la cuinaré a mi mateix&quot;, &quot;massa feina&quot; o &quot;a l&#39;air fryer&quot;. Revelen restriccions (cuina per a una persona, el mínim esforç) que cap pregunta directa hauria tret. Cal desar-les i convertir-les en regles del perfil.</li>
+</ul>
+<h3>11.5 Jerarquia i estructura del producte</h3>
+<ul>
+<li><strong>Capes del codi</strong>, que es van mantenir en tots els mòduls nous:<ul>
+<li>la lògica pura de domini a <code>lib/&lt;domini&gt;/</code> (sense I/O i amb tests);</li>
+<li>l&#39;accés a dades a <code>lib/db/*</code>;</li>
+<li>els serveis que munten el payload de cada pantalla a <code>lib/services/*</code>;</li>
+<li>les rutes primes amb <code>requireUser()</code> + <code>parseBody()</code>;</li>
+<li><strong>la IA mai fa càlculs</strong>: tria i conversa, i l&#39;app calcula (a mAI Fitness, cada gram i cada kcal).</li>
+<li><strong>A OOTD:</strong> formalitat, abric, rotació i &quot;no repetir&quot; al codi, i el model només tria entre candidats ja filtrats.</li>
+</ul>
+</li>
+<li><strong>Plantilla base versionada + materialització per setmana + ajust puntual.</strong><ul>
+<li>Tant la rutina com el pla de menjar segueixen el mateix model: una base immutable amb versions (<code>addVersion</code>, mai editar in situ), una setmana real materialitzada a partir d&#39;aquesta base, i adaptacions que només afecten aquella setmana. L&#39;historial no es toca mai.</li>
+<li>Quan l&#39;usuari edita des de la setmana, se li pregunta <strong>&quot;Només aquesta setmana&quot; o &quot;A partir d&#39;ara&quot;</strong>.</li>
+<li>Cada pla té la seva pàgina de consulta, edició manual i iteració amb l&#39;agent, com Programa a mAI Fitness.</li>
+<li><strong>A OOTD:</strong> si hi ha un &quot;armari càpsula&quot; o una &quot;rotació setmanal&quot; de looks, ha de seguir aquest model.</li>
+</ul>
+</li>
+<li><strong>Alternatives com a primera classe.</strong><ul>
+<li>A l&#39;exercici d&#39;avui o a l&#39;àpat d&#39;avui, &quot;Canviar&quot; obre un full: primer un motiu (no tinc temps, no em ve de gust, em falta…) i després 3–5 alternatives ordenades <strong>sense IA</strong> per similitud.</li>
+<li>Triar-ne una només afecta avui, i &quot;Pregunta-ho al coach&quot; queda com a últim recurs.</li>
+<li>És el <code>SwapSheet</code> de §6.4: el rànquing ha de ser una funció pura amb tests (<code>../mAI_fitness/lib/training/alternatives.ts</code>).</li>
+</ul>
+</li>
+<li><strong>Suggeriment vs obligació.</strong><ul>
+<li>A mAI Fitness l&#39;entrenament s&#39;ha de complir, i té estats de fet i no fet. <strong>El pla de menjar no és obligatori</strong>: no hi ha &quot;no complert&quot;, ni vermells, ni ratxes, ni culpa. Si l&#39;usuari menja una altra cosa, el dia es reequilibra en silenci, i un àpat sense marcar compta com a fet tal com estava previst.</li>
+<li><strong>A OOTD, el look és sempre un suggeriment.</strong> Res de &quot;no has seguit el look&quot;, i &quot;m&#39;he posat una altra cosa&quot; és tan vàlid com &quot;me&#39;l poso&quot;. L&#39;estilista suggereix, mai renya.</li>
+</ul>
+</li>
+<li><strong>Dos dominis lligats per un objectiu comú.</strong><ul>
+<li>A mAI Fitness, l&#39;objectiu (per exemple, perdre greix sense perdre força) mou alhora la rutina i la dieta:<ul>
+<li>les calories varien segons el dia d&#39;entrenament;</li>
+<li>els objectius es recalculen quan l&#39;entrenament canvia, sempre com a proposta;</li>
+<li>el coach avisa quan les dues coses no quadren.</li>
+</ul>
+</li>
+<li><strong>A OOTD,</strong> l&#39;equivalent és lligar el look amb el context real (temps, agenda, el que es va portar ahir) i mostrar-ho en una frase de per què.</li>
+</ul>
+</li>
+<li><strong>Un sol agent per a tot el producte.</strong> Es va decidir un únic coach per a l&#39;entrenament i el menjar, en lloc de dos agents, perquè veu tot el context i no es contradiu. A OOTD, un únic estilista per a l&#39;armari, els looks i les compres.</li>
+</ul>
+<hr>
+<h2>12. Decisions de producte, negoci i models (octubre 2026, segona tanda)</h2>
+<p>Són decisions que l&#39;usuari va prendre a mAI Fitness i que no depenen del domini (fitness o menjar). S&#39;han d&#39;aplicar a OOTD des del primer dia, sense tornar-les a debatre. Cada punt explica què es va decidir, per què i com aplicar-ho.</p>
+<h3>12.1 UX/UI</h3>
+<ul>
+<li><strong>Sistema de maquetació d&#39;escriptori.</strong><ul>
+<li><strong>Què:</strong><ul>
+<li>Cada pàgina fa servir <code>AppPage</code>, amb una de quatre plantilles:<ul>
+<li><code>dashboard</code>: 8 + 4 columnes, amb un lateral secundari;</li>
+<li><code>split</code>: 6 | 6, per a dues àrees igual d&#39;importants;</li>
+<li><code>wide</code>: 12 columnes, per a graelles i taules;</li>
+<li><code>focus</code>: un formulari concentrat.</li>
+</ul>
+</li>
+<li>Tota pàgina porta <code>PageHeader</code> (etiqueta, títol, subtítol, accions a la dreta) i, quan cal, <code>PageTabs</code> (pestanyes subratllades a tot l&#39;ample, que no fan scroll a l&#39;escriptori).</li>
+<li>El contingut fa com a màxim ~1.200 px, alineat a l&#39;esquerra al costat del menú lateral, amb 12 columnes.</li>
+<li>Un <strong>test de contracte</strong> (<code>tests/layout-contract.test.ts</code>) falla si alguna pàgina del dashboard no fa servir <code>AppPage</code> + <code>PageHeader</code>.</li>
+</ul>
+</li>
+<li><strong>Per què:</strong> abans cada pàgina tenia una amplada diferent i el títol començava a quatre posicions diferents. Semblava poc professional.</li>
+<li><strong>A OOTD:</strong> copiar <code>components/layout/*</code>, <code>app/ui.css</code> (<code>.ui-page*</code>, <code>.ui-tabs</code>) i <code>ai/DESIGN.md</code> §6.1 de mAI Fitness.</li>
+</ul>
+</li>
+<li><strong>Les &quot;dues columnes a tot arreu&quot; no són un criteri.</strong><ul>
+<li>El primer intent repartia cada pantalla en columnes sense pensar. L&#39;usuari ho va rebutjar: &quot;no segueix un criteri de UX/UI amb sentit&quot;.</li>
+<li><strong>Regla:</strong> primer es decideix la tasca principal de la pantalla i quin contingut és més important. Després es tria un <strong>patró amb nom</strong> i s&#39;escriu a <code>DESIGN.md</code> per què.</li>
+<li><strong>Patrons:</strong><ul>
+<li>barra d&#39;ordres a tot l&#39;ample;</li>
+<li>vista dividida;</li>
+<li>llista + detall;</li>
+<li>graella <em>bento</em> amb files de la mateixa alçada;</li>
+<li>planificador setmanal;</li>
+<li>configuració amb índex d&#39;àncores;</li>
+<li>taula amb columnes alineades.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Regles de jerarquia:</strong><ul>
+<li>Dues àrees igual d&#39;importants tenen el <strong>mateix espai</strong> (a Avui de mAI Fitness, entrenament 50 % | menjar 50 %).</li>
+<li>Una acció o una entrada que afecta <strong>tota la pàgina</strong> va a la capçalera o en una <strong>barra d&#39;ordres a tot l&#39;ample</strong>, mai en una cantonada del lateral. L&#39;usuari ho va dir explícitament amb &quot;Explica&#39;m com estàs&quot;.</li>
+<li>El lateral és <strong>només per a context secundari</strong>: historial, versions, metadades.</li>
+<li>Les accions d&#39;una secció van a la dreta de la seva capçalera (<code>SectionHeader</code>).</li>
+<li>Les files de targetes tenen la mateixa alçada i les taules tenen columnes alineades. <strong>Sense forats.</strong></li>
+</ul>
+</li>
+<li><strong>El mòbil no es toca</strong> quan es fa l&#39;escriptori. Es compara amb captures a 390 px, abans i després (±3 px).</li>
+<li><strong>A OOTD:</strong><ul>
+<li><strong>Avui:</strong> a dalt, la barra &quot;Què et poses avui?&quot; a tot l&#39;ample. A sota, en <code>split</code>, el look | el context (temps, agenda, el que vas portar ahir).</li>
+<li><strong>Armari:</strong> <code>wide</code>, amb una graella de peces i filtres a la capçalera.</li>
+<li><strong>Estilista:</strong> vista dividida (fils | conversa).</li>
+<li><strong>Perfil:</strong> configuració amb índex.</li>
+<li><strong>Look:</strong> el detall amb les peces en un panell.</li>
+</ul>
+</li>
+<li><strong>L&#39;inici serveix per fer; la resta, per consultar i modificar.</strong><ul>
+<li>A mAI Fitness, marcar un àpat com a menjat es fa <strong>només a Avui</strong>, amb un toc. A la pestanya Menjar no s&#39;hi pot marcar res: s&#39;hi consulta i s&#39;hi edita el pla.</li>
+<li><strong>A OOTD:</strong> &quot;Me&#39;l poso&quot; només a Avui. Armari i Looks són per consultar i editar.</li>
+</ul>
+</li>
+<li><strong>Perfils d&#39;ús: l&#39;app ha de funcionar amb poc compromís.</strong><ul>
+<li><p><strong>Com és a mAI Fitness:</strong></p>
+<ul>
+<li>cada àmbit té el seu nivell (entrenament, menjar, cos, coach);</li>
+<li>hi ha tres perfils predefinits: Només entreno, Equilibrat i Exigent;</li>
+<li>un àmbit desactivat <strong>desapareix sencer</strong> i no recorda res a l&#39;usuari;</li>
+<li>canviar de perfil no esborra cap dada;</li>
+<li>el coach, els avisos i l&#39;adaptació només fan servir el que el perfil permet.</li>
+</ul>
+</li>
+<li><p><strong>A OOTD:</strong></p>
+<ul>
+<li><strong>&quot;Només looks&quot;:</strong> el look del dia i prou, sense registrar res.</li>
+<li><strong>&quot;Armari&quot;:</strong> inventari, el que t&#39;has posat i rotació.</li>
+<li><strong>&quot;Estilista&quot;:</strong> tot, amb la conversa, el gust amb pesos, les compres i les revisions.</li>
+</ul>
+<p>La lògica va en un mòdul pur (<code>capabilities()</code>), com <code>../mAI_fitness/lib/profile/usage.ts</code>.</p>
+</li>
+</ul>
+</li>
+<li><strong>Error que es pot copiar sense voler: referències inline que canvien estat.</strong><ul>
+<li>El full del coach feia petar la pàgina (&quot;This page couldn&#39;t load&quot;) en obrir-lo. <code>Sheet</code> passava <code>ref={el =&gt; { … onPanel(el) }}</code>, i React torna a cridar una referència inline a <strong>cada render</strong>. El hook <code>useStickToBottom</code> hi feia <code>setState</code> i provocava un altre render, en un bucle infinit.</li>
+<li><strong>Arreglo:</strong> referència estable (<code>useCallback</code>) i el hook només reacciona a un element nou.</li>
+<li><strong>Test</strong> <code>tests/components/refs.test.ts</code>: prohibeix les referències inline a <code>components/</code> i <code>app/</code>.</li>
+<li><strong>A OOTD:</strong> portar el <code>Sheet</code> i el <code>useStickToBottom</code> ja arreglats, i el test.</li>
+</ul>
+</li>
+</ul>
+<h3>12.2 Negoci i monetització</h3>
+<ul>
+<li><p><strong>Mètode (repetible a OOTD):</strong></p>
+<ol>
+<li><strong>Cost real per missatge:</strong> treure&#39;l de <code>usage_events</code> de producció, <strong>només agregats</strong> (suma i recompte per funció, model i mes), en una transacció <code>READ ONLY</code> i amb permís de l&#39;usuari.</li>
+<li><strong>Perfils d&#39;ús:</strong> construir-ne tres, de lleuger a intens, amb un ús mensual típic, i calcular-ne el cost al mes.</li>
+<li><strong>Mercat:</strong> comparar amb els preus de la competència i amb l&#39;eCPM dels anuncis.</li>
+<li><strong>Resultat:</strong> un informe en una pàgina (artifact) amb la recomanació a dalt.</li>
+</ol>
+<ul>
+<li><strong>A OOTD:</strong> la peça de cost que pesa és la <strong>imatge</strong> (Nano Banana, ~0,039 $ cada una), més que el text.</li>
+</ul>
+</li>
+<li><p><strong>Anuncis, només al pla gratuït:</strong></p>
+<ul>
+<li>Generen <strong>cèntims</strong> per usuari al mes (0,04–0,18 €), mentre que la IA costa <strong>euros</strong>. A més, trenquen l&#39;estètica premium.</li>
+<li>Per servir-ne a la UE cal un <strong>gestor de consentiment (CMP) certificat per Google</strong> (IAB TCF 2.2) amb <strong>Consent Mode v2</strong>. El <code>CookieBanner</code> propi no ho és.</li>
+<li>Fins que hi hagi aquest gestor, <code>ADS_ENABLED</code> queda apagat a producció.</li>
+<li><strong>A OOTD:</strong> el sistema d&#39;anuncis i <code>noAds</code> ja existeixen. Cal lligar-los als drets del pla, no a un camp manual.</li>
+</ul>
+</li>
+<li><p><strong>Plans lligats als perfils d&#39;ús.</strong> Decidit a mAI Fitness (IVA inclòs):</p>
+<table>
+<thead>
+<tr>
+<th>Pla</th>
+<th>Perfil d&#39;ús</th>
+<th>Mensual</th>
+<th>Anual</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Entrena</td>
+<td>Només entreno</td>
+<td>4,99 €</td>
+<td>39,99 €</td>
+</tr>
+<tr>
+<td>Coach</td>
+<td>Equilibrat</td>
+<td>9,99 €</td>
+<td>79,99 €</td>
+</tr>
+<tr>
+<td>Coach+</td>
+<td>Exigent</td>
+<td>16,99 €</td>
+<td>149,99 €</td>
+</tr>
+</tbody></table>
+<p>El preu segueix l&#39;ús i, per tant, el cost.</p>
+<ul>
+<li><strong>A OOTD:</strong> un pla per perfil d&#39;ús (Només looks / Armari / Estilista), amb els preus calculats a partir del cost d&#39;<strong>imatges + text</strong> de cada perfil.</li>
+</ul>
+</li>
+<li><p><strong>Anual destacat i prova llarga:</strong></p>
+<ul>
+<li>A Salut i fitness, el ~60 % dels ingressos són anuals i la baixa al primer any és molt menor (48 % vs 79 %).</li>
+<li>Les proves de 17–32 dies converteixen un ~70 % més que les de menys de 4 dies.</li>
+<li><strong>Decisió:</strong> 14 dies de prova amb tot obert i <strong>sense targeta</strong>, i l&#39;anual presentat com &quot;2 mesos gratis&quot;.</li>
+</ul>
+</li>
+<li><p><strong>Preu fundador:</strong> els testers de la beta tenen un <strong>30 % de descompte per sempre</strong> si es fan subscriptors. Fidelitza i premia el feedback.</p>
+</li>
+<li><p><strong>Pla gratuït:</strong></p>
+<ul>
+<li>sense xat, excepte el primer programa i 5 missatges al mes;</li>
+<li>els usuaris gratuïts no poden menjar-se el marge.</li>
+<li><strong>A OOTD:</strong> look del dia sense imatge, o amb poques imatges al mes, i sense conversa.</li>
+</ul>
+</li>
+<li><p><strong>Pagaments amb Stripe per web:</strong></p>
+<ul>
+<li><strong>Per què per web:</strong> una PWA pot cobrar per web i s&#39;estalvia el 15–30 % de les botigues d&#39;apps. Si un dia hi ha app nativa, caldrà RevenueCat.</li>
+<li><strong>Peces:</strong><ul>
+<li>Checkout amb <code>automatic_tax</code>;</li>
+<li>Billing;</li>
+<li><strong>Customer Portal</strong> per gestionar i cancel·lar;</li>
+<li><strong>Stripe Tax</strong> i alta a l&#39;<strong>OSS de l&#39;IVA europeu</strong>;</li>
+<li>webhooks <strong>idempotents</strong> (<code>checkout.session.completed</code>, <code>customer.subscription.*</code>, <code>invoice.payment_failed</code>).</li>
+</ul>
+</li>
+<li>Sense <code>STRIPE_SECRET_KEY</code>, tota la part de pagaments surt com a &quot;properament&quot; i no es trenca res (flag per presència de claus).</li>
+<li>Un script (<code>scripts/stripe-setup.mts</code>) crea els productes, els preus i el cupó fundador amb la clau de prova.</li>
+</ul>
+</li>
+<li><p><strong>Drets en un mòdul pur.</strong></p>
+<ul>
+<li><code>lib/billing/entitlements.ts</code> → <code>entitlementsFor(user, subscription, now)</code> retorna:<ul>
+<li>el pla o l&#39;estat de la prova;</li>
+<li>el pressupost mensual de missatges i tokens;</li>
+<li>si es mostren anuncis;</li>
+<li>quins perfils d&#39;ús permet.</li>
+</ul>
+</li>
+<li>Els administradors no tenen límits, i qui fa servir la seva pròpia clau d&#39;IA se salta el pressupost. Amb tests de cada cas.</li>
+<li><strong>A OOTD:</strong> substitueix <code>weeklyCredits</code> i els pressupostos globals per env (<code>CLAUDE_MONTHLY_BUDGET_USD</code>, <code>GEMINI_MONTHLY_BUDGET_USD</code>). Els globals es poden mantenir com a fre d&#39;emergència.</li>
+</ul>
+</li>
+<li><p><strong>Legal</strong> (els textos, sempre revisats per un advocat):</p>
+<ul>
+<li><strong>Desistiment de 14 dies:</strong> cal un consentiment exprés i separat per renunciar-hi. Una sentència del TJUE de juliol de 2026 tracta els serveis digitals &quot;dinàmics&quot; com a servei, així que per seguretat es retorna la part proporcional.</li>
+<li>Cancel·lació <strong>en un clic</strong>.</li>
+<li>Preus amb IVA i renovació automàtica explicada.</li>
+<li>Esborrar el compte per correu (amb una frase al peu del Perfil) fins que hi hagi un botó.</li>
+</ul>
+</li>
+<li><p><strong>A OOTD, atenció especial al RGPD amb les fotos:</strong></p>
+<ul>
+<li>Les fotos de persones són dades personals.</li>
+<li><strong>Si es processen cares</strong> (reconeixement, <em>try-on</em> amb la cara de l&#39;usuari), poden ser <strong>dades biomètriques</strong> (art. 9). Això vol dir consentiment explícit, avaluació d&#39;impacte (DPIA) i un contracte de tractament de dades amb Google (Gemini).</li>
+<li>S&#39;ha de dir a la política de privacitat i preguntar-ho a l&#39;advocat <strong>abans</strong> de la beta.</li>
+</ul>
+</li>
+</ul>
+<h3>12.3 Models d&#39;IA: rendiment i cost</h3>
+<ul>
+<li><p><strong>Mesurat a producció a mAI Fitness:</strong> amb Opus a tot arreu, cada missatge de l&#39;usuari costava <strong>0,11–0,18 $</strong>, amb ~58.000 tokens d&#39;entrada per crida.</p>
+<ul>
+<li>El cost l&#39;infla el <strong>context</strong>: el prompt, totes les eines dels dos dominis i una foto de l&#39;usuari amb massa coses (el receptari sencer, l&#39;historial).</li>
+<li>La <strong>memòria cau de prompts</strong> el divideix per ~3 (sense, ~0,26 $ per crida de xat).</li>
+<li><strong>A OOTD:</strong> posar <code>cache_control</code> des del primer dia, revisar els tokens de cache després d&#39;afegir eines (§11.2) i enviar només les eines del tema de la conversa.</li>
+</ul>
+</li>
+<li><p><strong>Enrutar per tasca (decisió de l&#39;usuari).</strong> El model barat (Haiku 4.5) fa la feina rutinària:</p>
+<ul>
+<li>generar receptes, plans de menjar i programes d&#39;entrenament;</li>
+<li>canvis ràpids;</li>
+<li>&quot;què passa avui?&quot; (vacances, cansament, màquina ocupada).</li>
+</ul>
+<p>El model fort (Opus o Sonnet 5.5) <strong>només defineix objectius</strong>: les metes de menjar, les etapes i l&#39;onboarding.</p>
+<ul>
+<li>Ho decideix un mòdul pur (<code>lib/coach/models.ts</code>) segons el tipus de torn, i el torn pot escalar quan cal una eina d&#39;objectius.</li>
+<li>Es pot sobreescriure per env (<code>COACH_MODEL_DEFAULT</code>, <code>COACH_MODEL_GOALS</code>) per tirar enrere de pressa.</li>
+<li>El model queda registrat a cada <code>usage_event</code> per veure&#39;n el repartiment a <code>/admin/analytics</code>.</li>
+</ul>
+</li>
+<li><p><strong>Perquè un model barat sigui fiable:</strong></p>
+<ul>
+<li>esquemes zod estrictes a les eines, i si la validació falla, l&#39;error es torna al model perquè ho reintenti;</li>
+<li><strong>l&#39;app calcula i el model només tria</strong>: quantitats, compatibilitats i filtres al codi, mai al model.</li>
+</ul>
+</li>
+<li><p><strong>A OOTD:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tasca</th>
+<th>Model</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Triar un look entre candidats ja filtrats, &quot;Un altre&quot;, canviar una peça, nom i xips del look, brief de la imatge</td>
+<td><strong>Haiku</strong></td>
+</tr>
+<tr>
+<td>Definir o revisar el <strong>gust</strong> (els pesos del perfil d&#39;estil), l&#39;onboarding d&#39;estil i una auditoria de l&#39;armari (&quot;què et falta&quot;)</td>
+<td><strong>Model fort</strong></td>
+</tr>
+<tr>
+<td>Imatge</td>
+<td><strong>Gemini 2.5 Flash Image</strong> (~0,039 $), només per al look proposat i l&#39;acceptat (§4.7)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Avui OOTD té <code>aiModel</code> per usuari, per defecte <code>claude-sonnet-4-6</code>. S&#39;ha de substituir per l&#39;enrutament per tasca.</li>
+</ul>
+</li>
+<li><p><strong>Resultats mesurats</strong> (mAI Fitness, 2026-10-05, 8 torns reals en català):</p>
+<table>
+<thead>
+<tr>
+<th>Tasca</th>
+<th>Model</th>
+<th>Cost per torn</th>
+<th>Qualitat</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Canviar una recepta</td>
+<td>Haiku 4.5</td>
+<td>≈0,01 $</td>
+<td>Bé. Va inventar un id, va rebre l&#39;error de validació, va cercar i ho va encertar.</td>
+</tr>
+<tr>
+<td>Canviar el pla de menjar</td>
+<td>Haiku 4.5</td>
+<td>≈0,01 $</td>
+<td>Bé. Va fer una pregunta i va proposar plats amb sentit del receptari.</td>
+</tr>
+<tr>
+<td>Generar un programa</td>
+<td>Haiku 4.5</td>
+<td>≈0,01 $</td>
+<td>Correcta, amb petites incoherències: va tornar a preguntar coses ja dites i hi va posar dos dies de pes mort.</td>
+</tr>
+<tr>
+<td>&quot;Què passa avui&quot;</td>
+<td>Haiku 4.5</td>
+<td>≈0,01 $</td>
+<td>Opcions útils.</td>
+</tr>
+<tr>
+<td>Definir objectius i etapes</td>
+<td>Sonnet 5.5</td>
+<td>≈0,09 $ (3 crides)</td>
+<td>Excel·lent: va detectar una incoherència entre els objectius de menjar i l&#39;etapa.</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Abans:</strong> amb Opus a tot arreu, cada missatge costava 0,06–0,18 $.</li>
+<li><strong>Idioma de Haiku:</strong> el català és fluix, perquè hi cola paraules en castellà i anglès (&quot;Mirando&quot;, &quot;targets&quot;, &quot;tight&quot;). Demanar-li un català natural ho redueix, però no ho elimina. L&#39;usuari ho va acceptar a canvi del cost. Sonnet escriu un català impecable a ~0,02 $ per torn.</li>
+<li><strong>Requisits tècnics de Haiku:</strong><ul>
+<li>no accepta missatges <code>system</code> a mitja conversa, així que la foto de context va dins el missatge de l&#39;usuari;</li>
+<li>no accepta el paràmetre <code>effort</code>;</li>
+<li>la memòria cau funciona;</li>
+<li>accepta blocs de pensament d&#39;Opus que ja hi hagi a l&#39;historial.</li>
+</ul>
+</li>
+<li><strong>Error trobat:</strong> l&#39;API retorna l&#39;id amb data (<code>claude-haiku-4-5-20251001</code>). Si la taula de preus només té l&#39;id curt, el cost es compta malament. Normalitza l&#39;id abans de calcular el cost.</li>
+<li><strong>Per a Outfit:</strong><ul>
+<li>Haiku per al dia a dia (canviar una peça, &quot;què em poso avui&quot;, etiquetar);</li>
+<li>el model fort només per definir l&#39;estil i auditar l&#39;armari;</li>
+<li>els models configurables amb variables d&#39;entorn per poder tornar enrere ràpid.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3>12.4 Procés</h3>
+<ul>
+<li><strong>Recorregut de QA amb guió</strong> (<code>../mAI_fitness/scripts/e2e/qa.mjs</code> + <code>qa-seed.mts</code>):<ul>
+<li>es fa sobre un build de producció aïllat, en una còpia del repo amb <code>node_modules</code> copiat amb <code>cp -cR</code> (un enllaç simbòlic trenca Turbopack), una base de dades PGlite pròpia i ports propis;</li>
+<li>Chrome sense finestra fa clic a tota la llista de validació a 390, 1024 i 1440 px, comprova el resultat al DOM, recull errors de consola i de xarxa i fa una captura per pas;</li>
+<li>IA real, però amb un límit d&#39;uns quants torns i el cost apuntat;</li>
+<li>surt una <strong>taula de passa/falla per amplada</strong> de pantalla;</li>
+<li>va trobar dos errors reals que els tests no veien.</li>
+<li><strong>A OOTD:</strong> fer-ne un abans de donar per tancada cada iteració gran.</li>
+</ul>
+</li>
+<li><strong>Decisions d&#39;una en una</strong>, amb opcions i la recomanada primer (§9). Quan una resposta és text lliure, es llegeix sencera: canvia la decisió.</li>
+<li><strong>Agents en segon pla:</strong><ul>
+<li>mai dos agents sobre els mateixos fitxers;</li>
+<li><strong>mai</strong> sobre els serveis locals d&#39;una altra sessió.</li>
+<li><strong>Incident:</strong> un agent va tornar a sembrar la base de dades de proves e2e d&#39;<strong>OOTD</strong> que una altra sessió feia servir. Esborrar i reinserir les 7 peces de <code>e2e@local</code> va poder perdre estat de les proves d&#39;aquella sessió.</li>
+<li>Cada agent té ports i base de dades propis i els atura en acabar.</li>
+</ul>
+</li>
+<li><strong>Mai el <code>npm run dev</code> local contra la base de dades de producció.</strong><ul>
+<li>A mAI Fitness, <code>.env.local</code> apuntava a producció. El codi nou demanava una columna d&#39;una migració que encara no s&#39;havia aplicat, i la pàgina petava (&quot;This page couldn&#39;t load&quot;). Es va confondre amb un error de producció.</li>
+<li><strong>Regla:</strong> local amb PGlite (<code>DATABASE_URL=postgresql://postgres@127.0.0.1:…</code>), i les proves dels agents sempre amb <code>DATABASE_URL</code> explícit.</li>
+</ul>
+</li>
+<li><strong>Migracions a producció:</strong> l&#39;agent fa el dry-run i l&#39;usuari les aplica (§11.1). Es poden aplicar abans d&#39;hora si només afegeixen coses: el codi vell les ignora.</li>
+<li><strong>Accés a producció només per llegir, amb permís explícit i només agregats.</strong><ul>
+<li>El classificador va <strong>bloquejar</strong> que un agent copiés el compte d&#39;un usuari de producció a local per reproduir un error, perquè eren dades personals.</li>
+<li><strong>Alternatives:</strong> demanar el log de Netlify, reproduir-ho amb dades de prova o fer que la pantalla d&#39;error mostri l&#39;error real.</li>
+<li>L&#39;error del full del coach es va trobar reproduint-lo en local amb dades de prova.</li>
+</ul>
+</li>
+<li><strong>Kit de beta</strong> (es prepara abans de convidar ningú):<ul>
+<li><strong>codis d&#39;invitació per grup</strong> (un per perfil d&#39;ús), que fixen el grup, el preu fundador i el perfil suggerit;</li>
+<li>una taula <strong><code>product_events</code></strong> amb un <code>track()</code> (alta, activació, accions clau, paywall, prova, subscripció);</li>
+<li>un botó de <strong>feedback + NPS</strong> al Perfil;</li>
+<li><strong>Admin → Beta</strong> amb retenció D1/D7/D30 per grup, activació, missatges per usuari actiu, <strong>cost d&#39;IA per usuari i grup</strong> i NPS;</li>
+<li>enquestes de <strong>Tally</strong> les setmanes 2, 4 i 6, i les preguntes de preu de <strong>Van Westendorp</strong> a la setmana 4;</li>
+<li><code>ai/BETA.md</code> amb els passos i la plantilla de l&#39;informe final;</li>
+<li>mida orientativa: 40 testers en 3 grups durant 6 setmanes.</li>
+<li><strong>A OOTD:</strong> els esdeveniments clau són &quot;Me&#39;l poso&quot;, &quot;Un altre&quot;, canviar una peça, peça afegida a l&#39;armari i imatge generada (cost).</li>
+</ul>
+</li>
+<li><strong>Documentació de negoci per a algú no tècnic.</strong> L&#39;usuari no és expert en temes empresarials i ho vol explicar a un soci. Per això es fa un artifact amb:<ol>
+<li>un <strong>pla de negoci per fases</strong>;</li>
+<li>la <strong>documentació de l&#39;app</strong>: què inclou cada pla, preus, quin model fa cada tipus de missatge, com funciona cada peça i proveïdors;</li>
+<li>un <strong>tauler de tasques tipus Trello</strong> amb el que ha de fer l&#39;usuari (crear Stripe, posar claus a Netlify, OSS de l&#39;IVA, revisió legal, CMP), desat a la base de dades de l&#39;artifact perquè els dos el puguin moure;</li>
+<li>l&#39;estudi de mercat.</li>
+</ol>
+<ul>
+<li><strong>A OOTD:</strong> el mateix format quan arribi la monetització.</li>
+</ul>
+</li>
+</ul>
+<h2>13. Operar l&#39;app: admin, mètriques, comunicacions, pagaments i desplegament (octubre 2026, tercera tanda)</h2>
+<p>Lliçons apreses en posar a punt una app per a testers i per cobrar. Cada punt diu què es va decidir, per què, i com aplicar-ho a OOTD. OOTD ja té Admin → Users, Admin → Analytics (cost d&#39;IA), el cron diari amb push, i <code>weeklyCredits</code> i <code>noAds</code> a <code>users</code>. La resta no hi és.</p>
+<h3>13.1 Administració</h3>
+<ul>
+<li><strong>Interruptor &quot;Accés complet&quot;</strong> (comp) a Admin → Users, per a amics i col·laboradors.<ul>
+<li><strong>Què dona:</strong> l&#39;app sencera per sempre, sense prova, sense límits de pla i sense anuncis, encara que els pagaments estiguin actius.</li>
+<li><strong>Límit de seguretat:</strong> l&#39;únic límit és un sostre de tokens al mes, <code>COMP_MONTHLY_TOKEN_LIMIT</code>. Si no és un número positiu, s&#39;agafa 20M per defecte, perquè una errada no costi una fortuna.</li>
+<li><strong>Per què:</strong> l&#39;usuari volia que un amic fes servir l&#39;app &quot;com jo&quot;, sense passar pel procés comercial.</li>
+<li><strong>A OOTD:</strong> una columna <code>users.comp_access</code>, que dins del mòdul de drets equival al pla més alt. El sostre s&#39;aplica també a les <strong>fotos</strong> (Gemini), no només als tokens.</li>
+</ul>
+</li>
+<li><strong>Fitxa d&#39;edició d&#39;usuari</strong> a Admin → Users:<ul>
+<li><strong>Camps:</strong> nom, usuari, correu, rol, accés complet, perfil d&#39;ús, idioma, límit d&#39;IA personal, correu verificat, grup de beta, preu fundador i data de fi de prova.</li>
+<li><strong>Només lectura:</strong> data d&#39;alta, última activitat, cost d&#39;IA del mes, i la <strong>llista de comunicacions</strong> enviades a aquell usuari.</li>
+<li><strong>Regles:</strong><ul>
+<li>validació zod al servidor;</li>
+<li>correu i usuari únics (en minúscules);</li>
+<li>un admin no es pot treure el rol a si mateix;</li>
+<li>cada edició deixa un esdeveniment d&#39;auditoria amb <strong>els noms dels camps, mai els valors</strong>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Recursos al Perfil, per a tots els admins:</strong><ul>
+<li><strong>Què és:</strong> enllaços al pla de negoci, a la llista de proves pendents, als panells d&#39;admin i als panells dels serveis (Netlify, Supabase, Stripe, Anthropic, Tally, Analytics).</li>
+<li><strong>Com es serveixen:</strong> venen d&#39;una API (<code>/api/admin/resources</code>) i no del bundle del client, perquè els usuaris normals no vegin els enllaços privats.</li>
+<li><strong>Història:</strong> primer eren només per al propietari, i l&#39;usuari va demanar que els veiessin tots els admins.</li>
+</ul>
+</li>
+</ul>
+<h3>13.2 Mètriques i panells: tres pàgines amb preguntes diferents</h3>
+<table>
+<thead>
+<tr>
+<th>Pàgina</th>
+<th>Pregunta</th>
+<th>Què mostra</th>
+<th>Quan</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Analytics</strong></td>
+<td>Quant ens costa?</td>
+<td>Cost d&#39;IA per mes i funció, previsió del mes i línia de pressupost</td>
+<td>Sempre, cada mes</td>
+</tr>
+<tr>
+<td><strong>Beta</strong></td>
+<td>La gent la fa servir i li agrada?</td>
+<td>Per grup: activació, D1/D7/D30, ús del coach, cost per persona, NPS i feedback. Selector <strong>Testers</strong> (només amb codi d&#39;invitació) / <strong>Everyone</strong> (tothom; els que no tenen codi surten a &quot;No cohort&quot;)</td>
+<td>Durant la beta. Després, &quot;Everyone&quot; fa de panell de salut</td>
+</tr>
+<tr>
+<td><strong>App health</strong></td>
+<td>L&#39;app va bé ara mateix?</td>
+<td>En directe: cost (setmana, mes i previsió), usuaris, errors del coach, mida de la base de dades i dels fitxers, versió publicada, pagaments, ús extern</td>
+<td>Quan es vulgui, i resumit al correu setmanal</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><strong>Resum setmanal per correu als admins</strong>, cada dilluns: un cop per setmana ISO, idempotent.</p>
+</li>
+<li><p><strong>Avisos automàtics</strong> quan es passa un llindar, com a màxim <strong>un per tipus al dia</strong>:</p>
+<ul>
+<li>previsió d&#39;IA per sobre del pressupost, o 80 % del pressupost gastat;</li>
+<li>base de dades al 80 %;</li>
+<li>pic d&#39;errors del coach;</li>
+<li>desplegament fallat;</li>
+<li>pagament fallat;</li>
+<li>una feina del cron que falla (cada feina va embolcallada en un <code>job()</code>).</li>
+</ul>
+</li>
+<li><p><strong>Claus opcionals:</strong></p>
+<ul>
+<li><code>ADMIN_AI_BUDGET_EUR</code>;</li>
+<li><code>ADMIN_DB_LIMIT_GB</code>, per defecte 8;</li>
+<li><code>ANTHROPIC_ADMIN_KEY</code>, l&#39;API d&#39;ús i cost de l&#39;organització. <strong>Pendent de verificar si l&#39;import ve en cèntims.</strong></li>
+<li><code>NETLIFY_API_TOKEN</code> + <code>NETLIFY_SITE_ID</code>, per a l&#39;estat de l&#39;últim desplegament.</li>
+</ul>
+<p>Sense claus, el resum posa &quot;mira-ho a mà&quot; amb l&#39;enllaç.</p>
+</li>
+<li><p><strong>Automàtic vs manual:</strong> és automàtic tot el que surt de la nostra base de dades i el que donen les claus opcionals. Es mira a mà, amb una targeta mensual al tauler i una guia &quot;Revisions periòdiques&quot;: els minuts de build i l&#39;ample de banda de Netlify, l&#39;ús de Supabase, els correus de Resend i els pagaments de Stripe.</p>
+</li>
+<li><p><strong>A OOTD:</strong></p>
+<ul>
+<li>afegir a App health i al resum el <strong>cost de Gemini</strong> i el <strong>nombre de fotos</strong> per setmana;</li>
+<li>fer servir <code>CLAUDE_MONTHLY_BUDGET_USD</code> / <code>GEMINI_MONTHLY_BUDGET_USD</code> com a llindars dels avisos;</li>
+<li>els avisos d&#39;emmagatzematge pesen més, per les fotos.</li>
+</ul>
+</li>
+</ul>
+<h3>13.3 Comunicacions: correu, push i avisos dins l&#39;app</h3>
+<ul>
+<li><strong>Infraestructura:</strong><ul>
+<li><strong>Registre:</strong> una taula <code>notifications_log</code> amb una fila per usuari × esdeveniment × clau × canal (única). Abans d&#39;enviar, cada missatge reclama la seva fila, així que <strong>res no s&#39;envia dues vegades</strong>, encara que el cron es repeteixi.</li>
+<li><strong>Disseny:</strong> una sola plantilla de correu amb la marca, en ca/es/en segons l&#39;idioma de l&#39;usuari.</li>
+</ul>
+</li>
+<li><strong>Esdeveniments de cicle de vida:</strong><ul>
+<li>benvinguda (en verificar el correu o en registrar-se amb OAuth);</li>
+<li>la prova s&#39;acaba d&#39;aquí a 3 dies, i la prova s&#39;ha acabat (el cron, només amb els pagaments actius);</li>
+<li>accés complet donat o tret: treure&#39;l <strong>obre una prova nova de 14 dies</strong> des d&#39;aquell dia, amb un correu que ho explica;</li>
+<li>subscripció nova, canvi de pla, cancel·lació (amb accés fins a final de període), pla acabat;</li>
+<li>termes nous;</li>
+<li>&quot;Novetats&quot; després d&#39;actualitzar l&#39;app, a partir d&#39;un <code>lib/changelog.ts</code> en tres idiomes, que es mostra un cop per versió.</li>
+</ul>
+</li>
+<li><strong>Dins l&#39;app:</strong><ul>
+<li>targetes que surten un sol cop;</li>
+<li>un bàner &quot;actualitza la targeta&quot; quan el pagament està pendent (només a qui paga; ni admins ni accés complet);</li>
+<li>un avís quan es porta el 80 % dels missatges del mes.</li>
+</ul>
+</li>
+<li><strong>El recordatori diari per push s&#39;ha de localitzar.</strong> A mAI estava en anglès, posat a mà.</li>
+<li><strong>Preferències: una graella temes × canals</strong> (correu, push) al Perfil.<ul>
+<li><strong>Temes:</strong> coach, entrenament/ús diari, menjar, progrés, compte, novetats, beta, i admin (només per als admins).</li>
+<li><strong>Correus de compte i facturació:</strong> sempre actius; es mostren bloquejats amb l&#39;explicació.</li>
+<li><strong>Novetats per correu:</strong> <strong>opt-in</strong>, amb la data i hora del consentiment desades.</li>
+<li><strong>Abans d&#39;enviar:</strong> tots els enviaments consulten <code>canNotify(user, tema, canal)</code>.</li>
+</ul>
+</li>
+<li><strong>Acceptar textos legals:</strong><ul>
+<li>Una constant <code>LEGAL_VERSION</code> i la columna <code>users.terms_accepted_version</code>.</li>
+<li>Quan canvia la versió, arriba un correu i, en entrar, un full que no es pot tancar fins que s&#39;accepta.</li>
+<li><strong>Compte:</strong> el primer cron després de publicar-ho envia el correu a tots els usuaris existents.</li>
+</ul>
+</li>
+<li><strong>Configuració externa obligatòria:</strong><ul>
+<li><strong>Resend necessita un domini verificat.</strong> Amb <code>onboarding@resend.dev</code> només arriben correus al propietari del compte.</li>
+<li><strong>Correus de Stripe:</strong> activar a Stripe → Settings → Customer emails els rebuts, els pagaments fallats i el recordatori de la renovació anual.</li>
+</ul>
+</li>
+<li><strong>A OOTD, temes:</strong><ul>
+<li><strong>look del dia</strong>, el push del matí;</li>
+<li><strong>estilista</strong>;</li>
+<li><strong>armari</strong>, amb recordatoris de peces sense fer servir;</li>
+<li><strong>compte</strong>, <strong>novetats</strong> i <strong>beta</strong>.</li>
+</ul>
+</li>
+</ul>
+<h3>13.4 Garantia de pagaments: que ningú faci servir un pla que no ha pagat</h3>
+<p>Tres capes:</p>
+<ol>
+<li><p><strong>Webhooks de Stripe:</strong> el camí normal, que cobreix el 99 % dels casos.</p>
+</li>
+<li><p><strong>Data límit guardada.</strong> <code>current_period_end</code> es comprova <strong>en cada càlcul de drets</strong>, a la nostra base de dades, sense cridar Stripe.</p>
+<ul>
+<li>Subscripció activa: 1 dia de marge.</li>
+<li><code>past_due</code>: <strong>7 dies de gràcia</strong>.</li>
+<li>Cancel·lada: fins a final de període.</li>
+<li>Qualsevol altre estat: sense pla.</li>
+</ul>
+<p>Així es talla a temps encara que es perdi un webhook.</p>
+</li>
+<li><p><strong>Cron diari de reconciliació:</strong> pregunta a Stripe <strong>només</strong> per les subscripcions que vencen en menys de 2 dies, ja vençudes sense renovació, o en <code>past_due</code>. Hi ha un índex a <code>current_period_end</code>. Les que encara tenen mesos per davant no es miren mai, i el cron no fa res si els pagaments no estan actius.</p>
+</li>
+</ol>
+<p><strong>Control al servidor de cada funció de pagament:</strong></p>
+<ul>
+<li><strong>Nivells escollits vs efectius:</strong> es guarden els nivells que l&#39;usuari ha escollit, i en cada petició se&#39;n calculen els efectius, retallats al que permet el seu pla (<code>getEffectiveUsage</code>). Si torna a pagar, recupera la seva configuració sense perdre dades.</li>
+<li><strong>Rutes protegides:</strong> les rutes de les funcions de pagament tornen <strong>403</strong> si el pla no les inclou. Amagar el botó no és suficient.</li>
+<li><strong>A OOTD:</strong> el mateix per a les <strong>fotos al mes</strong>, els <strong>missatges a l&#39;estilista</strong> i les funcions de l&#39;estilista (&quot;dona-me&#39;n 3&quot;, auditoria de l&#39;armari). Quan s&#39;acaben les fotos, el look continua en text.</li>
+</ul>
+<h3>13.5 Desplegament i operació: lliçons cares</h3>
+<ul>
+<li><p><strong>Una variable buida a Netlify va bloquejar tots els desplegaments durant dies.</strong></p>
+<ul>
+<li><strong>Què va passar:</strong> <code>COACH_MONTHLY_TOKEN_LIMIT</code> era buida o 0, i <code>Number(&#39;&#39;)</code> dona 0. Això feia que el coach respongués &quot;sense pressupost&quot;, i 5 tests fallaven <strong>només a Netlify</strong>. El build (<code>npm test &amp;&amp; npm run build</code>) s&#39;aturava, i producció es va quedar amb una versió antiga. L&#39;usuari es pensava que els canvis no funcionaven.</li>
+<li><strong>Solució:</strong><ul>
+<li>llegir les variables d&#39;entorn de manera defensiva (buida, 0, negativa o no numèrica → valor per defecte), amb un test;</li>
+<li>passar els tests en local amb un entorn semblant al de Netlify (<code>NETLIFY=true</code> i les variables reals buides).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Quan &quot;un canvi no surt&quot;:</strong></p>
+<ol>
+<li>mirar <code>/api/version</code> (quin commit està publicat);</li>
+<li>mirar Netlify → Deploys (si n&#39;hi ha de &quot;Failed&quot;, llegir el log);</li>
+<li>mirar la cache de la PWA.</li>
+</ol>
+<p>Per aquest ordre, abans de buscar errors al codi.</p>
+</li>
+<li><p><strong>Migracions SEMPRE abans de pujar codi que selecciona columnes noves.</strong> Si no, l&#39;app peta per a tothom, i ni tan sols es pot arribar al banner d&#39;admin per aplicar-les, perquè el layout ja falla. Primer el dry-run, després aplicar-les, i només llavors el push.</p>
+</li>
+<li><p><strong>Incident: l&#39;usuari va fer <code>git commit</code> + push de la feina a mig fer d&#39;un agent,</strong> amb una migració sense aplicar.</p>
+<ul>
+<li><strong>Com es va resoldre:</strong><ol>
+<li>un <strong>revert</strong> a <code>origin</code> des d&#39;un worktree separat, sense tocar el checkout de l&#39;agent;</li>
+<li>es va passar la suite per assegurar que producció quedava estable;</li>
+<li>quan l&#39;agent va acabar, <code>git merge -s ours origin/main</code> per recuperar la feina sencera;</li>
+<li>dry-run, aplicar la migració i publicar.</li>
+</ol>
+</li>
+<li><strong>Regla:</strong> mentre hi ha agents treballant, ningú fa commit ni push del mateix checkout.</li>
+</ul>
+</li>
+<li><p><strong>Pla per quan l&#39;app sigui pública: migracions &quot;expand/contract&quot; aplicades en el desplegament.</strong></p>
+<ul>
+<li>Cada versió només <strong>afegeix</strong>, i el codi funciona amb la migració aplicada o sense. Esborrar es fa en una versió posterior.</li>
+<li>Un pas del build (o una GitHub Action) fa el dry-run i aplica les migracions additives. Les que esborren dades requereixen un pas manual.</li>
+<li>El layout d&#39;admin ha de carregar encara que hi hagi una migració pendent.</li>
+</ul>
+</li>
+<li><p><strong>Una llista que torna a mostrar un element esborrat:</strong></p>
+<ul>
+<li><strong>Causa:</strong> el service worker serveix la pàgina guardada quan la xarxa triga més de 3,5 s (els <em>cold starts</em> de Netlify en triguen ~3), i el router reaprofita les pàgines precarregades. L&#39;esborrat sí que s&#39;havia fet: el servidor responia 204 i la fila ja no hi era.</li>
+<li><strong>Solució:</strong> les llistes que canvien (converses, i a OOTD l&#39;<strong>armari</strong> i l&#39;<strong>historial de looks</strong>) es tornen a demanar a l&#39;API quan es munta el component.</li>
+</ul>
+</li>
+<li><p><strong>Errors silenciosos:</strong> tota mutació que falla ha de mostrar un avís (&quot;No s&#39;ha pogut… torna-ho a provar&quot;), mai treure l&#39;element de la llista com si hagués anat bé.</p>
+</li>
+<li><p><strong>Prova del 204:</strong> demanar a l&#39;usuari l&#39;estat de la petició a DevTools → Network va servir per descartar el servidor en 2 minuts.</p>
+</li>
+</ul>
+<h3>13.6 Producte i UX</h3>
+<ul>
+<li><strong>Perfils d&#39;ús:</strong> si l&#39;usuari tria &quot;Personalitzat&quot; i canvia un nivell, <strong>continua sent Personalitzat</strong> encara que la combinació coincideixi amb un perfil predefinit. Abans saltava a &quot;Equilibrat&quot; i semblava un error.</li>
+<li><strong>Afegir en text lliure:</strong><ul>
+<li><strong>Exemple:</strong> &quot;dues cerveses i un croissant a mig matí&quot;. Un model barat (Haiku, ~0,002 $) ho converteix en ítems del catàleg amb quantitats, amb una eina forçada i validada amb zod; els números els calcula l&#39;app. Abans de desar, l&#39;usuari ho revisa i ho pot editar. El que no troba al catàleg es marca &quot;≈ estimat&quot;.</li>
+<li><strong>A OOTD:</strong> &quot;avui m&#39;he posat els texans negres i la jaqueta verda&quot; → peces de l&#39;armari → &quot;M&#39;he posat una altra cosa&quot;, sense haver de buscar peça per peça.</li>
+</ul>
+</li>
+<li><strong>Accions paral·leles amb el mateix pes:</strong> &quot;Registrar entrenament&quot; i &quot;Afegir menjar&quot; eren un botó gran i una píndola, i l&#39;usuari ho va detectar. Dues accions germanes van amb el mateix component i la mateixa icona.</li>
+<li><strong>La pantalla d&#39;inici no porta calendari:</strong><ul>
+<li>El calendari viu a la seva pestanya.</li>
+<li>Els widgets per a la pantalla d&#39;inici queden en una <strong>llista d&#39;idees</strong> al roadmap, per quan no se sàpiga com millorar el producte, i s&#39;han de validar amb dades de la beta. Exemples: constància, propera sessió, progrés de l&#39;etapa, rècords, aigua, hàbits, frase del coach.</li>
+<li><strong>A OOTD:</strong> la pantalla d&#39;inici és el look del dia. Idees de widgets: rotació de l&#39;armari, peces oblidades, temps de la setmana, ocasions de l&#39;agenda.</li>
+</ul>
+</li>
+<li><strong>Els preus de la landing surten del mateix mòdul de plans que l&#39;app.</strong> Mai s&#39;escriuen a mà, i un test ho comprova, perquè la landing i l&#39;app no es contradiguin.</li>
+<li><strong>Pàgines amb el registre en els dies passats:</strong> a mAI el calendari permet registrar coses dels últims 14 dies, i el servidor també aplica aquest límit. <strong>A OOTD:</strong> &quot;què em vaig posar dimarts&quot; des del Calendari.</li>
+</ul>
+<h3>13.7 Documents de treball per a un soci no tècnic</h3>
+<ul>
+<li><strong>Artifact del pla de negoci,</strong> un per app i mai barrejats. Pestanyes:<ol>
+<li><strong>Pla de negoci:</strong> el model, quant queda de cada pagament, les fases amb criteris per passar a la següent, riscos, i un bloc de <strong>competència</strong> amb apps amb IA i sense IA, més una taula comparativa.</li>
+<li><strong>Com funciona l&#39;app:</strong> pantalles, conceptes, què inclou cada pla, quin model fa cada tipus de missatge, costos i proveïdors.</li>
+<li><strong>Tasques:</strong> un tauler tipus Trello desat a la base de dades de l&#39;artifact, perquè l&#39;usuari i el soci moguin targetes. Cada targeta té el perquè i els passos.</li>
+<li><strong>Guies:</strong> com fer la beta (setmana a setmana, la pàgina Beta, preguntes de preu, plantilla de l&#39;informe), pagaments pas a pas, anuncis, com es publica una versió, què és cada variable de configuració, revisions periòdiques dels serveis i què queda per fer.</li>
+<li><strong>Estudi de mercat.</strong></li>
+</ol>
+</li>
+<li><strong>&quot;Proves pendents&quot;: un artifact separat</strong>, una llista de TODO amb caselles agrupades per àrea. El que es marca baixa a &quot;Fet&quot;.<ul>
+<li><strong>Després de cada canvi</strong>, l&#39;assistent hi afegeix el que cal provar, amb una línia de com fer-ho, i l&#39;usuari ho marca mentre prova.</li>
+<li><strong>Per què:</strong> les llistes llargues de &quot;què has de validar&quot; dins del xat es perdien.</li>
+</ul>
+</li>
+<li><strong>Revisió mensual dels serveis:</strong> una targeta al tauler i una guia amb què mirar a Netlify, Supabase, Anthropic, Resend i Stripe, i quan preocupar-se (&gt;80 % del pla).</li>
+<li><strong>Separació estricta:</strong> cada app té els seus documents, enllaços i tauler. L&#39;única connexió entre les dues és aquest fitxer de traspàs.</li>
+</ul>
+<h3>13.8 Sense cobertura de veritat (lliçó del 7/10/2026)</h3>
+<ul>
+<li><strong>Què va fallar:</strong> amb cobertura fluixa el mòbil diu que hi ha connexió, però les peticions no reben resposta. Tres hipòtesis no aguanten aquest cas:<ul>
+<li>la navegació entre pestanyes (les peticions RSC del router) anava a la xarxa sense límit de temps, i l&#39;app es quedava penjada;</li>
+<li>si una pàgina guardada depenia de fitxers JS que no eren a la cache, s&#39;esperava per sempre;</li>
+<li>la píndola &quot;sense connexió&quot; només sortia amb <code>navigator.onLine === false</code>, que amb cobertura fluixa no passa mai.</li>
+</ul>
+</li>
+<li><strong>Agreujant:</strong> cada desplegament esborrava les caches versionades (<code>pages-${VERSION}</code>), i el dia de molts deploys el mòbil es va quedar sense res guardat.</li>
+<li><strong>Com es va arreglar:</strong><ul>
+<li>un límit de temps també a les navegacions RSC (4 s, després la còpia guardada);</li>
+<li>guardar els fitxers JS i CSS de cada pàgina en el moment de guardar-la;</li>
+<li>tornar a guardar les pàgines clau en activar una versió nova, i retallar els fitxers vells;</li>
+<li>un límit absolut (12 s abans de la pàgina offline);</li>
+<li>la píndola també quan la resposta ve de la cache.</li>
+</ul>
+</li>
+<li><strong>Com provar-ho:</strong> un test e2e amb un proxy que pot tallar o penjar la connexió, i un cas &quot;deploy nou → mode avió → obrir des de zero&quot;.</li>
+<li><strong>Per a Outfit:</strong> si s&#39;ha de poder obrir sense cobertura (el look del dia al matí, &quot;Me&#39;l poso&quot;), cal aplicar-hi les mateixes regles. Les fotos del look d&#39;avui també s&#39;haurien de guardar.</li>
+</ul>
+<h3>13.9 Navegació al mòbil: 4 pestanyes + &quot;Més&quot; que obre el menú lateral (8/10/2026)</h3>
+<ul>
+<li><strong>Què va fallar:</strong><ul>
+<li>amb 6 pestanyes al peu no hi cabien els textos;</li>
+<li>una pàgina &quot;Més&quot; amb elements de farciment feia que el mòbil tingués una navegació diferent de la de l&#39;ordinador.</li>
+</ul>
+</li>
+<li><strong>Regla:</strong> la navegació ha de ser <strong>idèntica</strong> al mòbil i a l&#39;ordinador.</li>
+<li><strong>Com està fet:</strong><ul>
+<li><strong>Pestanyes:</strong> les quatre de més ús (Avui · Calendari · Menjar · Coach) + &quot;Més&quot;.</li>
+<li><strong>&quot;Més&quot; obre el menú lateral de l&#39;ordinador</strong>, el mateix component (<code>SidebarNav</code>, amb <code>expanded</code> perquè sempre mostri els textos):<ul>
+<li>una capa a pantalla completa per sobre de tot, amb una X a dalt;</li>
+<li>entra des de l&#39;esquerra en 0,5 s i surt en 0,25 s (ease-in-out); a 1 s / 0,5 s es feia lent (canviat el 10/10);</li>
+<li>també es tanca amb Escape, en tocar un enllaç i en tocar fora;</li>
+<li>bloqueja l&#39;scroll de la pàgina i retorna el focus al botó.</li>
+</ul>
+</li>
+<li><strong>&quot;Més&quot; queda marcat</strong> quan ets en una pantalla que no té pestanya (llista <code>MORE_PATHS</code>).</li>
+<li><strong>Sense pàgina <code>/more</code>.</strong></li>
+</ul>
+</li>
+<li><strong>Per a Outfit:</strong> si les pestanyes no hi caben, aplica el mateix patró en lloc de fer una pàgina &quot;Més&quot; pròpia.</li>
+</ul>
+<h3>13.10 Les comprovacions de migració només miren l&#39;esquema de l&#39;app (13/10/2026) — <strong>ja aplicat a OOTD</strong></h3>
+<ul>
+<li><strong>Què va fallar a mAI Fitness:</strong> <code>0038_last_sign_in</code> afegia <code>users.last_sign_in_at</code>. A Supabase, <code>auth.users</code> ja té aquesta columna, i el <code>check</code> (que buscava per <code>relname</code> a tot el catàleg) la va donar per aplicada. No es va executar mai a <code>public.users</code> i <strong>totes les lectures d&#39;usuaris van petar</strong> a producció.</li>
+<li><strong>Regla:</strong> tot <code>check</code> filtra per <code>relnamespace=current_schema()::regnamespace</code> (i <code>information_schema</code> per <code>table_schema = current_schema()</code>).</li>
+<li><strong>A OOTD (14/10):</strong> <code>columnExists</code>, <code>tableExists</code>, els <code>check</code> escrits a mà de <code>lib/db/migrations.ts</code> i <code>/api/admin/db-check</code> ja ho fan. Test a <code>tests/lib/db/migrations.test.ts</code> (crea un <code>auth.users</code> al costat i comprova que no enganya). Cap migració aplicada canvia d&#39;estat: a producció totes són a <code>public</code>.</li>
+<li><strong>Atenció:</strong> qualsevol columna nova a <code>users</code> amb un nom que també tingui <code>auth.users</code> (<code>last_sign_in_at</code>, <code>phone</code>, <code>confirmed_at</code>, <code>banned_until</code>…) hauria fallat igual.</li>
+</ul>
+<h3>13.11 L&#39;agent no narra entre eines (14/10/2026) — <strong>ja aplicat a OOTD</strong></h3>
+<ul>
+<li><strong>Què va fallar:</strong> el que el model escriu entre crides d&#39;eines s&#39;ensenya tal qual, un tros darrere l&#39;altre: &quot;deixa&#39;m mirar…&quot;, &quot;ara el preparo…&quot; i després la mateixa resposta repetida.</li>
+<li><strong>Regla al prompt:</strong> no anunciar passos, no repetir dins la mateixa resposta, parlar un cop al final. Afegida al prompt de l&#39;estilista (<code>lib/stylist/prompt.ts</code>, test a <code>tests/lib/stylist/prompt.test.ts</code>).</li>
+<li><strong>El bug de la UI de mAI Fitness no hi és:</strong> allà, en recarregar el fil després del torn, s&#39;hi tornava a afegir el text del streaming quan el torn acabava amb una targeta o respostes ràpides (es veia la resposta dues vegades; arreglat amb <code>withStreamedReply</code>, <code>lib/coach/streamed.ts</code>). <code>StylistChat</code> descarta el streaming després del <code>mutate()</code>, així que no duplica; el cas contrari (un torn que falla <em>després</em> d&#39;haver parlat perd el text que l&#39;usuari ja havia llegit) sí que hi pot passar. Si es vol, copiar <code>withStreamedReply</code>.</li>
+</ul>
+<h3>13.12 Un xat productiu: &quot;el dia d&#39;un cop d&#39;ull&quot; + respostes per tocar (11/10/2026)</h3>
+<ul>
+<li><strong>mAI Fitness:</strong> el snapshot del coach comença amb &quot;Today at a glance&quot; (<code>lib/coach/context.ts › formatGlance</code>: dies des de l&#39;últim entrenament, la setmana, què toca avui) perquè el coach <strong>no pregunti mai el que ja sap</strong>. Mida la petició (un dia vs. el programa), pregunta com a molt un cop i actua al mateix torn.</li>
+<li><strong>Eina <code>offer_replies</code>:</strong> sota una pregunta, 2–5 respostes per tocar, cadascuna completa (&quot;Gimnàs, 45 min&quot;). Es mostren només mentre són l&#39;últim que s&#39;ha dit (<code>components/chat/QuickReplies.tsx</code>, <code>ChatItem</code> kind <code>replies</code>). Un torn que només ofereix respostes acaba sense una altra ronda del model (estalvia tokens).</li>
+<li><strong>Per a Outfit:</strong> l&#39;estilista ja demana com a molt una pregunta; li falten les respostes per tocar. Exemple: &quot;És a l&#39;oficina o fora?&quot; → &quot;Oficina&quot;, &quot;Sopar fora&quot;, &quot;Totes dues&quot;. Al mòbil, tocar és molt millor que escriure. Candidat clar.</li>
+</ul>
+<h3>13.13 Bloquejat, mai amagat (12/10/2026)</h3>
+<ul>
+<li><strong>Regla:</strong> el que inclou un altre pla i el teu no, <strong>es veu i està bloquejat</strong>: mateix lloc i etiqueta, més apagat, un cadenat, <code>aria-disabled=&quot;true&quot;</code> (mai <code>disabled</code>), i en tocar-ho s&#39;obre <strong>un sol full d&#39;upgrade</strong> (&quot;Millora el pla per desbloquejar …&quot;, el pla més barat que ho té, botó a <code>/plans</code>). Només s&#39;amaga el que l&#39;usuari ha apagat ell mateix.</li>
+<li><strong>Com:</strong> <code>lib/billing/locks.ts › computeLocks(ent, billingEnabled(), usage)</code> és pur i ho deriva tot de <code>PLANS</code>; mateixos nivells que el servidor, així el cadenat i el 403 sempre coincideixen. Res bloquejat amb els pagaments apagats, ni per a admins, accés complet o la prova. Components <code>Locked</code>, <code>UpgradeHost</code>, <code>upgrade</code> (<code>components/billing/</code>); <code>lockProps(feature)</code> + <code>&lt;LockMark /&gt;</code>. Una pantalla sense el pla (Menjar a Avui) deixa un <strong>placeholder</strong> amb la forma del contingut i el missatge.</li>
+<li>Cada funció de pagament nova necessita una clau a <code>UPGRADE_FEATURES</code> i el text a <code>upgrade.features</code> (ca/es/en); un test comprova que les dues llistes coincideixen. Obrir el full registra <code>paywall_viewed { feature, source: &#39;lock&#39; }</code>.</li>
+<li><strong>Per a Outfit:</strong> quan s&#39;activin els plans (fotos del look, auditoria, nombre de peces…), aplicar-ho igual en lloc d&#39;amagar botons. És el millor anunci del pla de pagament.</li>
+</ul>
+<h3>13.14 La IA escriu, les regles són la xarxa (12–13/10/2026)</h3>
+<ul>
+<li><strong>Patró de mAI Fitness</strong> (revisió setmanal i menú de la setmana): primer, <strong>regles pures</strong> donen un resultat vàlid a l&#39;instant; després, <strong>una crida per persona i setmana</strong> a la IA (en segon pla, <code>netlify/functions/week-review-background.mts</code>) amb un dossier (últimes 4 setmanes reals, preferències, el resultat de les regles com a pista) que respon amb <strong>una eina i un vocabulari tancat</strong> de canvis. Un <code>sanitize*</code> el manté dins dels límits (ids desconeguts fora, màxims). Sense clau, sense pressupost o si falla: es queden les regles (<code>aiFailed</code>), i es demana només un cop (<code>aiPendingSince</code>, com a molt 90 s amb &quot;mirant la teva setmana…&quot;).</li>
+<li><strong>Res no canvia sense acceptar:</strong> la nota surt a Avui amb &quot;Aplicar&quot; / &quot;Deixa-ho com està&quot;.</li>
+<li><strong>El que l&#39;usuari fixa es queda:</strong> un canvi &quot;a partir d&#39;ara&quot; porta <code>keep: true</code> i ni les regles ni la IA el toquen.</li>
+<li><strong>Detall tècnic:</strong> els models nous rebutgen un <code>tool_choice</code> forçat: el prompt demana l&#39;eina i la resposta es llegeix amb tolerància.</li>
+<li><strong>Per a Outfit:</strong> és el patró per a una <strong>planificació setmanal de looks</strong> (dilluns: &quot;aquesta setmana tens feina dl–dj, sopar dv, plou dimecres&quot; → una proposta per dia, rotant peces, sense repetir), amb <code>lib/styling/*</code> com a xarxa. També per a la &quot;revisió de l&#39;armari&quot; mensual.</li>
+</ul>
+<h3>13.15 Altres coses petites que valen la pena</h3>
+<ul>
+<li><strong>Últim inici de sessió</strong> (<code>users.last_sign_in_at</code>, a Admin → Usuaris): només es marca on la persona entra ella mateixa (contrasenya, Google, Apple, l&#39;enllaç de verificació), <strong>mai en impersonar</strong> ni en renovar la sessió. Si es porta a OOTD: migració nova amb <code>columnExists</code> (ara ja segur, §13.10).</li>
+<li><strong>Feedback de fora de l&#39;app</strong> (Admin → Beta → &quot;Afegir feedback&quot;, <code>components/admin/ManualFeedbackSheet.tsx</code>, <code>POST</code>/<code>DELETE /api/admin/beta/feedback</code>): el que algú diu per WhatsApp o en persona. Amb un email de compte s&#39;atribueix a aquella persona (cohort i NPS); amb qualsevol altre nom queda sota l&#39;admin amb <code>context.linked = false</code> i fora de l&#39;NPS. Només les files fetes a mà (<code>context.manual</code>) es poden esborrar. A OOTD encara no hi és.</li>
+<li><strong>Esborrany local del que s&#39;ha escrit</strong> (<code>lib/log/draft-store.ts</code>): una pàgina que es tanca no perd res; diu &quot;continues on ho havies deixat&quot; amb &quot;Començar de nou&quot;. Per a Outfit: &quot;M&#39;he posat una altra cosa&quot; i el formulari de peça nova.</li>
+<li><strong>Test env sense clau d&#39;Anthropic</strong> (<code>tests/setup.ts</code>): a OOTD ja hi és (<code>ANTHROPIC_API_KEY</code> i companyia s&#39;esborren).</li>
+</ul>
+<h3>13.16 Llançament (document nou a mAI Fitness: <code>../mAI_fitness/ai/LAUNCH.md</code>, 10/10/2026)</h3>
+<ul>
+<li>Canals que es poden repetir cada setmana (xarxes, comunitats, amics) vs. canals d&#39;<strong>un sol tret</strong> (Product Hunt, Hacker News, premsa): aquests no es gasten fins que l&#39;app retingui.</li>
+<li>Objectiu de la beta: ~40 testers bons, no &quot;fer-se viral&quot;. <strong>Un codi d&#39;invitació per lloc</strong> on surt l&#39;enllaç (la columna &quot;Used&quot; diu qui ha portat gent).</li>
+<li><strong>Portes per passar de fase</strong>, mirades a Admin → Beta: activació ≥ 60 % → comunitats; D7 ≥ 25 % → directoris; D30 ≥ 15 %, NPS ≥ 30 i pagaments → un sol tret.</li>
+<li>Mercats per ordre de facilitat (català → castellà → anglès Europa), domini comprovat abans de comprar, calendari per a <strong>3–4 h/setmana</strong>, vídeos com a gravacions de pantalla amb titulars (sense sortir a càmera), textos preparats.</li>
+<li><strong>Per a Outfit:</strong> copiar l&#39;estructura del document (<code>ai/LAUNCH.md</code>) adaptant canals (TikTok/Instagram de moda, Reddit r/femalefashionadvice, r/malefashionadvice, r/capsulewardrobe) i les portes de fase a les mètriques que ja té Admin → Beta.</li>
+</ul>

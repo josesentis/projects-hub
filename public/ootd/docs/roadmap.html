@@ -1,0 +1,499 @@
+<h1>Roadmap &amp; TODOs — Outfit of the Day</h1>
+<blockquote>
+<p>Document únic. Totes les tasques, fases i bloquejants en un sol lloc.<br>Última revisió: 2026-05-26</p>
+</blockquote>
+<hr>
+<h2>Prerequisits externs bloquejants</h2>
+<blockquote>
+<p>Accions que <strong>no pot fer el codi</strong> — requereixen comptes, claus o decisions externes. Desbloquejar-les permet avançar en múltiples fases.</p>
+</blockquote>
+<h3>Infraestructura</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Comprar domini (suggerits: <code>outfitoftheday.app</code>, <code>oodd.style</code>, <code>ootd.app</code>)</li>
+<li><input disabled="" type="checkbox"> Configurar DNS i publicar a Netlify amb domini personalitzat</li>
+<li><input disabled="" type="checkbox"> Actualitzar <code>NEXT_PUBLIC_APP_URL</code> a Netlify (necessari per a links d&#39;email)</li>
+</ul>
+<h3>Variables d&#39;entorn a Netlify</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <code>DATABASE_URL</code> — connexió a Supabase PostgreSQL</li>
+<li><input disabled="" type="checkbox"> <code>ANTHROPIC_API_KEY</code> — necessari per a la generació d&#39;outfits sense key pròpia</li>
+<li><input disabled="" type="checkbox"> <code>RESEND_FROM</code> — configurar com <code>Outfit of the Day &lt;jose@josesentis.com&gt;</code> (emails de verificació)</li>
+</ul>
+<h3>Serveis externs</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Google AdSense</strong> — aplicar a adsense.google.com (requereix domini actiu + tràfic real). Un cop aprovat: crear Ad Unit i afegir <code>NEXT_PUBLIC_ADSENSE_CLIENT</code> + <code>NEXT_PUBLIC_ADSENSE_SLOT</code> a Netlify</li>
+<li><input disabled="" type="checkbox"> <strong>Apple Developer Program</strong> ($99/any) — necessari per a Apple Sign In</li>
+</ul>
+<h3>Migracions pendents de córrer a producció</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <code>0018_operations</code> i <code>0019_photo_consent</code> (additives). Fer el <code>db:dry-run</code>, aplicar-les amb <code>! set -a; . ./.env.local; set +a; npm run db:apply -- --production</code> i <strong>només llavors</strong> pujar el codi nou (<code>ai/AGENTS.md</code> → Operating rules).</li>
+<li>L&#39;estat real del projecte és a <code>ai/PLAN-estilista.md</code> (§6 i §7); aquest document és anterior al model conversacional.</li>
+</ul>
+<hr>
+<h2>Fase 1 — Completada ✅</h2>
+<p>MVP públic funcional. Tot el que hi ha aquí <strong>ja existeix al codi i a producció</strong>.</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Login / registre amb email i password</li>
+<li><input checked="" disabled="" type="checkbox"> OAuth Google</li>
+<li><input checked="" disabled="" type="checkbox"> Armari personal: puja fotos, anàlisi AI (nom, categoria, descripció)</li>
+<li><input checked="" disabled="" type="checkbox"> Àlbums de referència: puja imatges, importació de Pinterest, anàlisi AI</li>
+<li><input checked="" disabled="" type="checkbox"> Generació d&#39;outfits amb AI (Claude Sonnet 4.6) — estil, referència a peces de l&#39;armari</li>
+<li><input checked="" disabled="" type="checkbox"> Calendari d&#39;outfits confirmats</li>
+<li><input checked="" disabled="" type="checkbox"> Dashboard personal amb calendari mensual i últim outfit</li>
+<li><input checked="" disabled="" type="checkbox"> Notificacions push i email — codi implementat (activació del cron diferida a Fase 3)</li>
+<li><input checked="" disabled="" type="checkbox"> Sistema de crèdits setmanals (infraestructura — enforcement pendent, veure 3.1)</li>
+<li><input checked="" disabled="" type="checkbox"> Pàgina admin: gestió d&#39;usuaris</li>
+<li><input checked="" disabled="" type="checkbox"> Pàgina admin: analytics de costos (Claude + remove.bg per usuari i feature)</li>
+<li><input checked="" disabled="" type="checkbox"> Tracking granular de costos (<code>usage_events</code> table)</li>
+<li><input checked="" disabled="" type="checkbox"> Onboarding wizard per a usuaris nous</li>
+<li><input checked="" disabled="" type="checkbox"> Idiomes: EN, ES, CA</li>
+</ul>
+<p><strong>Watch list:</strong></p>
+<ul>
+<li>Pinterest <code>api.pinterest.com/v3/pidgets</code> és <strong>no oficial</strong> — monitorar si canvia l&#39;API</li>
+</ul>
+<hr>
+<h2>Fase 2 — Neteja tècnica + verificació manual</h2>
+<blockquote>
+<p><strong>Juny 2026.</strong> Deute acumulat de la Fase 1. Prioritat alta: cada nova feature hereda la confusió si no es neteja.</p>
+</blockquote>
+<h3>2.1 — Verificació manual pendent</h3>
+<p><em>Features implementades però no verificades manualment en local/staging.</em></p>
+<p><strong>Onboarding</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Wizard s&#39;obre automàticament per a usuaris nous (0 outfits, 0 ítems)</li>
+<li><input disabled="" type="checkbox"> Botó Skip tanca el wizard i no es torna a obrir en recarregar</li>
+<li><input disabled="" type="checkbox"> Botó Complete marca com a completat; el widget desapareix del dashboard</li>
+<li><input disabled="" type="checkbox"> Widget d&#39;onboarding: barra de progrés, checklist 5 passos, botó &quot;Resume setup&quot;</li>
+</ul>
+<p><strong>Dashboard</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Layout 3 columnes en pantalla md+: onboarding/outfit ocupa 2 cols, calendar 1 col</li>
+<li><input disabled="" type="checkbox"> Calendar widget: navegació de mes (← →), dies amb outfit ressaltats, clic mostra l&#39;outfit</li>
+</ul>
+<p><strong>References (refactor unificat)</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Pinterest import crea <code>image_folder</code> + <code>images</code> — verificar que apareix a la graella</li>
+<li><input disabled="" type="checkbox"> Drag &amp; drop de carpetes: reordenació persistent en recarregar</li>
+<li><input disabled="" type="checkbox"> Drag &amp; drop d&#39;imatges dins carpeta (FolderDrawer)</li>
+<li><input disabled="" type="checkbox"> Folder picker per imatge (botó top-left flotant): mou imatge entre carpetes</li>
+<li><input disabled="" type="checkbox"> Folder: rename inline (llapis), delete amb confirm (imatges passen a arrel), analyze all</li>
+<li><input disabled="" type="checkbox"> ImageDetailModal: folder picker + favorite persistent</li>
+</ul>
+<p><strong>TopBar / SettingsPanel</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Botó &quot;Profile&quot; al dropdown va a <code>/app</code> (no a <code>/profile</code>)</li>
+<li><input disabled="" type="checkbox"> Cookie preferences eliminat del dropdown i del peu del SettingsPanel</li>
+</ul>
+<h3>2.2 — Remove.bg: eliminació de fons</h3>
+<p><em>Millora estètica per presentar millor les peces a l&#39;armari i als outfits generats.</em></p>
+<ul>
+<li><input disabled="" type="checkbox"> Crear compte a remove.bg i obtenir API key</li>
+<li><input disabled="" type="checkbox"> Afegir <code>REMOVEBG_API_KEY</code> a Netlify env vars</li>
+<li><input disabled="" type="checkbox"> El codi ja és complet — en activar la key, funciona automàticament en analitzar cada peça nova</li>
+</ul>
+<h3>2.3 — Deute de codi Pinterest</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Eliminar <code>pinterestBoards</code>, <code>pinterestPins</code> del schema i del codi d&#39;outfits</li>
+<li><input disabled="" type="checkbox"> Eliminar <code>getAnalyzedPinsForBoardsDb</code>, <code>BoardWithPins</code> i tot allò que no sigui la ruta d&#39;importació</li>
+<li><input disabled="" type="checkbox"> Unificar tot a <code>image_folders + images</code> (arquitectura actual)</li>
+</ul>
+<h3>2.3 — Audit atomic design</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Revisar pàgines <code>/app</code>, <code>/calendar</code>, <code>/wardrobe</code> buscant components inline duplicats</li>
+<li><input disabled="" type="checkbox"> Tot el que apareix en &gt;1 pàgina va a <code>components/</code> com a component compartit</li>
+<li><input disabled="" type="checkbox"> Referència: <code>OutfitCard</code> ja unificada. Revisar la resta (modals, cards, botons)</li>
+</ul>
+<h3>2.4 — Bugs admin</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Pool poisoning</strong>: <code>/admin/users</code> pot fallar si <code>usage_tokens</code> no existeix en prod → verificar migració + investigar pool de connexions</li>
+<li><input disabled="" type="checkbox"> <strong>Taula admin users</strong>: afegir <code>overflow-x-auto</code> al wrapper de <code>&lt;table&gt;</code> (<code>app/(dashboard)/admin/users/page.tsx</code>)</li>
+</ul>
+<h3>2.5 — Outfit generation: features pendents</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Persistència de l&#39;outfit actual</strong>: l&#39;outfit generat ha de persistir com a &quot;actual&quot; fins que es confirmi o se&#39;n generi un de nou</li>
+<li><input disabled="" type="checkbox"> <strong>Peces de l&#39;armari a l&#39;outfit</strong>: mostrar peces analitzades visualment integrades a la suggerència generada</li>
+</ul>
+<h3>2.6 — Quick wins d&#39;engagement</h3>
+<p><em>Senzills, milloren la retenció sense dependències de pricing.</em></p>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Wear counter a l&#39;armari</strong>: mostrar <code>wornCount</code> a les cards de cada peça (<code>usageCount</code> ja existeix al schema)</li>
+<li><input disabled="" type="checkbox"> <strong>&quot;Suggest new outfit&quot; CTA</strong>: botó visible a la pàgina d&#39;outfits per generar un nou suggeriment directament</li>
+<li><input disabled="" type="checkbox"> <strong>Hide filename a references</strong>: no renderitzar el nom de fitxer a les targetes (mantenir a DB)</li>
+<li><input disabled="" type="checkbox"> <strong>Streak / stats widget</strong>: &quot;7 dies seguits&quot;, &quot;estil més portat: casual&quot;</li>
+</ul>
+<hr>
+<h2>Fase 3 — Monetització</h2>
+<blockquote>
+<p><strong>Juliol–Setembre 2026.</strong> No implementar fins a tenir 4–6 setmanes de dades a <code>usage_events</code>. Les decisions de pricing han de basar-se en números reals.</p>
+</blockquote>
+<h3>3.0 — Activació del cron i notificacions</h3>
+<p><em>Diferit de Fase 1. Es defineix aquí perquè els missatges de les notificacions depenen dels tiers (crèdits, límits, tipus d&#39;usuari).</em></p>
+<ul>
+<li><input disabled="" type="checkbox"> Definir els tipus de missatge per tier (free vs pro vs sense crèdits)</li>
+<li><input disabled="" type="checkbox"> Afegir <code>CRON_SECRET</code> a Netlify</li>
+<li><input disabled="" type="checkbox"> Configurar cron job (Netlify Scheduled Functions o servei extern) per cridar <code>POST /api/cron/daily</code> amb <code>Authorization: Bearer $CRON_SECRET</code></li>
+</ul>
+<h3>3.1 — Enforcement dels crèdits setmanals</h3>
+<p><em>Infraestructura ja feta. Només cal re-habilitar el codi comentat.</em></p>
+<ul>
+<li><input disabled="" type="checkbox"> Re-habilitar <code>checkAndDecrementCreditsDb</code> a <code>app/api/outfits/route.ts:4</code></li>
+<li><input disabled="" type="checkbox"> Re-habilitar flux <code>no_credits</code> (retornar 402 quan l&#39;usuari no té crèdits)</li>
+<li><input disabled="" type="checkbox"> Admins: crèdits il·limitats sempre</li>
+<li><input disabled="" type="checkbox"> Usuaris amb <code>aiApiKey</code> pròpia: no consumeixen crèdits de la plataforma</li>
+<li><input disabled="" type="checkbox"> <code>lib/db/schema.ts:163</code> — billing periods per usuari (ara sempre dia 1, futur: data de billing per usuari)</li>
+</ul>
+<h3>3.2 — Decisions de tiers (basades en dades)</h3>
+<p><em>Respondre amb les dades de <code>/admin/analytics</code> antes d&#39;implementar res.</em></p>
+<ul>
+<li><input disabled="" type="checkbox"> Quin % d&#39;usuaris supera 5 outfits/setmana? → fixar límit free</li>
+<li><input disabled="" type="checkbox"> Quin cost real per usuari/mes? → fixar preu Pro</li>
+<li><input disabled="" type="checkbox"> Remove.bg és sostenible al free tier o va a Pro?</li>
+</ul>
+<p><strong>Tiers hipotètics (revisar amb dades reals):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Free</th>
+<th>Pro (~€5/mes)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Outfits/setmana</td>
+<td>5</td>
+<td>Il·limitat</td>
+</tr>
+<tr>
+<td>Eliminació de fons</td>
+<td>10 primeres peces</td>
+<td>Il·limitat</td>
+</tr>
+<tr>
+<td>Àlbums de referència</td>
+<td>3</td>
+<td>Il·limitat</td>
+</tr>
+<tr>
+<td>Model AI</td>
+<td>Haiku (ràpid)</td>
+<td>Sonnet (millor)</td>
+</tr>
+</tbody></table>
+<h3>3.3 — Integració Stripe</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <code>Price</code> amb <code>recurring.interval: &#39;month&#39;</code> + opció anual</li>
+<li><input disabled="" type="checkbox"> Webhook per activar/desactivar <code>noAds</code> i límits per usuari</li>
+<li><input disabled="" type="checkbox"> Pàgina de preus amb toggle mensual/anual (referència de disseny: <code>ai/COMPETITION.md</code> → claude.com/pricing)</li>
+<li><input disabled="" type="checkbox"> Botó &quot;Remove Ads / Upgrade&quot; al Settings → redirigeix a pàgina de preus</li>
+<li><input disabled="" type="checkbox"> Regal de benvinguda: 5 crèdits extra en completar el perfil per primer cop</li>
+</ul>
+<h3>3.4 — Emails transaccionals</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Welcome email</strong> — en verificar l&#39;email per primer cop</li>
+<li><input disabled="" type="checkbox"> <strong>Account deletion confirmation</strong> — confirmació en eliminar compte</li>
+<li><input disabled="" type="checkbox"> <strong>Email setmanal</strong> — resum d&#39;outfits de la setmana (diumenge)</li>
+<li><input disabled="" type="checkbox"> <strong>Notificació de reset de crèdits</strong> — email quan es resetegen els crèdits (dilluns)</li>
+</ul>
+<h3>3.5 — Per-user API key UI</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Re-activar UI comentada a <code>app/(dashboard)/profile/page.tsx:301</code></li>
+<li><input disabled="" type="checkbox"> Decidir si és feature Free o Pro (si és Pro, només visible per a subscriptors)</li>
+</ul>
+<h3>3.6 — Apple Sign In</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Activar quan s&#39;hagi pagat l&#39;Apple Developer Program ($99/any)</li>
+<li><input disabled="" type="checkbox"> UI ja comentada a <code>app/(auth)/login/page.tsx:104</code> i <code>register/page.tsx:117</code></li>
+</ul>
+<h3>3.7 — AI enrichment del prompt</h3>
+<p><em>Milloren la qualitat de les suggerències. Alt impacte, relativament simple.</em></p>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Wear rotation</strong>: passar <code>wornCount</code> a l&#39;AI per prioritzar peces menys portades</li>
+<li><input disabled="" type="checkbox"> <strong>Combinació apresa</strong>: quan es confirma un outfit, desar la combinació i usar-la com a context al prompt següent</li>
+<li><input disabled="" type="checkbox"> <strong>Seasonal/weather context</strong>: passar estació + temperatura actual al prompt</li>
+<li><input disabled="" type="checkbox"> <strong>Feedback d&#39;outfit confirmat</strong>: rating/comentari de l&#39;outfit → contexte de preferències</li>
+</ul>
+<h3>3.8 — UX d&#39;outfit avançada</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Tinder-like outfit selection</strong>: lliscar per suggerències històriques per escollir l&#39;outfit d&#39;avui</li>
+<li><input disabled="" type="checkbox"> <strong>Canvi de prenda des del suggeriment</strong>: clic a una peça → modal amb alternatives de la mateixa categoria</li>
+<li><input disabled="" type="checkbox"> <strong>&quot;Suggest new outfit&quot; CTA</strong> visible sempre a la pàgina d&#39;outfits (si no s&#39;ha fet a Fase 2)</li>
+</ul>
+<h3>3.9 — Analytics avançat (Iteració 4 + 5)</h3>
+<p><em>Fer quan hi hagi &gt;50 usuaris actius.</em></p>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Ingressos per usuari</strong>: estimar RPM publicitari per sessions (AdSense)</li>
+<li><input disabled="" type="checkbox"> <strong>Simulador de tiers</strong>: histograma &quot;si limito a X outfits/setmana, quants usuaris es veuen afectats i quant estalvio en $?&quot;</li>
+</ul>
+<h3>3.10 — Events GA4 a implementar</h3>
+<p><em>Enviar amb <code>window.gtag?.(&#39;event&#39;, ...)</code> únicament si l&#39;usuari ha acceptat cookies.</em></p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Quan</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sign_up</code></td>
+<td>Registre completat + email verificat</td>
+</tr>
+<tr>
+<td><code>login</code></td>
+<td>Cada inici de sessió</td>
+</tr>
+<tr>
+<td><code>onboarding_step</code></td>
+<td>Cada pas de l&#39;onboarding</td>
+</tr>
+<tr>
+<td><code>first_outfit_generated</code></td>
+<td>Primera generació (moment &quot;aha!&quot;)</td>
+</tr>
+<tr>
+<td><code>first_wardrobe_upload</code></td>
+<td>Primera peça pujada</td>
+</tr>
+<tr>
+<td><code>first_reference_upload</code></td>
+<td>Primera referència pujada</td>
+</tr>
+<tr>
+<td><code>outfit_generated</code></td>
+<td>Cada generació (inclou <code>style</code>)</td>
+</tr>
+<tr>
+<td><code>outfit_confirmed</code></td>
+<td>&quot;I wore this today&quot;</td>
+</tr>
+<tr>
+<td><code>image_analyzed</code></td>
+<td>Anàlisi (type: reference / wardrobe / pinterest)</td>
+</tr>
+<tr>
+<td><code>wardrobe_item_added</code></td>
+<td>Peça afegida (inclou <code>category</code>)</td>
+</tr>
+<tr>
+<td><code>favorite_toggled</code></td>
+<td>Item marcat/desmarcat com a favorit</td>
+</tr>
+<tr>
+<td><code>credits_exhausted</code></td>
+<td>L&#39;usuari arriba a 0 crèdits (clau per conversió)</td>
+</tr>
+<tr>
+<td><code>api_key_added</code></td>
+<td>L&#39;usuari afegeix key pròpia</td>
+</tr>
+<tr>
+<td><code>upgrade_cta_shown</code></td>
+<td>Es mostra CTA de pagament</td>
+</tr>
+<tr>
+<td><code>purchase_started</code> / <code>purchase_completed</code></td>
+<td>Flux de compra Stripe</td>
+</tr>
+<tr>
+<td><code>api_error</code></td>
+<td>Errors d&#39;API (rate_limited / invalid_key / upload_failed)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Fase 4 — Experiència visual</h2>
+<blockquote>
+<p><strong>Q4 2026.</strong> Depèn d&#39;haver resolt monetització i tenir usuaris pagants. Visió a llarg termini.</p>
+</blockquote>
+<h3>4.1 — Generació visual d&#39;outfits (collage)</h3>
+<ul>
+<li><input disabled="" type="checkbox"> L&#39;outfit passa de ser text + thumbnails a un collage visual generat automàticament</li>
+<li><input disabled="" type="checkbox"> <strong>Prerequisit</strong>: Pool de peces (4.2)</li>
+</ul>
+<h3>4.2 — Pool de peces de roba</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Base de dades interna de peces per categoria/estil (per a usuaris sense armari propi)</li>
+<li><input disabled="" type="checkbox"> Auto-poblar quan s&#39;analitzen imatges de referència i es detecta una prenda nova</li>
+</ul>
+<h3>4.3 — PWA i app nativa</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>PWA</strong>: <code>manifest.json</code>, service worker, icones → instal·lable com a app des del navegador</li>
+<li><input disabled="" type="checkbox"> <strong>App nativa (React Native / Expo)</strong>: quan la PWA no sigui suficient o es vulgui entrar a l&#39;App Store</li>
+</ul>
+<h3>4.4 — Shareable outfit card</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Generar imatge estilitzada de l&#39;outfit del dia</li>
+<li><input disabled="" type="checkbox"> Compartir a Instagram Stories, WhatsApp, o descarregar</li>
+<li><input disabled="" type="checkbox"> <strong>Referència</strong>: Yafa fa exactament això — és un loop viral (veure <code>ai/COMPETITION.md</code>)</li>
+</ul>
+<h3>4.5 — Neteja de <code>usage_events</code> (si cal)</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Cron mensual que elimina events de &gt;6 mesos si la taula supera ~100.000 files</li>
+</ul>
+<h3>4.6 — Investigació i benchmark</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Analitzar competidors amb el mateix format que Yafa (veure <code>ai/COMPETITION.md</code>):<ul>
+<li><strong>Whering</strong> (prioritat alta) — funded, wardrobe management</li>
+<li><strong>Smart Closet</strong> (prioritat alta) — AI outfits, gran base d&#39;usuaris</li>
+<li><strong>Combyne</strong> (mitjana) — social outfit builder</li>
+<li><strong>Stylebook</strong> (mitjana) — iOS, sense AI</li>
+<li><strong>Cladwell</strong> (baixa) — capsule wardrobe, subscription</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> Formulari Google Forms per recollir feedback dels primers usuaris (hàbits, motivació, gustos)</li>
+</ul>
+<hr>
+<h2>Fase 5 — Social + creixement</h2>
+<blockquote>
+<p><strong>2027.</strong> Post-monetització. Competir directament amb Yafa i Smart Closet.</p>
+</blockquote>
+<h3>5.1 — Feed social / comunitat</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Feed d&#39;outfits públics (opt-in per usuari)</li>
+<li><input disabled="" type="checkbox"> Seguidors, likes, comentaris</li>
+<li><input disabled="" type="checkbox"> UI de descoberta i seguiment d&#39;usuaris (schema de <code>follows</code> ja existeix)</li>
+<li><input disabled="" type="checkbox"> <code>Outfit Post</code>: selfie + outfit seleccionat = post de 2 slides (taula <code>outfit_posts</code> a crear)</li>
+</ul>
+<h3>5.2 — Shoppable closet + Vinted</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Shoppable closet</strong>: &quot;Find in stores&quot; tab a References — peces similars a comprar</li>
+<li><input disabled="" type="checkbox"> <strong>Vinted resale</strong>: botó &quot;Sell on Vinted&quot; per peça rarament portada → diferenciador clar vs Yafa</li>
+</ul>
+<h3>5.3 — Detecció d&#39;adblocker</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Popup bloquejant per a usuaris sense <code>noAds</code> si detecta adblocker (Fase 5 perquè necessita AdSense actiu i base d&#39;usuaris)</li>
+</ul>
+<h3>5.4 — Infraestructura d&#39;escala</h3>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Migrar storage a Cloudflare R2</strong> quan Supabase Storage arribi al límit (1 GB free). <code>lib/storage/supabase.ts</code> fa que sigui un canvi d&#39;un sol fitxer.</li>
+</ul>
+<hr>
+<h2>Fase 6 — Intel·ligència col·lectiva (repositori de roba comú)</h2>
+<blockquote>
+<p>Investigació i implementació. Objectiu: fer que l&#39;app sigui més intel·ligent usant dades compartides entre usuaris (anònim/optin), sense comprometre la privacitat.</p>
+</blockquote>
+<h3>6.1 — Repositori de peces de roba &quot;comunes&quot;</h3>
+<p><strong>Concepte:</strong> Una base de dades curada de peces genèriques (categories, colors, estils típics) que l&#39;AI pot usar com a &quot;armari universal&quot; per completar outfits quan l&#39;usuari no té prou peces pròpies.</p>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Investigar arquitectura</strong> — taula <code>common_wardrobe_items</code> amb categoria, color, descripció genèrica, estil; cap imatge personal</li>
+<li><input disabled="" type="checkbox"> <strong>Pàgina admin: gestor de peces comunes</strong> — CRUD d&#39;items del repositori (nom genèric, categoria, tags d&#39;estil, compatibilitats)</li>
+<li><input disabled="" type="checkbox"> <strong>Pàgina admin: combinacions curades</strong> — admins poden afegir combinacions &quot;provades&quot; (p.ex. &quot;jeans blaus + samarreta blanca + sneakers blanques = casual clàssic&quot;)</li>
+<li><input disabled="" type="checkbox"> <strong>Pàgina admin: referències curades</strong> — bank d&#39;imatges de referència editorial que l&#39;AI pot usar si l&#39;usuari no en té prou</li>
+<li><input disabled="" type="checkbox"> Integrar <code>common_wardrobe_items</code> al prompt de generació d&#39;outfits — si l&#39;usuari no té una peça clau, l&#39;AI suggereix la versió genèrica (&quot;un abric beix&quot; en lloc de nada)</li>
+<li><input disabled="" type="checkbox"> Opt-in per a usuaris: &quot;Contribuir el meu armari anonimitzat al repositori comú&quot; → millora la intel·ligència col·lectiva</li>
+</ul>
+<h3>6.2 — Generació d&#39;outfits amb prompt lliure</h3>
+<p><strong>Concepte:</strong> Afegir una caixa de text a la pantalla de generació d&#39;outfits, igual que un editor d&#39;imatges amb IA (Adobe Firefly, Midjourney). L&#39;usuari pot dir &quot;genera un outfit per anar a una boda a la platja&quot; o &quot;vull un look més minimalista que l&#39;últim&quot;.</p>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Investigar UX</strong> — caixa de prompt col·lapsable / expandible al panell de generació</li>
+<li><input disabled="" type="checkbox"> Passar el prompt lliure al context del missatge de Claude (com a &quot;instruccions addicionals&quot;)</li>
+<li><input disabled="" type="checkbox"> UI: exemples de prompts suggerits (&quot;Per a una entrevista de feina&quot;, &quot;Estil street casual&quot;, &quot;Per clima fred&quot;)</li>
+<li><input disabled="" type="checkbox"> Historial de prompts recents per reutilitzar</li>
+</ul>
+<hr>
+<h2>TODOs de codi — referència ràpida</h2>
+<table>
+<thead>
+<tr>
+<th>Fitxer</th>
+<th>TODO</th>
+<th>Fase</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>app/api/outfits/route.ts:4</code></td>
+<td>Re-habilitar crèdits + flux no_credits</td>
+<td>3.1</td>
+</tr>
+<tr>
+<td><code>app/api/outfits/route.ts:74</code></td>
+<td>Deduir crèdits quan no hi ha user key</td>
+<td>3.1</td>
+</tr>
+<tr>
+<td><code>lib/db/schema.ts:163</code></td>
+<td>Billing periods per usuari (no sempre dia 1)</td>
+<td>3.1</td>
+</tr>
+<tr>
+<td><code>app/(auth)/login/page.tsx:104</code></td>
+<td>Apple Sign In comentat</td>
+<td>3.6</td>
+</tr>
+<tr>
+<td><code>app/(auth)/register/page.tsx:117</code></td>
+<td>Apple Sign In comentat</td>
+<td>3.6</td>
+</tr>
+<tr>
+<td><code>app/(dashboard)/profile/page.tsx:301</code></td>
+<td>Per-user API key UI comentada</td>
+<td>3.5</td>
+</tr>
+<tr>
+<td><code>app/(dashboard)/admin/users/page.tsx</code></td>
+<td><code>overflow-x-auto</code> a la taula</td>
+<td>2.4</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Calendari</h2>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Quan</th>
+<th>Prerequisit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Prerequisits externs</strong></td>
+<td>Immediatament</td>
+<td>Decisions externes</td>
+</tr>
+<tr>
+<td><strong>2 — Neteja + verificació</strong></td>
+<td>Juny 2026</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>3.1–3.4 — Crèdits + email</strong></td>
+<td>Juliol 2026</td>
+<td>4–6 setmanes de dades <code>usage_events</code></td>
+</tr>
+<tr>
+<td><strong>3.5–3.9 — Stripe + AI enrichment</strong></td>
+<td>Agost–Setembre 2026</td>
+<td>Dades analytics + decisió tiers</td>
+</tr>
+<tr>
+<td><strong>4 — Experiència visual</strong></td>
+<td>Q4 2026</td>
+<td>Monetització funcionant</td>
+</tr>
+<tr>
+<td><strong>5 — Social + creixement</strong></td>
+<td>2027</td>
+<td>Base d&#39;usuaris pagants</td>
+</tr>
+<tr>
+<td><strong>6 — Intel·ligència col·lectiva</strong></td>
+<td>2027+</td>
+<td>Base d&#39;usuaris + decisions de privacitat</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Després de la generació d&#39;outfits (apuntat el 2026-10-04)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Millora general de l&#39;algoritme d&#39;outfits</strong> (selecció de peces, ús de referències, tendències, variació
+segons època/temps/hora/ocasió). Ara només s&#39;ha tocat el necessari per alimentar la imatge:
+<code>generateOutfit</code> + shortlist de l&#39;armari a <code>lib/outfit-gen/wardrobe-select.ts</code>.</li>
+<li><input disabled="" type="checkbox"> <strong>Reconstrucció de peces amb Nano Banana</strong> substituint remove.bg → <code>ai/WARDROBE_RECONSTRUCTION_NEXT.md</code>.</li>
+<li><input disabled="" type="checkbox"> <strong>Esborrar outfits antics</strong> (només text + collage canvas) i el codi legacy: <code>lib/collage-generator.ts</code>,
+<code>components/OutfitCollage.tsx</code>, <code>/api/worn-outfits/[id]/collage</code>, admin collages/placeholders,
+<code>public/wardrobe-placeholders/</code>.</li>
+<li><input disabled="" type="checkbox"> <strong>Tornar a activar límits/crèdits setmanals</strong> quan acabi la fase de test (ara no s&#39;apliquen, per decisió).</li>
+<li><input disabled="" type="checkbox"> <strong>Consentiment</strong>: push d&#39;acceptació de nous T&amp;C (les fotos viatgen a Google) abans del llançament oficial.</li>
+<li><input disabled="" type="checkbox"> Si la plataforma limita les funcions per sota de ~20s: moure el job a una Netlify Background Function.</li>
+<li><input disabled="" type="checkbox"> Imatges per tendència (descartat de moment: faria les imatges massa semblants).</li>
+<li><input disabled="" type="checkbox"> <strong>Tests manuals de Nano Banana</strong> (identitat, peces, referències, filtres, cost) → <code>ai/NANO_BANANA_TESTS.md</code>.</li>
+</ul>

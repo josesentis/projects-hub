@@ -1,0 +1,305 @@
+<h1>OOTD — App Style Manual</h1>
+<p>The single source of truth for building <strong>new dashboard / app screens and components</strong> so they
+match OOTD&#39;s design language. Hand this to Claude Code alongside <code>dashboard-restyle/</code> (a working
+reference prototype of every current screen). Same brand DNA as the landing page, adapted to a
+working application.</p>
+<blockquote>
+<p><strong>Golden rule:</strong> OOTD is <em>editorial fashion software</em>. Dark, confident <strong>navigation chrome</strong>;
+a calm, <strong>light gallery canvas</strong> for content so clothing photos are the heroes. Restrained type,
+generous whitespace, hairline borders, a single lime accent used sparingly. Never busy, never
+&quot;SaaS-template&quot;. When unsure, do less.</p>
+</blockquote>
+<hr>
+<h2>1. Foundations</h2>
+<h3>1.1 Colour tokens (CSS variables — all scoped under <code>.ootd-dash</code> in <code>app/(dashboard)/dashboard.css</code>)</h3>
+<p><strong>Content (light canvas)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--app-bg</code></td>
+<td><code>#f1f0ea</code></td>
+<td>page background (warm off-white)</td>
+</tr>
+<tr>
+<td><code>--surface</code></td>
+<td><code>#ffffff</code></td>
+<td>cards, tables, modals, inputs</td>
+</tr>
+<tr>
+<td><code>--surface-2</code></td>
+<td><code>#f7f6f1</code></td>
+<td>insets, hovers, placeholders</td>
+</tr>
+<tr>
+<td><code>--ink</code></td>
+<td><code>#15150f</code></td>
+<td>primary text (warm near-black)</td>
+</tr>
+<tr>
+<td><code>--muted</code></td>
+<td><code>rgba(21,21,15,.58)</code></td>
+<td>secondary text, body</td>
+</tr>
+<tr>
+<td><code>--faint</code></td>
+<td><code>rgba(21,21,15,.38)</code></td>
+<td>mono labels, meta, captions</td>
+</tr>
+<tr>
+<td><code>--line</code></td>
+<td><code>rgba(21,21,15,.12)</code></td>
+<td>borders / hairlines</td>
+</tr>
+<tr>
+<td><code>--line-2</code></td>
+<td><code>rgba(21,21,15,.07)</code></td>
+<td>faint dividers (table rows)</td>
+</tr>
+</tbody></table>
+<p><strong>Sidebar (dark chrome)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--side</code></td>
+<td><code>#0e0e0c</code></td>
+</tr>
+<tr>
+<td><code>--side-2</code></td>
+<td><code>#1a1a17</code></td>
+</tr>
+<tr>
+<td><code>--side-ink</code></td>
+<td><code>#f4f4f0</code></td>
+</tr>
+<tr>
+<td><code>--side-muted</code></td>
+<td><code>rgba(244,244,240,.56)</code></td>
+</tr>
+<tr>
+<td><code>--side-faint</code></td>
+<td><code>rgba(244,244,240,.34)</code></td>
+</tr>
+<tr>
+<td><code>--side-line</code></td>
+<td><code>rgba(244,244,240,.10)</code></td>
+</tr>
+</tbody></table>
+<p><strong>Accent &amp; status</strong></p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--accent</code></td>
+<td><code>#d6ff3f</code></td>
+<td>the ONE accent — lime. Active nav, primary buttons, the eyebrow dot, key highlights. Use sparingly.</td>
+</tr>
+<tr>
+<td><code>--accent-ink</code></td>
+<td><code>#10120a</code></td>
+<td>text/icon on lime surfaces</td>
+</tr>
+<tr>
+<td><code>--accent-soft</code></td>
+<td><code>color-mix(--accent 16%, transparent)</code></td>
+<td>glows, focus rings</td>
+</tr>
+<tr>
+<td><code>--danger</code></td>
+<td><code>#e5484d</code></td>
+<td>destructive (&quot;Elimina&quot;)</td>
+</tr>
+<tr>
+<td><code>--fav</code></td>
+<td><code>#ec5a5a</code></td>
+<td>favourite heart</td>
+</tr>
+</tbody></table>
+<p><strong>Accent discipline:</strong> at most ~2 lime elements per screen (e.g. the active nav item + the primary action). Everything else is ink / neutral. Lime is a spotlight, not a theme.</p>
+<h3>1.2 Typography</h3>
+<p>Three families. Loaded via <code>next/font/google</code> in <code>app/layout.tsx</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>CSS var</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Instrument Serif</strong> (400, also italic)</td>
+<td><code>--serif</code></td>
+<td>Page titles (<code>.h1</code>), big numbers/stats, modal titles, the wordmark. Editorial voice. Italic for emphasis only.</td>
+</tr>
+<tr>
+<td><strong>Archivo</strong> (400–900)</td>
+<td><code>--grotesk</code></td>
+<td>All UI: body, buttons, nav, inputs, card titles (600–700), table cells.</td>
+</tr>
+<tr>
+<td><strong>JetBrains Mono</strong> (400/500)</td>
+<td><code>--mono</code></td>
+<td>Eyebrows, section labels, meta, counts, table headers, badges, item codes. UPPERCASE, letter-spacing <code>.14–.2em</code>, 10–11px.</td>
+</tr>
+</tbody></table>
+<p><strong>Type recipes</strong></p>
+<ul>
+<li>Page title <code>.h1</code>: serif 400, <code>clamp(34px,3.4vw,46px)</code>, <code>line-height:1</code>, <code>letter-spacing:-.01em</code>. Emphasis word in <code>&lt;em&gt;</code> (italic).</li>
+<li>Eyebrow (above every page title): <code>.eyebrow</code> = mono 11px + a lime <code>.dot</code> (6px, glowing). One short label, e.g. <code>EVERYTHING YOU OWN</code>, <code>USAGE &amp; COST</code>.</li>
+<li>Section label: <code>.section-label</code> = mono 11px <code>.18em</code> faint — separates blocks within a page (<code>ESTIL PER VIBE</code>, <code>CARPETES</code>).</li>
+<li>Card title: grotesk 700, 15–17px. Big stat number: grotesk 800 <code>clamp(28px,2.6vw,38px)</code> (or serif 400 for a softer, editorial number).</li>
+<li>Body: grotesk 14–15px, <code>--muted</code>.</li>
+</ul>
+<h3>1.3 Spacing, shape, motion</h3>
+<ul>
+<li><strong>Radii:</strong> cards/modals <code>--r-card:14px</code>; tiles/inputs/image frames <code>--r-tile:8px</code>; pills/buttons/chips <code>--r-pill:100px</code>; modal <code>18px</code>.</li>
+<li><strong>Page padding:</strong> <code>30px 40px 80px</code>; max-width <code>1500px</code>, centred. Topbar <code>16–40px</code>, min-height 72px, sticky + blur.</li>
+<li><strong>Rhythm:</strong> ~34px between page sections; 18–22px grid gaps; 24–26px card padding.</li>
+<li><strong>Borders over shadows:</strong> every surface gets a 1px <code>--line</code>; shadows are very soft (<code>--shadow</code>). Modals use <code>--shadow-lg</code>.</li>
+<li><strong>Easing:</strong> <code>--ease cubic-bezier(.22,.61,.36,1)</code> (general), <code>--ease-out cubic-bezier(.16,1,.3,1)</code> (entrances). Transitions 200–350ms. Hover lifts <code>translateY(-1px)</code>. Keep motion subtle.</li>
+<li><strong>Icons:</strong> simple 1.6px-stroke line icons on a 24px grid, <code>stroke:currentColor</code> (see <code>dashboard-restyle/nextjs/Icons.tsx</code>). 20px in nav, 16–17px in buttons. No filled/duotone icons.</li>
+</ul>
+<hr>
+<h2>2. Layout</h2>
+<ul>
+<li><strong>App shell:</strong> CSS grid <code>grid-template-columns: var(--sidebar-w, 280px) 1fr; min-height:100vh</code>. Class <code>app ootd-dash</code> on the root div (in <code>app/(dashboard)/layout.tsx</code>).</li>
+<li><strong>Sidebar</strong> (<code>.sidebar</code>, dark, sticky full-height): serif italic wordmark &quot;Outfit of the Day&quot; at top → primary <code>.nav</code> → a <code>.nav-group</code> mono divider (&quot;ADMIN&quot;) → secondary <code>.nav</code> → spacer → <code>.side-user</code> footer.</li>
+<li><strong>Main</strong> (<code>.main</code>): sticky <code>.topbar</code> (right-aligned <code>.user-chip</code>) over a scrolling <code>.page</code>.</li>
+<li>Every page opens with a <code>.page-head</code>: an <code>.eyebrow</code>, the serif <code>.h1</code>, an optional <code>.sub</code> (muted count/date), and an optional right-aligned action (button or link).</li>
+<li><strong>Responsive:</strong> sidebar hides below 860px (MobileNav component handles it); two-column page layouts collapse to one column ~1180px; tables get <code>overflow-x:auto</code>.</li>
+<li><strong>CSS scoping:</strong> ALL design system rules are prefixed <code>.ootd-dash</code> so they never collide with Tailwind preflight or landing page CSS. Never add <code>.ootd-dash</code> to landing page elements.</li>
+</ul>
+<hr>
+<h2>3. Components (classes live in <code>app/(dashboard)/dashboard.css</code>, scoped under <code>.ootd-dash</code>)</h2>
+<h3>Navigation item — <code>.nav-item</code> (<code>.active</code> = lime pill)</h3>
+<p>Icon + label, pill radius, <code>white-space:nowrap</code>. Hover → <code>--side-2</code>. Active → lime bg, ink text, weight 600. Exactly one active at a time.</p>
+<h3>Buttons — <code>.btn</code></h3>
+<ul>
+<li><code>.btn-primary</code> — lime, ink text. The page&#39;s main action (e.g. &quot;Suggereix outfit&quot;, &quot;+ Afegeix&quot;). Optional leading icon (star/plus). One per screen.</li>
+<li><code>.btn-dark</code> — ink bg, white text. Secondary strong action.</li>
+<li><code>.btn-ghost</code> — surface + 1px line. Tertiary.</li>
+<li><code>.btn-danger</code> — red text, used ghost-style for destructive.</li>
+<li><code>.btn-lg</code> for hero actions. <code>.icon-btn</code> (34px square) for edit/delete/close on cards.</li>
+</ul>
+<h3>Chips / pills — <code>.chip</code></h3>
+<p>Selectable tags (vibes, styles, filters). Default = surface + line; hover → ink border. Selected = <code>.sel</code> (ink fill, white text); <code>.sel.accent</code> (lime fill) for the single &quot;primary&quot; selection like the chosen vibe. Counts use a trailing mono <code>.ct</code>. Lay out in <code>.chips</code> (flex-wrap, 10px gap).</p>
+<h3>Inputs — <code>.input</code> / <code>.textarea</code> / <code>.select</code></h3>
+<p>Surface bg, 1px line, 8px radius, 14–16px padding. Focus → ink border + <code>--accent-soft</code> ring. Always preceded by a mono <code>.label</code>. Selects use a custom chevron background.</p>
+<h3>Cards — <code>.card</code> (+ <code>.card-pad</code>)</h3>
+<p>White, 1px line, 14px radius, soft shadow. The base container for everything: outfit cards, folders, wardrobe items, panels. Image areas inside use <code>--r-tile</code> and a fixed <code>aspect-ratio</code>.</p>
+<h3>Stat card — <code>.stat</code></h3>
+<p>Mono <code>.k</code> label → big <code>.v</code> number (grotesk 800 or serif) → muted <code>.m</code> sub. Lay out in an auto-fit grid (<code>minmax(220px,1fr)</code>).</p>
+<h3>Badges — <code>.badge</code></h3>
+<p>Mono micro-labels. Variants: default (neutral), <code>.solid</code> (ink/white, e.g. &quot;Analitzat&quot;), <code>.live</code> (soft-lime status), <code>.ok</code> (ink bg + lime text, e.g. &quot;admin&quot;). For category tags, status, roles.</p>
+<h3>Tabs — <code>.tabs</code> / <code>.tab</code></h3>
+<p>Underline tabs for in-page filtering (wardrobe categories). Active = ink text + 2px ink underline. Counts in a trailing mono <code>.n</code>. Horizontally scrollable.</p>
+<h3>Table — <code>.table</code></h3>
+<p>Surface card with hairline rows. <code>thead th</code> = mono uppercase faint. Rows hover → <code>--surface-2</code>. Numerics use <code>.num</code> (mono, tabular, right-aligned). Two-line cells: <code>.cell-strong</code> + <code>.cell-sub</code> (mono, faint). Wrap in <code>overflow-x:auto</code>.</p>
+<h3>Toggle — <code>.toggle</code> (<code>.on</code>)</h3>
+<p>Pill switch, ink when on. For per-row booleans (e.g. &quot;Sense anuncis&quot;).</p>
+<h3>Modal — <code>.scrim</code> &gt; <code>.modal</code></h3>
+<p>Blurred scrim, centred. <code>.modal-head</code> (serif title + icon-btns, sticky), <code>.modal-body</code>, sticky <code>.modal-foot</code> with full-width primary + ghost actions. Rises in with <code>--ease-out</code>. Closes on scrim click / ✕ / Esc. Used for item detail, edit, confirms. Keep inside <code>.ootd-dash</code> subtree — do not portal to <code>&lt;body&gt;</code>.</p>
+<h3>Image placeholder — <code>.empty-thumb</code></h3>
+<p>Diagonal-hatch neutral fill with a small mono caption naming the expected photo. Use wherever real user/product imagery will go until it&#39;s wired in. Never hand-draw garments.</p>
+<hr>
+<h2>4. Patterns &amp; content voice</h2>
+<ul>
+<li><strong>Every page:</strong> eyebrow → serif title → (sub) → content. Keep the eyebrow short and declarative.</li>
+<li><strong>Bilingual reality:</strong> UI copy is currently Catalan (&quot;Suggereix outfit&quot;, &quot;El meu armari&quot;, &quot;Afegeix&quot;); eyebrows/labels often English mono. Match the surrounding screen — don&#39;t translate existing labels.</li>
+<li><strong>Counts &amp; meta</strong> go in mono, lowercase-friendly (&quot;46 referències · 46 analitzades&quot;, &quot;4 outfits&quot;, &quot;Usat en 5 outfits&quot;).</li>
+<li><strong>Empty states:</strong> centred, faint, one calm line (&quot;No leads yet.&quot;) — never loud.</li>
+<li><strong>Density:</strong> comfortable. Prefer fewer, larger, well-spaced elements over dense dashboards. Whitespace is part of the brand.</li>
+<li><strong>Don&#39;t:</strong> add gradients, drop-shadow stacks, coloured section backgrounds, emoji (except the ♥ favourite/<code>♥ Favorits</code>), multiple accent colours, or rounded-corner+left-border &quot;callout&quot; boxes. No icon soup.</li>
+</ul>
+<hr>
+<h2>5. How to build a NEW screen/component (checklist)</h2>
+<ol>
+<li>Start from the shell: it renders inside <code>.main &gt; .page</code>. Open with a <code>.page-head</code> (eyebrow + serif <code>.h1</code> + optional action).</li>
+<li>Compose from the components in §3 — don&#39;t invent new primitives if one fits. Reuse class names so it inherits the system.</li>
+<li>Use the tokens (<code>var(--…)</code>) for every colour/space/radius — never hard-code hex or px colours.</li>
+<li>Type: serif for titles/numbers, grotesk for UI, mono for labels/meta. Lime only for the one key action/state.</li>
+<li>Imagery → <code>.empty-thumb</code> placeholder with a label until real assets exist; fixed <code>aspect-ratio</code>, <code>--r-tile</code> radius.</li>
+<li>Add hover/focus states (subtle), keep motion 200–350ms with the shared easings, honour <code>prefers-reduced-motion</code>.</li>
+<li>Make it responsive: collapse multi-column layouts ~1180px, tables scroll, sidebar gone &lt; 860px.</li>
+<li>Sanity check against the golden rule: dark chrome, light gallery content, restrained type, one accent, lots of air.</li>
+</ol>
+<hr>
+<h2>6. Reference files</h2>
+<ul>
+<li><code>lib/ui.ts</code> — <strong>shared Tailwind class strings</strong> for every UI primitive (<code>card</code>, <code>btn*</code>, <code>chip*</code>, <code>badge*</code>, <code>tab*</code>, <code>modal*</code>, etc.) + <code>cn()</code> helper. The canonical source for component classes — import from here, don&#39;t hardcode strings.</li>
+<li><code>app/globals.css</code> (<code>@theme inline</code>) — OOTD design tokens as Tailwind CSS variables (<code>--color-app</code>, <code>--color-ink</code>, <code>--radius-card</code>, <code>--shadow-card</code>, <code>--animate-ootdFade</code>, etc.).</li>
+<li><code>app/(dashboard)/dashboard.css</code> — minimal: font remapping inside <code>.ootd-dash</code> (Instrument Serif, JetBrains Mono) + scrollbar/selection niceties. No component classes here.</li>
+<li><code>dashboard-restyle/nextjs-tailwind/Icons.tsx</code> — the line-icon set (1.6px stroke, 24px grid).</li>
+<li><code>dashboard-restyle/nextjs-tailwind/DashboardShell.tsx</code> — app shell reference structure.</li>
+<li><code>dashboard-restyle/nextjs-tailwind/components/</code> — reference screen components (Home, Calendar, References, Wardrobe, Analytics, Users).</li>
+<li><code>dashboard-restyle/reference-screens/</code> — PNG screenshots of every screen for visual comparison.</li>
+</ul>
+<p><em>This manual describes the app&#39;s CURRENT design phase (editorial restyle). The Phase 2 brief reimagines the journey (conversational stylist) — when that lands, revisit the Home/generator screen, but the foundations (§1) and components (§3) here stay the same.</em></p>
+<hr>
+<h2>7. The stylist app system (Glass / Bone) — current</h2>
+<blockquote>
+<p>Sections 1–6 describe the first admin-style system and are kept for the legacy admin screens. <strong>Everything the person sees is built on this section.</strong> The tokens live in <code>app/globals.css</code> (<code>--p-*</code>, <code>@theme inline</code>), the classes in <code>app/ui.css</code> (<code>ui-*</code>), scoped by <code>.ootd-dash</code> so the landing is never touched.</p>
+</blockquote>
+<h3>7.1 Principles</h3>
+<ul>
+<li>Two modes from the same tokens: <strong>Glass</strong> (dark, aurora, default) and <strong>Bone</strong> (light). Theme via <code>&lt;html data-theme&gt;</code> + cookie (<code>ThemeScript</code>), &quot;auto&quot; follows the system.</li>
+<li>Type: Archivo (UI), Instrument Serif italic (<strong>the stylist&#39;s voice only</strong>), JetBrains Mono (system state: steps, counters, dates).</li>
+<li>Lime (<code>--p-accent</code>) only for the main action and the AI state. Text on lime is <code>--p-accentink</code>; lime as <em>text</em> is <code>--p-accent-text</code> (dark in Bone).</li>
+<li><strong>Never <code>bg-ink text-white</code></strong>: ink flips with the theme, so white-on-white appears in dark mode. Use <code>bg-ink text-app</code>. Status colours are tokens (<code>danger</code>, <code>ok</code>, <code>warn</code>), never <code>red-50</code>/<code>green-600</code>.</li>
+<li>Phone first, tested at 390×844 and with the keyboard open. A desktop is a second layout, never a stretched phone.</li>
+</ul>
+<h3>7.2 Desktop layout (the contract)</h3>
+<p>Every dashboard screen is an <code>AppPage</code> with a <code>PageHeader</code> (<code>components/layout/*</code>, tested by <code>tests/layout-contract.test.ts</code>). The shell owns the outer padding; a page is a column of at most 75 rem, left-aligned next to the sidebar, and from 1280 px its body is a 12-column grid.</p>
+<table>
+<thead>
+<tr>
+<th>Template</th>
+<th>Columns</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>dashboard</code></td>
+<td>8 + 4</td>
+<td>a main area and secondary context</td>
+</tr>
+<tr>
+<td><code>wide</code></td>
+<td>12 (or 9 + 3 with an aside)</td>
+<td>grids, tables, lists: Wardrobe, References, Calendar, Profile, admin</td>
+</tr>
+<tr>
+<td><code>focus</code></td>
+<td>8 (+4)</td>
+<td>one concentrated form</td>
+</tr>
+<tr>
+<td><code>split</code></td>
+<td>6 | 6</td>
+<td>two areas of equal weight: <strong>Today</strong> (the look | the week, the plan, the occasions)</td>
+</tr>
+</tbody></table>
+<p>Rules (from the other project, after the &quot;two columns everywhere&quot; attempt was rejected): decide the screen&#39;s main task first and pick a <em>named</em> pattern; two equally important areas get <strong>equal space</strong>; an action that affects the whole page goes in the header or in a full-width <strong>command bar</strong> (Today&#39;s &quot;What have you got today?&quot;), never in a corner of the side column; the aside is secondary context only; rows of cards have the same height, tables aligned columns, no holes. <strong>The phone is not touched when the desktop changes</strong>: compare 390 px screenshots before and after.</p>
+<p>Named patterns used: command bar + split (Today), toolbar + grid (Wardrobe), settings with an anchor index (Profile), table with aligned columns (admin).</p>
+<p>The conversation (<code>/stylist</code>) is a full-height pane with its own header (exempt in the contract).</p>
+<h3>7.3 Doing vs consulting</h3>
+<p>&quot;I&#39;m wearing it&quot; is <strong>one tap, on Today</strong>, and undoes with one tap. The wardrobe and the calendar are for consulting and editing, never for marking. Alternatives are first-class: &quot;Change a piece&quot; asks which piece, why, and offers up to five from the person&#39;s own wardrobe, ranked without AI (<code>lib/styling/alternatives.ts</code>); &quot;ask the stylist&quot; is the last resort.</p>
+<h3>7.4 Usage profiles</h3>
+<p>A person chooses how much of the app exists for them (<code>lib/billing/usage-profiles.ts</code>): <strong>Just looks</strong>, <strong>Wardrobe</strong>, <strong>Stylist</strong> or <strong>Custom</strong>. A part switched off disappears whole (no tab, no button, no nagging) and nothing is deleted. Custom stays Custom whatever the levels. The plan cuts the choice down; paying again restores it. The look is always a suggestion: never &quot;you didn&#39;t follow the look&quot;.</p>
+<h3>7.5 Refs</h3>
+<p>Callback refs are never written inline (React calls them on every render; if they set state they loop): use <code>useCallback</code> or a ref object. <code>tests/components/refs.test.ts</code> enforces it.</p>

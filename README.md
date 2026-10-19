@@ -1,10 +1,12 @@
-# mAI Hub
+# Hub
 
-Tot el material de mAI Fitness que vivia en artifacts de Claude, en un sol web amb contrasenya:
+Tot el que estic llançant, en un sol web amb contrasenya. Cada projecte té la seva pàgina:
 
-- **Pla de negoci** (`negoci.html`): pla, publicar (calendari i textos de cada post), com funciona l'app, tasques, guies, estudi de mercat i **Documents**.
-- **Documents**: llançament, beta, roadmap i TODOs, i la documentació tècnica, copiats del repo de l'app.
-- **Proves pendents** (`proves.html`), **receptari base** (`receptari.html`) i **prototips** (`prototips.html`).
+- **mAI Fitness** (`public/mai/`): pla de negoci (pla, publicar amb els textos de cada post, com funciona, tasques, guies, estudi i **Documents**), proves pendents, receptari base i prototips.
+- **Outfit of the Day** (`public/ootd/`): pla de negoci (pla, com funciona, tasques, estudi i **Documents**) i el prototip de l'estilista.
+- **AI Slides to Figma** (`public/figma/`): les imatges de la Community, la fitxa per publicar i el README.
+
+Què hi ha de cada projecte ho diu `hub.config.json`: les pàgines, els documents que es copien del seu repo i el color. Per afegir un projecte nou, s'hi afegeix una entrada i `npm run build`.
 
 El que es marca (tasques, posts publicats, proves, vots del receptari) es desa a `data/` i ho veu tothom qui entra amb la contrasenya.
 
@@ -13,11 +15,12 @@ El que es marca (tasques, posts publicats, proves, vots del receptari) es desa a
 ```bash
 npm install
 npm run password      # usuari i contrasenya → .htpasswd
+npm run build         # copia els documents dels repos i fa les pàgines
 npm start             # http://localhost:4321
 ```
 
 - Per obrir-lo des del mòbil a la mateixa wifi: `HOST=0.0.0.0 npm start` i entra a `http://<ip-de-l'ordinador>:4321`.
-- Per actualitzar els documents després de canviar-los a l'app: `npm run docs` (llegeix `../mAI_fitness`; o `MAI_REPO=/ruta npm run docs`).
+- Els repos es busquen al costat del hub (`../mAI_fitness`, `../outfit-of-the-day`, `../ai-slides-to-figma`). Quan canviïs un document en un repo, `npm run build`.
 - Tests: `npm test`.
 
 ## Publicat (Apache amb PHP)
@@ -33,4 +36,4 @@ npm start             # http://localhost:4321
 
 - Les pàgines són les dels artifacts, sense canvis de contingut. `assets/store.js` els dona la mateixa API de dades que tenien a Claude (`claude.use('db')`), però sobre `api/store.php`. Comprova si hi ha canvis cada 5 s.
 - Els prototips (`*.dc.html`) es dibuixen amb `assets/dc-lite.js`, un motor petit per a les plantilles `{{…}}`, `<sc-for>` i `<sc-if>` del canvas de disseny.
-- No hi ha documents de l'Outfit of the Day: aquest hub és només de mAI Fitness.
+- Les pàgines de projecte i la portada les genera `scripts/build.mjs` a partir de `hub.config.json`; no s'editen a mà.

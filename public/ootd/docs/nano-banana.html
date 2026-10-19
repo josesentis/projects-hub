@@ -1,0 +1,153 @@
+<h1>Nano Banana — tests to run later (manual, with real data)</h1>
+<p>Status: <strong>pending</strong>. Nothing here has been validated beyond two smoke generations (2026-10-04):
+synthetic persona and one identity photo (<code>hero1</code>), both looked good, 6–8 s, <del>$0.039 each.
+Run these before the public launch and before deciding the quality/cost tier.
+Log results at the bottom of this file. Every generation costs real money (</del>$0.04), so a full pass is ~$3–5.</p>
+<h2>0. Setup</h2>
+<ul>
+<li>Migrations 0013–0019 applied in production (0013 is applied; 0018/0019 pending as of 2026-10-07).</li>
+<li><code>GEMINI_API_KEY</code> + <code>ANTHROPIC_API_KEY</code> set; optionally the two <code>*_MONTHLY_BUDGET_USD</code>.</li>
+<li>Test with 3–4 <strong>real</strong> people (different gender, skin tone, hair, build, age) who accept being used.</li>
+<li>Check the admin analytics page after each batch: cost per outfit should be ~$0.045.</li>
+</ul>
+<h2>0b. Added with the conversational stylist (also to test)</h2>
+<ul>
+<li>Look rendered <strong>from the conversation</strong> (not the old generator): the image shows exactly the pieces the stylist proposed, in the right slots; gaps (missing pieces) are shown as described, not as owned.</li>
+<li><strong>Photo consent</strong> (<code>PHOTO_CONSENT_REQUIRED=true</code>): without consent no face is sent and the generic person looks acceptable; with it, identity is kept; withdrawing returns to generic. Check Gemini receives no identity photo in the first case (usage/log).</li>
+<li>Swap one piece by hand → re-render keeps the rest of the look and the same person.</li>
+<li>Photo budget: when the month&#39;s photos run out the look stays as text with a clear message (and no Gemini call is billed).</li>
+<li>A day with 3 renders in a row: cost per day matches <code>usage_events</code> and the plan limits in <code>lib/billing/plans.ts</code> (decides whether 30/60/120 photos per month are affordable).</li>
+</ul>
+<h2>1. Identity fidelity (the main risk)</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Pass if</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 photo, front-facing selfie</td>
+<td>Same face/hair/skin/age recognisable by the person themselves</td>
+</tr>
+<tr>
+<td>3 photos, different angles/light</td>
+<td>Better than test above; no blending of faces</td>
+</tr>
+<tr>
+<td>5 photos uploaded (only 3 are sent)</td>
+<td>Order matters: confirm the first 3 are the ones used</td>
+</tr>
+<tr>
+<td>Photo with glasses / beard / hat</td>
+<td>Features kept, not &quot;cleaned up&quot;</td>
+</tr>
+<tr>
+<td>Photo of a person with long hair tied vs loose</td>
+<td>Hairstyle stays, not randomly changed</td>
+</tr>
+<tr>
+<td>Full-body vs face-only photo</td>
+<td>Body proportions plausible when only the face is given</td>
+</tr>
+<tr>
+<td>Profile stats contradict photo (e.g. wrong height)</td>
+<td>Photo wins; stats don&#39;t distort the person</td>
+</tr>
+<tr>
+<td>Same user, 5 generations in a row</td>
+<td>Same person each time (consistency)</td>
+</tr>
+<tr>
+<td>Compare against the <code>cheap</code> model vs <code>GEMINI_IMAGE_MODEL</code> = a Gemini 3 image model. Record which is worth the extra cost.</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2>2. Synthetic persona (no photos)</h2>
+<ul>
+<li>Each gender + &quot;not set&quot; × build × age bucket × skin tone: result matches the profile.</li>
+<li>Same user with no photos, 5 generations: same-looking character (seeded defaults).</li>
+<li>Avatar present, no photos: avatar used as identity (check it isn&#39;t a logo/pet/illustration → how it fails).</li>
+</ul>
+<h2>3. Wardrobe fidelity</h2>
+<ul>
+<li>1, 2, 4 chosen wardrobe pieces: exact colour/print/logo kept?</li>
+<li>Wardrobe image with transparent background vs photo with background.</li>
+<li>Dark garment on dark photo, patterned garments, logos/text on garments (text is the classic failure).</li>
+<li>Piece the stylist chose but its image failed to download → still produces a coherent outfit.</li>
+<li>Do pieces <strong>not</strong> chosen ever sneak in? (they must not)</li>
+</ul>
+<h2>4. References &amp; trends</h2>
+<ul>
+<li>0, 1, 2 references: result is <em>inspired by</em>, not a copy of person/outfit.</li>
+<li>Reference with a person in it: the generated person must not take that face.</li>
+<li>Contradictions: ocasió &quot;wedding&quot; + vibe &quot;workwear&quot; + gym reference → ocasió wins.</li>
+<li>Each of the ~40 vibes once (text only): do they look different from each other? (decides if trend images are needed)</li>
+</ul>
+<h2>5. Visual quality vs landing &quot;style-*&quot; images</h2>
+<ul>
+<li>Full body, shoes visible, relaxed pose, 3–5 garments + accessories, neutral clean background.</li>
+<li>Hands (extra fingers), feet cut off, mirrored text, weird shoes, floating accessories.</li>
+<li>Colour of backdrop consistent across outfits (<code>VISUAL_STYLE.background</code>).</li>
+<li>Decide: keep light neutral backdrop or switch to the dark studio of the landing (one constant in <code>config.ts</code>).</li>
+<li>Mobile: 768×1344 sharp enough on a retina phone? If not → higher tier / resolution.</li>
+</ul>
+<h2>6. Context &amp; stylist (Haiku)</h2>
+<ul>
+<li>Season / time of day / weather really change the outfit (winter rain vs summer morning).</li>
+<li>&quot;Breakfast with a wedding dress in the wardrobe&quot; → dress not used.</li>
+<li>Empty wardrobe, only references → outfit still generated with described (not owned) pieces.</li>
+<li>80-piece wardrobe: shortlist keeps variety; no category starvation.</li>
+<li>Non-English users (ES/CA): text in their language, IMAGE BRIEF in English.</li>
+</ul>
+<h2>7. Photo validation (Haiku vision on upload)</h2>
+<p>Sunglasses, mask, group photo, pet, landscape, screenshot, very dark, blurry, heavy filter, child, statue/drawing.
+Record false rejects (annoying) and false accepts (bad generations). Tune the prompt in <code>lib/ai.ts › validateUserPhoto</code>.</p>
+<h2>8. Safety filter behaviour</h2>
+<ul>
+<li>Swimwear / underwear / gym tops, revealing outfits requested by vibes (night-out, soft-glam): how often <code>blocked</code>?</li>
+<li>What the user sees (<code>genErrors.blocked</code>) and whether a retry with a different style works.</li>
+<li>Minors: decide policy (DOB under 18?) — currently not handled.</li>
+</ul>
+<h2>9. Failure &amp; resilience</h2>
+<ul>
+<li>Kill network mid-generation, close tab and reopen: job resumes polling and finishes.</li>
+<li>Rate limit (spam the button / 2 tabs): only one live job, clean error.</li>
+<li>Timeout (set <code>TIMING.imageAttemptTimeoutMs</code> low): error + retry reuses brief (no 2nd Claude charge).</li>
+<li>Cancel in the modal: row deleted, no orphan image in Storage.</li>
+<li>Confirm outfit → image still there after the saved row is deleted; generate a new one → old unconfirmed image deleted.</li>
+<li>Stale job (&gt; 3 min) becomes an error with retry.</li>
+</ul>
+<h2>10. Cost &amp; latency</h2>
+<ul>
+<li>Median/p95 total time (text + image) on production Netlify, not local.</li>
+<li>Real cost per outfit vs estimate ($0.045). Check input-token size with 3 photos + 4 pieces + 2 refs.</li>
+<li>Compare cost/quality with 1 identity photo instead of 3.</li>
+<li>Monthly projection: users × generations/day × cost, feed into the business plan.</li>
+</ul>
+<h2>Results log</h2>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Test</th>
+<th>Model</th>
+<th>Result</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2026-10-04</td>
+<td>smoke: synthetic persona</td>
+<td>gemini-2.5-flash-image</td>
+<td>✅</td>
+<td>6.4 s, 768×1344, clean neutral bg</td>
+</tr>
+<tr>
+<td>2026-10-04</td>
+<td>smoke: identity photo (hero1)</td>
+<td>gemini-2.5-flash-image</td>
+<td>✅</td>
+<td>7.8 s, identity kept, profile stats ignored</td>
+</tr>
+</tbody></table>

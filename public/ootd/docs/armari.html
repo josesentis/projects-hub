@@ -1,0 +1,39 @@
+<h1>Next iteration — wardrobe photo → reconstructed product shot (replaces remove.bg)</h1>
+<p>Status: <strong>not started</strong>. Do it after the outfit image flow is validated with real users.</p>
+<h2>Target look</h2>
+<p>The <code>wardrobe-*.webp</code> images on the landing: pieces laid out as <strong>clean product shots on a dark/neutral
+backdrop</strong> (3:4), one piece per image, consistent lighting, no person, no hands, no wrinkles from the
+original photo. <code>STUDIO_RECIPE</code> in <code>lib/gemini.ts</code> currently says pure white; switch to the colour
+the product team picks (keep it a single constant so the whole wardrobe stays consistent).</p>
+<h2>What already exists (inert)</h2>
+<ul>
+<li><code>lib/ai.ts › detectGarments()</code> — Claude lists the garments in a photo (name/category/description).</li>
+<li><code>lib/gemini.ts › reconstructGarment(source, garment)</code> + <code>buildGarmentPrompt</code> + <code>STUDIO_RECIPE</code>.</li>
+<li><code>geminiImageCostUsd</code> in <code>lib/usage-cost.ts</code>.</li>
+<li><code>ai/IMAGE_PIPELINE_TODO.md</code> has the earlier plan (max 2 garments per photo, discard the original,
+immediate vs background processing). Its &quot;B. AI collage&quot; section is obsolete — outfits are now photos of a person.</li>
+</ul>
+<h2>Proposed pipeline (1 vision call + N image calls per upload)</h2>
+<ol>
+<li>Upload → <code>shrinkForApi</code> → one <code>analyzeWardrobeItem</code>/<code>detectGarments</code> call (Haiku, ≤2 garments).</li>
+<li>For each garment: <code>reconstructGarment</code> (1 Nano Banana call, reference = the user&#39;s photo,
+aspect 3:4, input resized to 768px like the outfit flow).</li>
+<li>Store <code>wardrobe/{id}.webp</code>, save the item with <code>analyzed=true</code>, drop <code>bg_removed</code> semantics.</li>
+<li>Keep the original only until step 3 succeeds, then delete it (decided earlier).</li>
+<li>Usage events: <code>feature=&#39;wardrobe_reconstruct&#39;</code>, <code>provider=&#39;gemini&#39;</code>.</li>
+</ol>
+<h2>Things to validate before rolling out</h2>
+<ul>
+<li><strong>Fidelity</strong>: exact colour/print/logo must survive. Test with 20 real photos (selfies, mirror shots,
+folded clothes, worn). If details drift, add the original crop as a second reference and lower temperature.</li>
+<li><strong>Occlusion</strong> (jacket covering shirt): decide whether to reconstruct only fully visible garments.</li>
+<li><strong>Latency</strong>: 2 calls ≈ 15s → show a skeleton card per piece, process in the background with the same
+<code>after()</code> + polling pattern as outfits (see <code>lib/outfit-gen/pipeline.ts</code>, <code>status.ts</code>).</li>
+<li><strong>Cost</strong>: ~$0.04/piece + ~$0.003 detection. Compare with remove.bg&#39;s per-credit price.</li>
+</ul>
+<h2>Cleanup when done</h2>
+<p>Remove <code>lib/bg-removal.ts</code>, <code>app/api/wardrobe/[id]/bg</code>, <code>REMOVEBG_API_KEY</code>, <code>@imgly/background-removal</code>,
+<code>removebg</code> usage events/labels in admin analytics, the <code>bg_removed</code> column usage, the admin
+placeholders/collages tooling and <code>public/wardrobe-placeholders/</code>.
+Then feed the reconstructed images to the outfit generator as <code>wardrobe</code> inputs (already supported:
+<code>getWardrobeItemsByIdsDb</code> → <code>loadForModel</code>).</p>

@@ -1,0 +1,118 @@
+<h1>Phase 4 — Outfit imagery: the V1 collage system + the Premium &quot;See it on you&quot;</h1>
+<p>How OOTD <strong>shows</strong> an outfit. This is a product-strategy + build brief. Companion to the engine
+(<code>ai/phases/phase-2-outfit-engine/</code>), which decides <em>what</em> the outfit is; this phase decides how it
+<em>looks</em>.</p>
+<hr>
+<h2>TL;DR decision</h2>
+<p><strong>Do NOT block V1 on generative imagery.</strong> Ship V1 with a <strong>well-designed collage / flat-lay of the
+user&#39;s REAL garment cut-outs</strong> (deterministic, instant, free, truthful). Reserve <strong>generative
+image models (e.g. Gemini &quot;Nano Banana&quot; / similar) for a Premium &quot;See it on you&quot; feature</strong> — a
+clearly-labelled AI visualisation, gated behind Premium, added once garment + identity fidelity is
+guaranteed. The earlier &quot;ugly collages&quot; are a <strong>design</strong> problem, not a reason to bolt on generation.</p>
+<h3>Why</h3>
+<ul>
+<li><strong>Fidelity = the core promise.</strong> OOTD says &quot;from what you already own.&quot; A generated image can
+hallucinate a jacket that isn&#39;t the user&#39;s → breaks the one thing that differentiates OOTD. Real
+cut-outs are the truth.</li>
+<li><strong>Cost + latency.</strong> The daily &quot;dress me&quot; loop must be instant &amp; free. Generation is seconds + cents
+per call — wrong economics for the free, everyday output.</li>
+<li><strong>Risk surface.</strong> Generating images of people (user photos) brings likeness/rights, moderation,
+NSFW, and weird-artefact risks. Too much exposure for the primary output.</li>
+</ul>
+<hr>
+<h2>V1 — the collage / flat-lay system (Free, ships now)</h2>
+<p>A <strong>design</strong> task, not generation. Background removal is already in the stack (the analytics screen
+lists remove.bg), so clean cut-outs exist — compose them well.</p>
+<p><strong>Requirements</strong></p>
+<ul>
+<li><strong>Editorial composition, not a dump.</strong> A layout system with hierarchy: the hero piece larger,
+supporting pieces and accessories smaller, arranged on a brand-consistent canvas (warm off-white
+or the dark editorial surface), with subtle shadows and mono item labels.</li>
+<li><strong>Templates by item count.</strong> Define clean compositions for 2, 3, 4, 5 and 6-piece outfits (most
+outfits are 3–5). Each template positions categories sensibly (outerwear/top/bottom/shoes/
+accessory) — a deterministic placement algorithm, not random.</li>
+<li><strong>Consistency over novelty.</strong> Same grid, same treatment, same background per outfit → the feed of
+daily looks feels designed and premium even though nothing is generated.</li>
+<li><strong>Uses the brand system</strong> (<code>ai/DESIGN.md</code> / <code>app/(dashboard)/dashboard.css</code>): radii, hairlines,
+serif/mono labels, lime accent. The collage card is the same visual language as the app.</li>
+<li><strong>Instant + free + truthful.</strong> Renders from the user&#39;s real cut-outs client-side or with light
+server compositing; no per-render AI cost.</li>
+</ul>
+<p><strong>Output:</strong> a shareable outfit card (good for the calendar, the daily suggestion, and social
+sharing). Make it export/share-friendly (it doubles as organic marketing).</p>
+<hr>
+<h2>Premium — &quot;See it on you&quot; (generative, later)</h2>
+<p>This is the <strong>wow</strong> Premium hook already promised on the landing pricing (&quot;Premium — coming soon&quot;).</p>
+<ul>
+<li><strong>&quot;See it on you&quot;</strong> — virtual try-on: the user&#39;s photo wearing the recommended pieces.</li>
+<li><strong>&quot;Style the scene&quot;</strong> — the look rendered in an editorial context (street, terrace, studio).</li>
+<li><strong>Engine:</strong> a generative image model (Gemini &quot;Nano Banana&quot; or comparable try-on/image model).</li>
+<li><strong>Guardrails (non-negotiable):</strong><ul>
+<li><strong>Garment fidelity</strong> — must clearly be the user&#39;s actual items, not look-alikes. Condition the
+generation on the real cut-outs; reject/flag low-fidelity results.</li>
+<li><strong>Label it AI.</strong> Always mark these as AI visualisations, distinct from the truthful collage.</li>
+<li><strong>Identity &amp; consent</strong> — explicit opt-in for using the user&#39;s face; secure storage; deletion;
+rights. Treat the face photo as sensitive data (GDPR).</li>
+<li><strong>Moderation / NSFW</strong> filtering on inputs and outputs.</li>
+<li><strong>Cost control</strong> — it&#39;s a paid Premium action; meter it, cache results, set fair-use limits.</li>
+</ul>
+</li>
+<li><strong>States:</strong> generating (with a tasteful loader), result (with regenerate / save / share), failure
+(graceful fallback to the collage). Latency expectation set up-front.</li>
+</ul>
+<hr>
+<h2>Roadmap fit</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Free (V1)</th>
+<th>Premium (later)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Daily output</strong></td>
+<td>Real-cut-out editorial collage</td>
+<td>optional &quot;See it on you&quot; upgrade</td>
+</tr>
+<tr>
+<td><strong>Engine</strong></td>
+<td>remove.bg + layout/compositing</td>
+<td>generative image model + guardrails</td>
+</tr>
+<tr>
+<td><strong>Cost / latency</strong></td>
+<td>~0, instant</td>
+<td>per-generation, metered</td>
+</tr>
+<tr>
+<td><strong>Fidelity</strong></td>
+<td>truthful (real items)</td>
+<td>AI visualisation (labelled)</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>the everyday product</td>
+<td>the paid &quot;wow&quot;, drives upgrades</td>
+</tr>
+</tbody></table>
+<p>The generative &quot;wow&quot; is worth far more as a <strong>Premium feature people rave about</strong> than hidden inside
+the free daily output. Ship the truthful collage first; layer try-on when fidelity is provable.</p>
+<hr>
+<h2>Prompt to paste into Claude Code</h2>
+<blockquote>
+<p>Build OOTD&#39;s <strong>outfit imagery</strong> in two tiers. <strong>(1) V1 (now):</strong> a deterministic <strong>collage /
+flat-lay system</strong> that composes the user&#39;s REAL garment cut-outs (background already removed) into
+an editorial outfit card — define clean composition <strong>templates for 2–6 pieces</strong> with hierarchy
+(hero piece larger, accessories smaller), a brand-consistent canvas, subtle shadows and mono item
+labels, using the OOTD design system in <code>ai/DESIGN.md</code>. It must be <strong>instant, free,
+consistent, truthful (only real items), and share/export-friendly</strong>. No image generation in this
+tier. <strong>(2) Premium (later, spec only for now):</strong> a <strong>&quot;See it on you&quot;</strong> generative try-on (user&#39;s
+photo wearing the recommended pieces) + &quot;style the scene&quot;, using a generative image model, with
+hard <strong>guardrails</strong>: garment fidelity to the real items, always labelled as an AI visualisation,
+explicit face-photo consent + GDPR-grade handling, NSFW/moderation, and metered per-generation
+cost with fair-use limits; plus generating / result / failure states with graceful fallback to the
+collage. Do NOT make the free daily output depend on generation.</p>
+</blockquote>
+<p><em>Tune the exact templates and whether compositing is client- or server-side to your stack. Validate
+try-on fidelity with a small test set before exposing it to users.</em></p>

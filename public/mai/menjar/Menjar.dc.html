@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<title>Menjar</title>
+<script src="../../assets/dc-lite.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#B4482C;text-decoration:none}a:hover{color:#8F3520}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2.5px solid #E2674A;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6EFE8; color: #2B2320; font-family: 'Bricolage Grotesque', system-ui, sans-serif;">
+  <div style="position: absolute; inset: 0 0 60px 0; overflow-y: auto; padding: 16px 16px 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;">
+      <div>
+        <p style="margin: 0; font-size: 13px; color: #6F6058;">Setmana del 5 al 11 d’octubre</p>
+        <h1 style="margin: 2px 0 0; font-size: 28px; line-height: 1.08; font-weight: 720; letter-spacing: -0.025em;">Menjar</h1>
+      </div>
+    </div>
+
+    <div role="tablist" aria-label="Menjar" style="display: flex; gap: 3px; padding: 3px; border-radius: 999px; background: #F0E6DC;">
+      <sc-for list="{{tabs}}" as="tab" hint-placeholder-count="3">
+        <button type="button" role="tab" aria-selected="{{tab.on}}" onClick="{{tab.pick}}" style="{{tab.style}}">{{tab.label}}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{showWeek}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+
+        <section aria-label="Objectiu" style="background: #FFFAF5; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px;">
+            <p style="margin: 0; font-size: 15px; font-weight: 650;">Definició · −0,5 kg/setmana</p>
+            <span style="font-size: 12px; color: #6F6058;">90 kg → 84 kg</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+            <sc-for list="{{macros}}" as="mc" hint-placeholder-count="4">
+              <div style="background: #F0E6DC; border-radius: 12px; padding: 8px 10px;">
+                <p style="margin: 0; font-size: 17px; font-weight: 750; letter-spacing: -0.02em;">{{mc.value}}</p>
+                <p style="margin: 1px 0 0; font-size: 11px; color: #6F6058;">{{mc.label}}</p>
+              </div>
+            </sc-for>
+          </div>
+          <p style="margin: 0; font-size: 12px; color: #6F6058;">Manteniment ≈ 2.780 kcal (4 sessions de força). El batut de proteïna (24 g) ja hi compta.</p>
+        </section>
+
+        <div style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 0 16px;">
+          <sc-for list="{{adapt}}" as="ad" hint-placeholder-count="3">
+            <span style="flex-shrink: 0; height: 32px; padding: 0 12px; border-radius: 999px; background: #FFFAF5; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 550; white-space: nowrap;">
+              <span style="width: 6px; height: 6px; border-radius: 999px; background: #E2674A;" aria-hidden="true"></span>{{ad}}</span>
+          </sc-for>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px;">
+          <sc-for list="{{days}}" as="d" hint-placeholder-count="7">
+            <button type="button" onClick="{{d.pick}}" aria-pressed="{{d.on}}" style="{{d.style}}">
+              <span style="font-size: 11px;">{{d.label}}</span>
+              <span style="font-size: 15px; font-weight: 700;">{{d.n}}</span>
+              <span style="{{d.markStyle}}" aria-hidden="true"></span>
+            </button>
+          </sc-for>
+        </div>
+
+        <section aria-label="Àpats del dia" style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <h2 style="margin: 0; font-size: 15px; font-weight: 650;">{{dayTitle}}</h2>
+            <span style="font-size: 13px; color: #6F6058;">{{dayTotal}}</span>
+          </div>
+          <ul style="list-style: none; margin: 0; padding: 0; background: #FFFAF5; border-radius: 18px; overflow: hidden;">
+            <sc-for list="{{dayMeals}}" as="m" hint-placeholder-count="4">
+              <li style="{{m.rowStyle}}">
+                <a href="{{m.href}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #2B2320;">
+                  <span style="flex: 1; min-width: 0;">
+                    <span style="display: block; font-size: 12px; color: #6F6058;">{{m.slot}} · {{m.kcal}}</span>
+                    <span style="display: block; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{m.name}}</span>
+                    <span style="display: block; font-size: 13px; color: #4A3D37; margin-top: 1px;">{{m.grams}}</span>
+                  </span>
+                  <sc-if value="{{m.fav}}" hint-placeholder-val="{{false}}">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#E2674A" aria-label="Favorita"><path d="M12 21s-7.5-4.6-9.5-9.3C1.2 8.4 3.3 5 6.8 5c2 0 3.6 1.1 4.2 2.6C11.6 6.1 13.2 5 15.2 5c3.5 0 5.6 3.4 4.3 6.7C19.5 16.4 12 21 12 21z"></path></svg>
+                  </sc-if>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8988D" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+                </a>
+              </li>
+            </sc-for>
+          </ul>
+        </section>
+
+        <section aria-label="Pla base" style="border-radius: 18px; background: #F0E6DC; padding: 14px 16px; display: flex; align-items: center; gap: 12px;">
+          <div style="flex: 1; min-width: 0;">
+            <p style="margin: 0; font-size: 14px; font-weight: 650;">Pla base · Setmana tipus v3</p>
+            <p style="margin: 2px 0 0; font-size: 12px; color: #6F6058;">Aquesta setmana l’hem adaptat 3 vegades. La setmana vinent tornarà a partir d’aquí.</p>
+          </div>
+          <a href="Coach.dc.html" style="flex-shrink: 0; height: 32px; padding: 0 12px; border-radius: 999px; background: #FFFAF5; color: #2B2320; display: inline-flex; align-items: center; font-size: 13px; font-weight: 600;">Canviar-lo</a>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{showRecipes}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{cuisines}}" as="cu" hint-placeholder-count="5">
+            <span style="{{cu.style}}">{{cu.label}}</span>
+          </sc-for>
+        </div>
+        <ul style="list-style: none; margin: 0; padding: 0; background: #FFFAF5; border-radius: 18px; overflow: hidden;">
+          <sc-for list="{{recipes}}" as="r" hint-placeholder-count="5">
+            <li style="{{r.rowStyle}}">
+              <a href="{{r.href}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #2B2320;">
+                <span style="flex: 1; min-width: 0;">
+                  <span style="display: block; font-size: 15px; font-weight: 600;">{{r.name}}</span>
+                  <span style="display: block; font-size: 12px; color: #6F6058; margin-top: 1px;">{{r.meta}}</span>
+                </span>
+                <sc-if value="{{r.fav}}" hint-placeholder-val="{{false}}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#E2674A" aria-label="Favorita"><path d="M12 21s-7.5-4.6-9.5-9.3C1.2 8.4 3.3 5 6.8 5c2 0 3.6 1.1 4.2 2.6C11.6 6.1 13.2 5 15.2 5c3.5 0 5.6 3.4 4.3 6.7C19.5 16.4 12 21 12 21z"></path></svg>
+                </sc-if>
+              </a>
+            </li>
+          </sc-for>
+        </ul>
+        <p style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; line-height: 1.25;">Per afegir-ne una de teva, explica-me-la al coach o enganxa-la tal qual.</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{showShop}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <section style="border-radius: 18px; background: #F2B8A0; padding: 14px 16px;">
+          <p style="margin: 0; font-size: 13px; font-weight: 600; color: #6B3420;">Cuina en lot · diumenge</p>
+          <p style="margin: 4px 0 0; font-size: 15px; font-weight: 650;">Arròs (255 g cru) i pollastre (600 g) per a dilluns, dimarts i dijous</p>
+        </section>
+        <sc-for list="{{shop}}" as="sec" hint-placeholder-count="3">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <h3 style="margin: 0; font-size: 13px; font-weight: 600; color: #6F6058;">{{sec.title}}</h3>
+            <ul style="list-style: none; margin: 0; padding: 0; background: #FFFAF5; border-radius: 18px; overflow: hidden;">
+              <sc-for list="{{sec.items}}" as="it" hint-placeholder-count="3">
+                <li style="{{it.rowStyle}}">
+                  <button type="button" onClick="{{it.toggle}}" style="width: 100%; border: 0; background: transparent; display: flex; align-items: center; gap: 12px; padding: 11px 16px; text-align: left; color: #2B2320;">
+                    <span style="{{it.boxStyle}}" aria-hidden="true"></span>
+                    <span style="{{it.nameStyle}}">{{it.name}}</span>
+                    <span style="font-size: 13px; color: #6F6058;">{{it.qty}}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <nav aria-label="Navegació principal" style="position: absolute; left: 0; right: 0; bottom: 0; height: 60px; background: rgba(246,239,232,0.94); box-shadow: 0 -8px 24px rgba(91,52,36,0.06); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));">
+    <a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #6F6058; font-size: 10.5px; font-weight: 500;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Avui</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #6F6058; font-size: 10.5px; font-weight: 500;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 9v6M21 9v6M6 6v12M18 6v12M6 12h12"></path></svg>Programa</a>
+    <a href="Menjar.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #2B2320; font-size: 10.5px; font-weight: 700;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3v8a3 3 0 0 0 6 0V3M7 3v18M17 21V3c-2.5 1.5-3.5 4-3.5 7.5S15 15 17 15"></path></svg>Menjar</a>
+    <a href="#" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #6F6058; font-size: 10.5px; font-weight: 500;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg>Progrés</a>
+    <a href="Coach.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #6F6058; font-size: 10.5px; font-weight: 500;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3.5"></circle></svg>Coach</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'week', day: 2, have: { 'Oli d’oliva': true, 'Arròs basmati': true } };
+  }
+  renderVals() {
+    const tab = this.state.tab;
+    const tabs = [['week', 'Setmana'], ['recipes', 'Receptes'], ['shop', 'Compra']].map(([id, label]) => ({
+      label, on: tab === id ? 'true' : 'false', pick: () => this.setState({ tab: id }),
+      style: 'flex: 1; height: 32px; border: 0; border-radius: 999px; font-size: 13px; ' + (tab === id ? 'background: #FFFAF5; color: #2B2320; font-weight: 650; box-shadow: 0 1px 6px rgba(91,52,36,0.10);' : 'background: transparent; color: #6F6058; font-weight: 550;'),
+    }));
+
+    const plan = {
+      normal: [
+        { slot: 'Esmorzar', name: 'Torrades amb ou i alvocat + skyr', grams: 'Pa 80 g · 2 ous · skyr 200 g', kcal: 560, fav: false },
+        { slot: 'Dinar', name: 'Pollastre al curri amb arròs basmati', grams: 'Pollastre 200 g · arròs 85 g (cru)', kcal: 675, fav: true, href: 'Recepta.dc.html' },
+        { slot: 'Berenar', name: 'Batut de proteïna, plàtan i ametlles', grams: 'Proteïna 30 g · plàtan 120 g', kcal: 310, fav: false },
+        { slot: 'Sopar', name: 'Salmó al forn amb patata i bròquil', grams: 'Salmó 180 g · patata 250 g', kcal: 690, fav: true },
+      ],
+      dinnerOut: [
+        { slot: 'Esmorzar', name: 'Iogurt grec amb civada i fruits vermells', grams: 'Iogurt 250 g · civada 50 g', kcal: 520, fav: false },
+        { slot: 'Dinar', name: 'Amanida de llenties, tonyina i ou', grams: 'Llenties 200 g (cuites) · tonyina 110 g', kcal: 590, fav: false },
+        { slot: 'Berenar', name: 'Batut de proteïna i poma', grams: 'Proteïna 30 g · poma 180 g', kcal: 230, fav: false },
+        { slot: 'Sopar', name: 'Fora · et queden ≈ 900 kcal', grams: 'Tria proteïna a la planxa i verdura; el vi, millor una copa', kcal: 900, fav: false },
+      ],
+      out: [
+        { slot: 'Esmorzar', name: 'Truita de 3 ous amb pa integral', grams: '3 ous · pa 60 g', kcal: 450, fav: false },
+        { slot: 'Dinar', name: 'Fora · et queden ≈ 1.000 kcal', grams: 'Prioritza 40–50 g de proteïna', kcal: 1000, fav: false },
+        { slot: 'Sopar', name: 'Fora · et queden ≈ 800 kcal', grams: 'Sopar lleuger si el dinar ha estat gran', kcal: 800, fav: false },
+      ],
+    };
+    const days = [
+      ['Dl', 5, 'normal', 'done'], ['Dt', 6, 'normal', 'done'], ['Dc', 7, 'normal', 'today'], ['Dj', 8, 'normal', ''],
+      ['Dv', 9, 'dinnerOut', 'out'], ['Ds', 10, 'out', 'out'], ['Dg', 11, 'out', 'out'],
+    ];
+    const sel = this.state.day;
+    const dayList = days.map(([label, n, kind, mark], i) => ({
+      label, n, on: sel === i ? 'true' : 'false', pick: () => this.setState({ day: i }),
+      style: 'border: 0; border-radius: 14px; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; ' + (sel === i ? 'background: #2B2320; color: #FFFAF5;' : 'background: #FFFAF5; color: #2B2320;'),
+      markStyle: 'width: 5px; height: 5px; border-radius: 999px; margin-top: 2px; ' + (mark === 'done' ? 'background: #5E8A6C;' : mark === 'out' ? 'background: #E2674A;' : mark === 'today' ? 'background: ' + (sel === i ? '#FFFAF5' : '#2B2320') + ';' : 'background: transparent;'),
+    }));
+    const [, n, kind] = days[sel];
+    const meals = plan[kind];
+    const total = meals.reduce((a, m) => a + m.kcal, 0);
+    const names = ['Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte', 'Diumenge'];
+
+    const cuisinesOn = ['Mediterrània', 'Japonesa'];
+    const cuisines = ['Mediterrània', 'Japonesa', 'Mexicana', 'Índia', 'Ràpida (<20 min)'].map(label => ({
+      label, style: 'height: 32px; padding: 0 12px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 13px; font-weight: 550; ' + (cuisinesOn.includes(label) ? 'background: #2B2320; color: #FFFAF5;' : 'background: #FFFAF5; color: #2B2320;'),
+    }));
+    const recipes = [
+      { name: 'Pollastre al curri amb arròs basmati', meta: 'Índia · 25 min · 55 g proteïna', fav: true, href: 'Recepta.dc.html' },
+      { name: 'Salmó al forn amb patata i bròquil', meta: 'Mediterrània · 30 min · 45 g', fav: true },
+      { name: 'Poke de tonyina amb edamame', meta: 'Japonesa · 15 min · 48 g', fav: false },
+      { name: 'Les llenties de la mama', meta: 'Teva · Mediterrània · 40 min · 32 g', fav: true },
+      { name: 'Tacos de gall dindi amb pico de gallo', meta: 'Mexicana · 20 min · 46 g', fav: false },
+    ].map((r, i) => Object.assign({}, r, { href: r.href || '#', rowStyle: i > 0 ? 'border-top: 1px solid #F0E6DC;' : '' }));
+
+    const have = this.state.have;
+    const shopData = [
+      { title: 'Carn i peix', items: [['Pit de pollastre', '1,2 kg'], ['Salmó', '720 g'], ['Tonyina al natural', '3 llaunes']] },
+      { title: 'Làctics i ous', items: [['Skyr natural', '1 kg'], ['Ous', '18 u'], ['Iogurt grec 0 %', '750 g']] },
+      { title: 'Rebost', items: [['Arròs basmati', '340 g'], ['Llenties cuites', '400 g'], ['Oli d’oliva', '—']] },
+    ];
+    const shop = shopData.map(sec => ({
+      title: sec.title,
+      items: sec.items.map(([name, qty], i) => {
+        const got = !!have[name];
+        return {
+          name, qty,
+          toggle: () => this.setState({ have: Object.assign({}, have, { [name]: !got }) }),
+          rowStyle: i > 0 ? 'border-top: 1px solid #F0E6DC;' : '',
+          boxStyle: 'width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0; ' + (got ? 'background: #5E8A6C;' : 'box-shadow: inset 0 0 0 1.5px #CDBBAD;'),
+          nameStyle: 'flex: 1; font-size: 15px; ' + (got ? 'color: #A8988D; text-decoration: line-through;' : 'color: #2B2320;'),
+        };
+      }),
+    }));
+
+    return {
+      tabs,
+      showWeek: tab === 'week', showRecipes: tab === 'recipes', showShop: tab === 'shop',
+      macros: [{ value: '2.250', label: 'kcal/dia' }, { value: '180 g', label: 'proteïna' }, { value: '220 g', label: 'hidrats' }, { value: '72 g', label: 'greixos' }],
+      adapt: ['Divendres sopo fora', 'Cap de setmana fora', 'Compra dijous'],
+      days: dayList,
+      dayTitle: names[sel] + ' ' + n,
+      dayTotal: '≈ ' + total.toLocaleString('ca-ES') + ' kcal',
+      dayMeals: meals.map((m, i) => ({
+        slot: m.slot, name: m.name, grams: m.grams, fav: m.fav, href: m.href || '#',
+        kcal: m.kcal.toLocaleString('ca-ES') + ' kcal',
+        rowStyle: i > 0 ? 'border-top: 1px solid #F0E6DC;' : '',
+      })),
+      cuisines, recipes, shop,
+    };
+  }
+}
+</script>
+</body>
+</html>

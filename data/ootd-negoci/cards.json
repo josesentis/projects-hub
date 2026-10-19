@@ -1,0 +1,363 @@
+{
+ "p0-construir-beta": {
+  "col": "todo",
+  "order": 8,
+  "phase": 0,
+  "steps": [
+   "Demanar-m'ho després dels plans",
+   "Els esdeveniments clau: Me'l poso, Un altre, canviar peça, peça afegida, foto generada"
+  ],
+  "title": "Demanar-me: el kit de beta a OOTD",
+  "who": "Claude",
+  "why": "Codis d'invitació per grup, mesura d'ús (\"Me'l poso\", fotos, canvis), feedback amb NPS i Admin → Beta."
+ },
+ "p0-construir-monetitzacio": {
+  "col": "todo",
+  "order": 7,
+  "phase": 0,
+  "steps": [
+   "Demanar-me-ho en una sessió a la carpeta d'Outfit",
+   "Inclou: perfils d'ús, drets per pla (fotos i missatges), Stripe, anuncis només al gratuït, models per tasca i Recursos al Perfil"
+  ],
+  "title": "Demanar-me: perfils d'ús, plans, límits de fotos i Stripe a OOTD",
+  "who": "Claude",
+  "why": "Cal tenir-ho programat abans de cobrar res."
+ },
+ "p0-decidir-plans": {
+  "col": "todo",
+  "order": 6,
+  "phase": 0,
+  "steps": [
+   "Llegir la secció 'Estudi de mercat'",
+   "Dir-me si hi estàs d'acord o què canviaries (preus, fotos per pla, si vols paquet de fotos extra)"
+  ],
+  "title": "Validar els plans i preus proposats",
+  "who": "Jose",
+  "why": "Proposta: Només looks 3,99 €, Armari 6,99 €, Estilista 11,99 € al mes (29,99 / 49,99 / 89,99 € l'any), gratuït amb look en text i 3 fotos al mes."
+ },
+ "p0-domini": {
+  "col": "todo",
+  "order": 12,
+  "phase": 0,
+  "steps": [
+   "Comprar el domini (suggerits: outfitoftheday.app, ootd.app)",
+   "Configurar-lo a Netlify",
+   "Actualitzar NEXT_PUBLIC_APP_URL"
+  ],
+  "title": "Domini definitiu i NEXT_PUBLIC_APP_URL",
+  "who": "Jose",
+  "why": "Els correus i el webhook de Stripe necessiten l'adreça definitiva."
+ },
+ "p0-financament": {
+  "col": "todo",
+  "order": 13,
+  "phase": 0,
+  "steps": [
+   "Triar l'opció",
+   "Si l'amic hi posa diners: formalitzar-ho per escrit (SAFE o préstec convertible) amb un advocat",
+   "Lligar la quantitat a una fita (usuaris actius i retenció a 30 dies)"
+  ],
+  "title": "Decidir el pressupost de llançament i com es finança",
+  "who": "Jose + amic",
+  "why": "Hi ha dues opcions estudiades: lean (~25.000 €) o sòlid (~45–50.000 €), sense el sou del fundador."
+ },
+ "p0-gemini-pressupost": {
+  "col": "todo",
+  "link": "https://console.cloud.google.com/billing",
+  "linkLabel": "Facturació de Google Cloud",
+  "order": 4,
+  "phase": 0,
+  "steps": [
+   "Google Cloud / AI Studio → Billing → Budgets & alerts",
+   "Crear un pressupost mensual (p. ex. 30 €) amb avisos al 50 %, 90 % i 100 %"
+  ],
+  "title": "Posar un límit de despesa a Google (Gemini)",
+  "who": "Jose",
+  "why": "Les fotos són el cost principal. Un límit al compte evita un ensurt si alguna cosa es dispara."
+ },
+ "p0-legal-fotos": {
+  "col": "todo",
+  "order": 5,
+  "phase": 0,
+  "steps": [
+   "Buscar un advocat de protecció de dades / dret digital",
+   "Demanar: política de privacitat, termes, consentiment explícit per a les fotos, DPIA i contracte de tractament amb Google",
+   "Preparar el text que hauran d'acceptar els usuaris actuals abans del llançament",
+   "Passar-me les correccions"
+  ],
+  "title": "Revisió legal: fotos de persones i cares",
+  "urgent": true,
+  "who": "Jose",
+  "why": "Guardem fotos teves i de l'usuari i les enviem a Google per generar la imatge. Si es processen cares, poden ser dades biomètriques (art. 9 RGPD): consentiment explícit, avaluació d'impacte (DPIA) i contracte amb Google."
+ },
+ "p0-migracions": {
+  "col": "todo",
+  "order": 1,
+  "phase": 0,
+  "steps": [
+   "A la carpeta d'Outfit: prova en sec amb `npm run db:dry-run` contra producció (la mateixa ordre de sempre)",
+   "Si surt bé: `npm run db:apply -- --production`",
+   "Avisa'm: faig el push i comprovo `/api/health` i `/api/version`"
+  ],
+  "title": "Aplicar les migracions 0013–0017 i publicar l'estilista",
+  "urgent": true,
+  "who": "Jose",
+  "why": "L'estilista conversacional (fases 0–9) està fet però no publicat. Les migracions ja tenen el dry-run net."
+ },
+ "p0-netlify-claus": {
+  "col": "todo",
+  "link": "https://aistudio.google.com/apikey",
+  "linkLabel": "Google AI Studio (clau de Gemini)",
+  "order": 2,
+  "phase": 0,
+  "steps": [
+   "Netlify → el lloc d'OOTD → Site configuration → Environment variables",
+   "Afegir GEMINI_API_KEY (de Google AI Studio) i CRON_SECRET (una cadena llarga aleatòria)",
+   "Opcional: CLAUDE_MONTHLY_BUDGET_USD i GEMINI_MONTHLY_BUDGET_USD com a fre d'emergència",
+   "Tornar a desplegar"
+  ],
+  "title": "Posar CRON_SECRET i GEMINI_API_KEY a Netlify",
+  "urgent": true,
+  "who": "Jose",
+  "why": "Sense la clau de Gemini no hi ha fotos de looks; sense el secret del cron no surt el push del matí."
+ },
+ "p0-oss": {
+  "col": "todo",
+  "order": 11,
+  "phase": 0,
+  "steps": [
+   "Parlar-ho amb el gestor",
+   "Presentar el model 035 si encara no està fet"
+  ],
+  "title": "IVA europeu (OSS)",
+  "who": "Jose / gestor",
+  "why": "Per vendre a particulars d'altres països de la UE cal cobrar l'IVA del seu país; l'OSS permet declarar-ho tot a Espanya."
+ },
+ "p0-removebg": {
+  "col": "todo",
+  "order": 9,
+  "phase": 0,
+  "steps": [
+   "Opcions: (a) substituir-lo (recomanat), (b) només als plans de pagament, (c) apagar-lo",
+   "Dir-me l'opció"
+  ],
+  "title": "Decidir què fem amb remove.bg",
+  "who": "Jose",
+  "why": "Treure el fons costa ~0,10 $ per peça: un armari de 50 peces són 5 $ per usuari. Hi ha un pla per substituir-lo per reconstrucció amb Gemini."
+ },
+ "p0-reset-historial": {
+  "col": "todo",
+  "order": 3,
+  "phase": 0,
+  "steps": [
+   "Confirmar-me que es pot fer",
+   "Executo l'script amb còpia JSON prèvia (`db:reset-history`) i et passo el recompte"
+  ],
+  "title": "Decidir i fer el reset de l'historial antic",
+  "who": "Jose",
+  "why": "Es va decidir començar de zero amb els outfits antics (només text + collage). Armari, referències i fotos no es toquen."
+ },
+ "p0-stripe-compte": {
+  "col": "todo",
+  "link": "https://dashboard.stripe.com",
+  "linkLabel": "Stripe",
+  "order": 10,
+  "phase": 0,
+  "steps": [
+   "Crear el compte de Stripe (o els productes d'OOTD si ja en tens un)",
+   "Activar Stripe Tax",
+   "Quan estigui programat: executar l'script de preus amb la clau de proves"
+  ],
+  "title": "Stripe per a OOTD",
+  "who": "Jose",
+  "why": "Per cobrar les subscripcions d'OOTD."
+ },
+ "p1-codis": {
+  "col": "todo",
+  "order": 3,
+  "phase": 1,
+  "steps": [
+   "Admin → Beta (quan estigui programat): un codi per grup",
+   "Missatge de benvinguda: què és, que és una beta, on es deixa el feedback",
+   "Recordar que s'han de fotografiar 10 peces el primer dia"
+  ],
+  "title": "Crear codis d'invitació i enviar-los",
+  "who": "Jose",
+  "why": "Cada codi fixa el grup i el preu fundador."
+ },
+ "p1-entrevistes": {
+  "col": "todo",
+  "order": 6,
+  "phase": 1,
+  "steps": [
+   "6–8 testers de grups diferents",
+   "Preguntar per l'hàbit del matí, la foto, el que els falta i el preu"
+  ],
+  "title": "Entrevistes de 15 minuts (setmana 6)",
+  "who": "Jose",
+  "why": "Entendre per què obren (o no) l'app cada matí."
+ },
+ "p1-informe": {
+  "col": "todo",
+  "order": 7,
+  "phase": 1,
+  "steps": [
+   "Demanar-me l'informe amb les dades d'Admin → Beta, Analytics i les enquestes"
+  ],
+  "title": "Informe final de la beta",
+  "who": "Claude",
+  "why": "Decidir preus i límits de fotos amb dades reals."
+ },
+ "p1-seguiment": {
+  "col": "todo",
+  "order": 5,
+  "phase": 1,
+  "steps": [
+   "Admin → Beta: activació, D7, 'Me'l poso' per setmana, fotos per usuari, NPS",
+   "Respondre el feedback en menys de 48 h",
+   "Passar-me els problemes"
+  ],
+  "title": "Seguiment setmanal (6 setmanes)",
+  "who": "Jose",
+  "why": "Detectar a temps què no funciona."
+ },
+ "p1-sostre-fotos": {
+  "col": "todo",
+  "order": 4,
+  "phase": 1,
+  "steps": [
+   "Decidir el número",
+   "Vigilar el gràfic de Gemini a Admin → Analytics cada setmana"
+  ],
+  "title": "Fixar el sostre de fotos per tester",
+  "who": "Jose",
+  "why": "La beta és cara per les fotos: un sostre (p. ex. 100 al mes) evita sorpreses."
+ },
+ "p1-tally": {
+  "col": "todo",
+  "link": "https://tally.so",
+  "linkLabel": "Tally",
+  "order": 1,
+  "phase": 1,
+  "steps": [
+   "Formulari amb camps ocults week i cohort",
+   "NPS, què funciona, què falta; a la setmana 4, les 4 preguntes de preu de Van Westendorp",
+   "Passar-me l'enllaç"
+  ],
+  "title": "Crear les enquestes de la beta a Tally",
+  "who": "Jose",
+  "why": "Setmanes 2, 4 (preu) i 6."
+ },
+ "p1-testers": {
+  "col": "todo",
+  "order": 2,
+  "phase": 1,
+  "steps": [
+   "A (12): volen 'què em poso avui' i prou",
+   "B (18): molta roba, volen treure-li partit",
+   "C (10): interessats en moda, usen Pinterest",
+   "Apuntar-los amb el grup"
+  ],
+  "title": "Buscar 40 testers en 3 grups",
+  "who": "Jose + amic",
+  "why": "Cada grup prova un perfil i així sabem quantes fotos demana i quant pagaria."
+ },
+ "p2-assets": {
+  "col": "todo",
+  "order": 4,
+  "phase": 2,
+  "steps": [
+   "Encarregar el que toqui segons el pressupost",
+   "Passar-me les imatges per a la landing"
+  ],
+  "title": "Marca i imatges de llançament",
+  "who": "Jose",
+  "why": "Segons l'opció de pressupost (lean o sòlid): marca, contingut UGC, una sessió de fotos."
+ },
+ "p2-campanya": {
+  "col": "todo",
+  "order": 3,
+  "phase": 2,
+  "steps": [
+   "Revisar els textos",
+   "Gravar el vídeo de 30–60 s",
+   "Publicar el fil i Product Hunt un dimarts o dimecres",
+   "Avisar els testers amb el preu fundador"
+  ],
+  "title": "Llançament: fil de X, Product Hunt i Reels",
+  "who": "Jose + amic",
+  "why": "Els textos ja estan escrits a la campanya de màrqueting d'OOTD."
+ },
+ "p2-live": {
+  "col": "todo",
+  "order": 2,
+  "phase": 2,
+  "steps": [
+   "Claus reals a Netlify",
+   "Webhook en mode real",
+   "Una compra real petita i retornar-la"
+  ],
+  "title": "Stripe en mode real",
+  "who": "Jose",
+  "why": "Fins ara tot era de proves."
+ },
+ "p2-preus": {
+  "col": "todo",
+  "order": 1,
+  "phase": 2,
+  "steps": [
+   "Decidir preus i fotos per pla",
+   "Canviar-los a Stripe (no cal tocar l'app)"
+  ],
+  "title": "Fixar preus i límits finals",
+  "who": "Jose",
+  "why": "Amb l'informe de la beta."
+ },
+ "p3-afiliats": {
+  "col": "todo",
+  "order": 2,
+  "phase": 3,
+  "steps": [
+   "Donar-se d'alta en programes d'afiliats de moda (p. ex. botigues que facin enviaments a Espanya)",
+   "Decidir si es mostra 'ven-ho a Vinted' a les peces que no portes",
+   "Demanar-me la integració"
+  ],
+  "title": "Explorar afiliats i Vinted per a la llista de desitjos",
+  "who": "Jose",
+  "why": "Segona font d'ingressos sense molestar: les peces que falten ja es desen a la llista."
+ },
+ "p3-botigues": {
+  "col": "todo",
+  "order": 4,
+  "phase": 3,
+  "steps": [
+   "Decidir-ho amb dades de creixement"
+  ],
+  "title": "Valorar App Store i Google Play",
+  "who": "Jose",
+  "why": "Més visibilitat, però 15–30 % de comissió i pagament integrat (RevenueCat). Caldria Apple Developer (99 $/any)."
+ },
+ "p3-compartir": {
+  "col": "todo",
+  "order": 3,
+  "phase": 3,
+  "steps": [
+   "Demanar-m'ho quan hi hagi usuaris de pagament"
+  ],
+  "title": "Demanar-me: targeta de look per compartir",
+  "who": "Claude",
+  "why": "Bucle viral (com fa Yafa): cada look compartit és publicitat gratuïta."
+ },
+ "p3-cost": {
+  "col": "todo",
+  "order": 1,
+  "phase": 3,
+  "steps": [
+   "Admin → Analytics: Gemini i Claude del mes, previsió i pressupost",
+   "Si un pla surt car, demanar-me ajustar límits"
+  ],
+  "title": "Revisió mensual del cost per foto i per usuari",
+  "who": "Jose",
+  "why": "Que cap pla perdi diners."
+ }
+}

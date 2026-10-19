@@ -1,0 +1,94 @@
+<h1>Outfit image generation (Claude Haiku → Nano Banana)</h1>
+<p>Replaces the old text-only outfit + canvas collage. One outfit = **1 Claude call (text, no images)</p>
+<ul>
+<li>1 Nano Banana call (image)**. Code lives in <code>lib/outfit-gen/</code>.</li>
+</ul>
+<h2>Flow</h2>
+<pre><code>POST /api/outfits ──► row saved_outfits (status=pending) ──► 202 {id}
+        │                       │
+        │                       └─ after(): runOutfitGeneration()
+        │                            1. planning   Claude Haiku 4.5 (text only)
+        │                            2. rendering  Nano Banana (1 image call, ≤2 attempts)
+        │                            3. done       WebP → Storage → collage_url
+        └─ client polls GET /api/outfits/[id] every 2s → step-by-step modal
+</code></pre>
+<p>Statuses: <code>pending → planning → rendering → done | error(errorCode)</code>. A job that never reports
+back for 3 min is settled as <code>error/stale</code> on the next poll. <code>POST /api/outfits/[id]/retry</code>
+re-runs only the image step when the stylist brief is already stored (Claude is not paid twice).</p>
+<h2>Token / cost levers (in the order they matter)</h2>
+<ol>
+<li>Claude sees <strong>no images</strong> — it reads the descriptions already stored by the analysis step.</li>
+<li><strong>Haiku 4.5</strong> for the text (<code>OUTFIT_TEXT_MODEL</code> in <code>config.ts</code>). ~$0.003/outfit.</li>
+<li>Wardrobe shortlisted <strong>in code</strong> to 15 pieces (favourites, least-worn, category-balanced);
+references capped at 8; descriptions truncated to 240 chars; <code>max_tokens</code> 1100.</li>
+<li>Situation (season / time of day / weather via Open-Meteo) computed in code, injected as one line.</li>
+<li>Nano Banana gets <strong>only what matters</strong>: ≤3 identity photos, ≤4 wardrobe pieces <em>chosen by the
+stylist</em>, ≤2 references <em>cited by the stylist</em>; all resized to 768px JPEG.</li>
+<li>Image model is the cheap tier (<code>gemini-2.5-flash-image</code>, ~$0.039/image, 768×1344).
+Override with <code>GEMINI_IMAGE_MODEL</code> when quality matters more than cost.</li>
+<li>Retries: one extra image attempt only for transient errors (429/5xx/timeout/no_image).
+<code>blocked</code> and <code>corrupt</code> never retry.</li>
+<li>One live generation per user: a double click joins the running job.</li>
+</ol>
+<p>Not done on purpose: a hash cache (the stylist output differs on every call, so identical inputs
+never repeat) and Anthropic prompt caching (the static part of the prompt is far below Haiku&#39;s
+minimum cacheable size).</p>
+<h2>Who appears in the image</h2>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>User has photos</td>
+<td>First 3 by order are sent as <code>identity</code> images; strict identity rules in the prompt. Profile stats are only a proportions hint.</td>
+</tr>
+<tr>
+<td>No photos, has avatar</td>
+<td>Avatar is the single identity image.</td>
+</tr>
+<tr>
+<td>Neither</td>
+<td>Synthetic model from profile data (gender, age from DOB, height, weight, build, hair, skin). Missing attributes are filled <strong>deterministically from the user id</strong>, so the character is stable across generations. Gender is never guessed.</td>
+</tr>
+<tr>
+<td>Photos fail to download</td>
+<td>Falls back to the synthetic flow instead of failing.</td>
+</tr>
+</tbody></table>
+<p>Profile photos (max 5) are validated on upload by one tiny Haiku vision call (<code>validateUserPhoto</code>):
+no person / several people / face hidden / low quality are rejected with an explanation.
+The check fails open if Anthropic is down.</p>
+<h2>Input priority (encoded by order — the model weighs earlier content more)</h2>
+<p>identity photos → wardrobe pieces → references → text (base style, subject, image roles, outfit
+brief, avoid-list). Conflict rule given to the stylist: <strong>occasion &gt; style &gt; vibe &gt; references</strong>;
+wardrobe pieces are used only if they fit (no wedding dress for breakfast).</p>
+<p>The landing example images are <strong>not</strong> sent on every call (they would burn the image budget and
+make the model copy their person/clothes). Their look is encoded in <code>config.ts</code> (<code>VISUAL_STYLE</code>).</p>
+<h2>Tuning (no logic changes needed)</h2>
+<p><code>lib/outfit-gen/config.ts</code>: aspect ratio, max height, WebP quality, input limits, timeouts,
+shortlist size, <code>VISUAL_STYLE</code> (photo / light / background / clothing), <code>NEGATIVE_RULES</code>,
+<code>IDENTITY_RULES</code>. <code>prompt.ts</code> only assembles these blocks. The stylist&#39;s output format
+(<code>PIECES USED</code>, <code>IMAGE BRIEF</code>) is in <code>lib/ai.ts › generateOutfit</code>.</p>
+<h2>Errors</h2>
+<p><code>OutfitGenError</code> codes: <code>not_configured, input_missing, rate_limited, timeout, blocked, no_image, corrupt_image, upstream, storage, stale, internal</code> (+ <code>retryable</code>). The UI shows a translated
+message and a &quot;Try again&quot; button for retryable ones.</p>
+<h2>Env</h2>
+<p><code>ANTHROPIC_API_KEY</code>, <code>GEMINI_API_KEY</code> (required), <code>GEMINI_IMAGE_MODEL</code> (optional),
+<code>CLAUDE_MONTHLY_BUDGET_USD</code> / <code>GEMINI_MONTHLY_BUDGET_USD</code> (optional, admin analytics shows what&#39;s left).
+Run migration <code>0013_outfit_images</code> from <code>/api/admin/run-migrations</code> (same SQL in <code>drizzle/0010_outfit_images.sql</code>).</p>
+<h2>Known caveats / follow-ups</h2>
+<ul>
+<li>The job runs in <code>after()</code> with <code>maxDuration = 60</code>. Measured generation: ~6–8s image + ~3s text.
+If the host ever caps functions below that, move the job to a Netlify Background Function
+(<code>runOutfitGeneration</code> is already host-agnostic; only the dispatch in <code>app/api/outfits/route.ts</code> changes).</li>
+<li>Generated images live at <code>outfit-images/{user}/{outfit}.webp</code> (public bucket). A confirmed outfit
+keeps the same file; discarding/replacing an unconfirmed one deletes it.</li>
+<li>Legacy outfits keep their canvas collages (<code>lib/collage-generator.ts</code>, <code>OutfitCollage</code>) and the
+<code>/api/worn-outfits/[id]/collage</code> route. Delete them when old outfits are purged (see ROADMAP).</li>
+<li>No usage limits are enforced right now (test phase, by decision). <code>weeklyCredits</code> is unused here.</li>
+<li>Photos are sent to Google; no consent flow yet (current users are friends). Add a T&amp;C acceptance
+push before the public launch.</li>
+</ul>
