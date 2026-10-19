@@ -259,7 +259,7 @@ tr.vid-done td { color: var(--muted); text-decoration: line-through }
         <div class="phase-head"><span class="num">Fase 0 · ara</span><h3>Tancar la V1</h3><span class="when">Octubre 2026 · 2–4 setmanes</span><p style="margin-top:8px"><span class="pill">En curs</span></p></div>
         <dl>
           <dt>Objectiu</dt><dd>L'app està llesta i és legal per obrir-la a gent de fora, i els pagaments ja funcionen en mode de proves.</dd>
-          <dt>Què cal fer</dt><dd><ul><li>Acabar les proves amb amics (fins al 25 d'octubre) i arreglar el que surti.</li><li>Preparar el llançament (26 d'octubre – 1 de novembre): domini, un codi d'invitació per canal i 4–5 captures. Són les primeres caselles de la pestanya <a href="#publicar">Publicar</a>.</li><li>Revisió legal (privacitat, termes, dades de salut).</li><li>Crear el compte de Stripe, activar l'IVA automàtic i fer l'alta a l'OSS.</li><li>Configurar els plans a Stripe en mode de proves i fer un pagament de prova.</li></ul></dd>
+          <dt>Què cal fer</dt><dd><ul><li>Les proves amb amics, fetes fins al 19 d'octubre.</li><li>Preparar el llançament (19 d'octubre): un codi d'invitació per canal, BetaList i 4–5 captures. Són les primeres caselles de la pestanya <a href="#publicar">Publicar</a>.</li><li>Revisió legal (privacitat, termes, dades de salut).</li><li>Crear el compte de Stripe, activar l'IVA automàtic i fer l'alta a l'OSS.</li><li>Configurar els plans a Stripe en mode de proves i fer un pagament de prova.</li></ul></dd>
           <dt>Cost</dt><dd>~55 € al mes d'infraestructura, més l'advocat (pressupost a part) i el gestor per a l'alta d'IVA.</dd>
           <dt>Per passar a la següent</dt><dd>Un pagament de prova funciona de cap a cap i els textos legals estan revisats.</dd>
         </dl>
@@ -268,7 +268,7 @@ tr.vid-done td { color: var(--muted); text-decoration: line-through }
         <div class="phase-head"><span class="num">Fase 1</span><h3>Beta amb 40 persones</h3><span class="when">6 setmanes</span></div>
         <dl>
           <dt>Objectiu</dt><dd>Saber si la gent torna, quant costa de veritat cada tipus d'usuari i quant estaria disposada a pagar.</dd>
-          <dt>Què cal fer</dt><dd><ul><li><b>Primer, presentar l'app</b> seguint el <a href="#publicar">calendari de publicació</a>: LinkedIn i X el 4 de novembre; Hacker News, Reddit, BetaList i Menéame la setmana següent; Indie Hackers i directoris després, i Product Hunt al gener. Serveix per arribar als testers professionals: entrenadors, dietistes-nutricionistes i gent que fa anys que entrena.</li><li>Buscar 40 testers en tres grups: 12 que només entrenen, 18 equilibrats i 10 exigents.</li><li>Enviar-los un codi d'invitació. Cada codi els posa al seu grup i els dona el preu fundador.</li><li>Fer seguiment setmanal a Admin → Beta i respondre el feedback en menys de 48 h.</li><li>Fer les enquestes de les setmanes 2, 4 (preu) i 6, i 6–8 entrevistes curtes.</li></ul></dd>
+          <dt>Què cal fer</dt><dd><ul><li><b>Primer, presentar l'app</b> seguint el <a href="#publicar">calendari de publicació</a>: LinkedIn i X el 20 d'octubre; Hacker News, Reddit i Menéame la mateixa setmana; Indie Hackers la següent i directoris al novembre, i Product Hunt al gener. Serveix per arribar als testers professionals: entrenadors, dietistes-nutricionistes i gent que fa anys que entrena.</li><li>Buscar 40 testers en tres grups: 12 que només entrenen, 18 equilibrats i 10 exigents.</li><li>Enviar-los un codi d'invitació. Cada codi els posa al seu grup i els dona el preu fundador.</li><li>Fer seguiment setmanal a Admin → Beta i respondre el feedback en menys de 48 h.</li><li>Fer les enquestes de les setmanes 2, 4 (preu) i 6, i 6–8 entrevistes curtes.</li></ul></dd>
           <dt>Cost</dt><dd>IA: menys d'1 € al mes per tester (estimat). Temps: unes 2 hores a la setmana.</dd>
           <dt>Per passar a la següent</dt><dd>Activació ≥ 60 %, retenció D30 ≥ 15 %, NPS ≥ 30 i una mediana de preu acceptable ≥ 8 €. Amb les dades, et preparo l'informe final.</dd>
         </dl>
@@ -383,7 +383,7 @@ tr.vid-done td { color: var(--muted); text-decoration: line-through }
     <h1>Què publicar, on i quan</h1>
     <p class="lede">És un llançament perquè la gent la provi si vol, no una campanya: LinkedIn i X, i els llocs on la gent busca coses noves (Hacker News, Reddit, BetaList, Menéame i directoris). Instagram, TikTok i YouTube vindran més endavant. Cada publicació té un dia orientatiu, el vídeo que hi has de pujar i el text per copiar. Els dies no són obligatoris: el que compta és publicar un matí entre setmana i ser-hi per contestar. Quan l'hagis pujada, marca-la: es guarda per a tothom qui té accés a aquesta pàgina. Les hores són de Madrid.</p>
     <div class="pub-progress"><div class="pub-bar" aria-hidden="true"><i id="pubBar"></i></div><span class="status-line" id="pubStatus" aria-live="polite">Carregant…</span></div>
-    <p class="meta">Els vídeos són a l'escriptori, carpeta <code>mai-fitness-videos-2026-10-16</code>. Res surt abans del 3 de novembre: fins al 25 d'octubre són les proves amb amics, i la setmana següent és per preparar.</p>
+    <p class="meta">Els vídeos són a l'escriptori, carpeta <code>mai-fitness-videos-2026-10-16</code>. El llançament és dimarts 20 d'octubre al matí, abans de dinar: LinkedIn i X.</p>
   </header>
 
   <section>
@@ -1389,25 +1389,25 @@ Ho he arreglat: ara, si fas una altra cosa en lloc d'una sessió, també compta.
 
   const P = [
     // ── Preparar
-    { id: 'prep-domini', week: 'prep', date: '2026-10-27', title: 'Decidir el domini', tips: ['Si compres maifitness.app ara, canvia l\'adreça de dalt i la del final dels vídeos (scripts/teaser/README.md). Si no, tot funciona amb maifitness.netlify.app.'] },
-    { id: 'prep-codis', week: 'prep', date: '2026-10-29', title: 'Crear un codi d\'invitació per canal i enganxar-los a dalt', tips: ['Admin → Beta → Invite codes: grup B, el nom del canal a "Note" i prou usos (per exemple 200).', 'LinkedIn, X, Hacker News, Reddit, BetaList, Menéame i Indie Hackers. Els de directoris, premsa i Product Hunt es poden fer més endavant.'] },
-    { id: 'prep-betalist', week: 'prep', date: '2026-10-27', ch: 'betalist', lang: 'EN', video: '3–4 captures i el logo', title: 'Enviar l\'app a BetaList',
+    { id: 'prep-domini', week: 'prep', date: '2026-10-19', title: 'Decidir el domini', tips: ['Si compres maifitness.app ara, canvia l\'adreça de dalt i la del final dels vídeos (scripts/teaser/README.md). Si no, tot funciona amb maifitness.netlify.app.'] },
+    { id: 'prep-codis', week: 'prep', date: '2026-10-19', title: 'Crear un codi d\'invitació per canal i enganxar-los a dalt', tips: ['Admin → Beta → Invite codes: grup B, el nom del canal a "Note" i prou usos (per exemple 200).', 'LinkedIn, X, Hacker News, Reddit, BetaList, Menéame i Indie Hackers. Els de directoris, premsa i Product Hunt es poden fer més endavant.'] },
+    { id: 'prep-betalist', week: 'prep', date: '2026-10-19', ch: 'betalist', lang: 'EN', video: '3–4 captures i el logo', title: 'Enviar l\'app a BetaList',
       tips: ['BetaList és on la gent busca productes nous en beta. L\'alta gratuïta té llista d\'espera i pot trigar setmanes: per això va ara. No cal pagar per sortir abans.', 'Quan surti, marca-la aquí i passa-hi a contestar els comentaris.'],
       texts: [['Nom', 'mAI Fitness'], ['Frase curta', 'Training and meals in one plan that adapts to your week'], ['Descripció', `I built this for myself and it grew into a full app: a training program that adapts to your real week, meals in grams for your body and your training, and an AI coach that proposes changes you accept or reject.
 
 Looking for people who train (or want to) to try it for a couple of weeks and tell me what's confusing or missing. It's a free web app, works on the phone: {LINK}`]] },
-    { id: 'prep-captures', week: 'prep', date: '2026-10-30', title: '4–5 captures de pantalla netes', tips: ['Avui, Registre, Menjar, Coach i Progrés, des del mòbil i amb dades que quedin bé.', 'Serveixen per a BetaList, els directoris i Product Hunt.', 'Fes-ne una també de la setmana amb «Caminar ha comptat com a HIIT o caminar»: és per als posts de la setmana 3.'] },
+    { id: 'prep-captures', week: 'prep', date: '2026-10-19', title: '4–5 captures de pantalla netes', tips: ['Avui, Registre, Menjar, Coach i Progrés, des del mòbil i amb dades que quedin bé.', 'Serveixen per a BetaList, els directoris i Product Hunt.', 'Fes-ne una també de la setmana amb «Caminar ha comptat com a HIIT o caminar»: és per als posts de la setmana 3.'] },
 
     // ── Setmana 1
-    { id: 'w1-li-en', week: 'w1', date: '2026-11-04', time: '9:00', ch: 'linkedin', lang: 'EN', video: 'mai-fitness-en-vertical.mp4', title: 'Presentació a LinkedIn en anglès',
+    { id: 'w1-li-en', week: 'w1', date: '2026-10-20', time: '11:00', ch: 'linkedin', lang: 'EN', video: 'mai-fitness-en-vertical.mp4', title: 'Presentació a LinkedIn en anglès',
       tips: ['Des del teu perfil personal. Puja el vídeo directament al post, no un enllaç de YouTube.', 'L\'enllaç pot anar al mateix text: amb aquest to no cal amagar-lo al primer comentari.', 'Si pots, queda\'t una hora o dues per contestar els comentaris.'],
       texts: [['Post', LI_EN]] },
-    { id: 'w1-x-ca', week: 'w1', date: '2026-11-04', time: '10:30', ch: 'x', lang: 'CA', video: 'mai-fitness-ca-vertical.mp4', title: 'Post a X en català',
+    { id: 'w1-x-ca', week: 'w1', date: '2026-10-20', time: '11:30', ch: 'x', lang: 'CA', video: 'mai-fitness-ca-vertical.mp4', title: 'Post a X en català',
       tips: ['Puja el vídeo al mateix post.', 'Fixa\'l al perfil perquè sigui el primer que vegi qui hi entri.'],
       texts: [['Post', X_CA]] },
 
     // ── Setmana 2
-    { id: 'w2-hn', week: 'w2', date: '2026-11-10', time: '15:00', ch: 'hn', lang: 'EN', video: 'Sense vídeo: només l\'enllaç i el comentari', title: 'Show HN a Hacker News',
+    { id: 'w2-hn', week: 'w1', date: '2026-10-21', time: '15:00', ch: 'hn', lang: 'EN', video: 'Sense vídeo: només l\'enllaç i el comentari', title: 'Show HN a Hacker News',
       tips: ['Envia l\'enllaç amb el títol i, de seguida, escriu el primer comentari: allà és on la gent llegeix la història.', 'Les 15:00 de Madrid són el matí als EUA. Reserva\'t un parell d\'hores per contestar; a HN agraeixen les respostes tècniques i honestes.', 'Si hi arriba molta gent, mira Admin → Analytics aquell dia: el cost d\'IA puja amb els usuaris.'],
       texts: [['Títol', 'Show HN: mAI Fitness – a training and meal planner I built for myself'], ['URL', '{LINK}'], ['Primer comentari', `I started this for myself: I wanted my training and what I eat in one plan that follows the week I actually have, not the one I planned on Sunday. It kept growing, so I'm putting it out there in case it's useful to someone else.
 
@@ -1418,7 +1418,7 @@ How it works, briefly:
 - It's a PWA with an offline outbox, because my gym has no signal.
 
 It's free while I test it, and there are rough edges. Happy to answer anything about how it's built or what it costs to run.`]] },
-    { id: 'w2-reddit', week: 'w2', date: '2026-11-11', time: '15:00', ch: 'reddit', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4', title: 'Reddit: r/SideProject',
+    { id: 'w2-reddit', week: 'w1', date: '2026-10-22', time: '15:00', ch: 'reddit', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4', title: 'Reddit: r/SideProject',
       tips: ['Llegeix les normes del subreddit abans de publicar.', 'Puja el vídeo al post. Respon tots els comentaris, també els durs.'],
       texts: [['Títol', 'I built a training and meal planner for myself and it kept growing. Maybe it\'s useful to someone else'], ['Text', `I started this as a small app for myself, to keep my training and what I eat in one place. It kept growing: now it writes my program, tells me what's on each day, suggests meals with the grams for my body and, when I end up doing something else, it rearranges the week.
 
@@ -1427,28 +1427,28 @@ The numbers (calories, protein, grams) are worked out by the app with plain rule
 It's a web app that works on the phone, offline at the gym too, in English, Spanish and Catalan. Free while I test it: {LINK}
 
 I made a short video of how it works. Any feedback is welcome, especially what would make you stop using it.`]] },
-    { id: 'w2-alpha', week: 'w2', date: '2026-11-12', time: '15:00', ch: 'reddit', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4', title: 'Reddit: r/alphaandbetausers (gent que prova betes)',
-      tips: ['Aquest subreddit és justament per buscar gent que provi productes en beta. Mira el format que fan servir els altres posts i les normes.'],
-      texts: [['Títol', '[Beta] mAI Fitness – training and meal plans that adapt to your week (free web app)'], ['Text', `I built this for myself and it grew into a full app: a training program that adapts to your real week, meals in grams for your body and your training, and an AI coach that proposes changes you accept or reject.
-
-Looking for people who train (or want to) to try it for a couple of weeks and tell me what's confusing or missing. It's a free web app, works on the phone: {LINK}`]] },
-    { id: 'w2-meneame', week: 'w2', date: '2026-11-13', time: '10:00', ch: 'meneame', lang: 'ES', video: 'Sense vídeo: només l\'enllaç', title: 'Menéame, en castellà',
+    { id: 'w2-meneame', week: 'w1', date: '2026-10-23', time: '10:00', ch: 'meneame', lang: 'ES', video: 'Sense vídeo: només l\'enllaç', title: 'Menéame, en castellà',
       tips: ['És el més semblant a Hacker News en castellà. Hi castiguen l\'autobombo: llegeix les normes i explica-ho com el que és, una cosa feta per a tu que comparteixes.', 'Si veus que no encaixa, salta-te-la: no passa res.'],
       texts: [['Títol', 'Me hice una app para llevar el entreno y la comida, y la comparto por si a alguien le sirve'], ['Entradilla', `Empecé haciéndome una app para mí, para llevar el entreno y la comida en un solo sitio. Ha ido creciendo: ahora me hace el programa, me dice qué toca cada día, me propone comidas con los gramos para mi cuerpo y, si un día hago otra cosa, me reorganiza la semana.
 
 Los números (calorías, proteína, gramos) los calcula la app con reglas; la IA solo propone cambios y tú decides. Es gratis mientras la pruebo.`]] },
 
     // ── Setmana 3
-    { id: 'w3-x-ca', week: 'w3', date: '2026-11-17', time: '10:00', ch: 'x', lang: 'CA', video: 'Captura: la setmana amb «Caminar ha comptat com a…»', title: 'X en català: una història petita de l\'app',
+    { id: 'w2-alpha', week: 'w2', date: '2026-10-26', time: '15:00', ch: 'reddit', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4', title: 'Reddit: r/alphaandbetausers (gent que prova betes)',
+      tips: ['Aquest subreddit és justament per buscar gent que provi productes en beta. Mira el format que fan servir els altres posts i les normes.'],
+      texts: [['Títol', '[Beta] mAI Fitness – training and meal plans that adapt to your week (free web app)'], ['Text', `I built this for myself and it grew into a full app: a training program that adapts to your real week, meals in grams for your body and your training, and an AI coach that proposes changes you accept or reject.
+
+Looking for people who train (or want to) to try it for a couple of weeks and tell me what's confusing or missing. It's a free web app, works on the phone: {LINK}`]] },
+    { id: 'w3-x-ca', week: 'w2', date: '2026-10-27', time: '10:00', ch: 'x', lang: 'CA', video: 'Captura: la setmana amb «Caminar ha comptat com a…»', title: 'X en català: una història petita de l\'app',
       tips: ['Una història petita i real funciona millor que una llista de funcions.'],
       texts: [['Post', X_CA_2]] },
-    { id: 'w3-li-en', week: 'w3', date: '2026-11-18', time: '9:00', ch: 'linkedin', lang: 'EN', video: 'Captura: la setmana amb «Walk counted as…»', title: 'LinkedIn en anglès: una història de producte',
+    { id: 'w3-li-en', week: 'w2', date: '2026-10-28', time: '9:00', ch: 'linkedin', lang: 'EN', video: 'Captura: la setmana amb «Walk counted as…»', title: 'LinkedIn en anglès: una història de producte',
       texts: [['Post', LI_EN_2]] },
-    { id: 'w3-ih', week: 'w3', date: '2026-11-19', time: '15:00', ch: 'indiehackers', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4', title: 'Indie Hackers: com va, amb números',
+    { id: 'w3-ih', week: 'w2', date: '2026-10-29', time: '15:00', ch: 'indiehackers', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4', title: 'Indie Hackers: com va, amb números',
       tips: ['Omple els números des d\'Admin → Beta abans de publicar. La gent d\'Indie Hackers vol xifres reals, encara que siguin petites.'],
-      texts: [['Títol', 'Three weeks into a training + food app: what the first users taught me'], ['Text', `I'm building mAI Fitness, a web app that plans training and meals together and adapts to the week you actually have. The app does the maths; an AI coach only proposes changes.
+      texts: [['Títol', 'Ten days into launching a training + food app: what the first users taught me'], ['Text', `I'm building mAI Fitness, a web app that plans training and meals together and adapts to the week you actually have. The app does the maths; an AI coach only proposes changes.
 
-Numbers after three weeks in public:
+Numbers after ten days in public:
 - [N] sign-ups, [N] activated (logged a first session)
 - D7 retention: [N] %
 - AI cost per active user: about [N] € a month
@@ -1459,16 +1459,16 @@ What surprised me: [...]
 What I'm doing next: [...]
 
 Try it: {LINK}. Feedback welcome, especially the harsh kind.`]] },
-    { id: 'w3-review', week: 'w3', date: '2026-11-22', title: 'Mirar quin canal porta gent que es queda',
+    { id: 'w3-review', week: 'w2', date: '2026-11-01', title: 'Mirar quin canal porta gent que es queda',
       tips: ['Admin → Beta: la columna "Used" de cada codi i l\'activació de cada grup.', 'Repeteix els dos canals que porten gent activa; deixa el que porti registres que no s\'activen.'] },
 
     // ── Directoris i premsa
-    { id: 'd1', week: 'w4', date: '2026-11-24', time: '10:00', ch: 'directoris', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4 + captures', title: 'Directoris (1): AlternativeTo i SaaSHub',
+    { id: 'd1', week: 'w4', date: '2026-11-02', time: '10:00', ch: 'directoris', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4 + captures', title: 'Directoris (1): AlternativeTo i SaaSHub',
       tips: ['A AlternativeTo, dona-la d\'alta com a alternativa a Fitbod, MyFitnessPal i Hevy.', 'No cal pagar per sortir abans.'],
       texts: [['Descripció curta', 'Training and food in one plan that adapts to you'], ['Descripció', `mAI Fitness plans your training and your meals together. Log each set in seconds, get meals in grams for your body and your training, and talk to a coach that adjusts the plan when life gets in the way. The app does the maths; the coach only proposes changes you accept. Works offline at the gym. {LINK}`]] },
-    { id: 'd2', week: 'w4', date: '2026-12-01', time: '10:00', ch: 'directoris', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4 + captures', title: "Directoris (2): There's An AI For That, Futurepedia, Uneed i Microlaunch",
+    { id: 'd2', week: 'w4', date: '2026-11-09', time: '10:00', ch: 'directoris', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4 + captures', title: "Directoris (2): There's An AI For That, Futurepedia, Uneed i Microlaunch",
       tips: ['Uneed i Microlaunch donen un dia de llançament: tria un dimarts o un dimecres.'], texts: [['Descripció', 'La mateixa del dia 24.']] },
-    { id: 'press-ca', week: 'w4', date: '2026-12-03', time: '10:00', ch: 'premsa', lang: 'CA', video: 'mai-fitness-ca-horitzontal.mp4', title: 'Correu als mitjans catalans',
+    { id: 'press-ca', week: 'w4', date: '2026-11-11', time: '10:00', ch: 'premsa', lang: 'CA', video: 'mai-fitness-ca-horitzontal.mp4', title: 'Correu als mitjans catalans',
       tips: ['VIA Empresa, les seccions de tecnologia dels diaris i la ràdio local. Un correu per persona, amb el seu nom.', 'Adjunta el vídeo o un enllaç per descarregar-lo.'],
       texts: [['Assumpte', 'Una app feta aquí que fa d\'entrenador i de dietista, en català'], ['Correu', `Hola, [nom]:
 
@@ -1508,11 +1508,10 @@ Gracias,
 Jose`]] },
   ]
   const WEEKS = [
-    ['prep', 'Preparar', '26 d\'octubre – 1 de novembre'],
-    ['w1', 'Setmana 1 · la presentació', '2–8 de novembre'],
-    ['w2', 'Setmana 2 · Hacker News, Reddit i Menéame', '9–15 de novembre'],
-    ['w3', 'Setmana 3 · construir en públic', '16–22 de novembre'],
-    ['w4', 'Directoris i premsa catalana', '23 de novembre – 6 de desembre'],
+    ['prep', 'Avui · preparar', 'dilluns 19 d\'octubre'],
+    ['w1', 'Aquesta setmana · el llançament', '20–25 d\'octubre'],
+    ['w2', 'La setmana vinent · la primera història', '26 d\'octubre – 1 de novembre'],
+    ['w4', 'Directoris i premsa catalana', '2–15 de novembre'],
     ['jan', 'Gener · Product Hunt (si es compleixen les condicions)', '12–13 de gener'],
   ]
 
