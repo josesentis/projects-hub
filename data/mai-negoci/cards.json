@@ -69,7 +69,7 @@
   "why": "Els textos de privacitat, termes i galetes estan actualitzats però són un esborrany. Tractem dades de salut (art. 9 RGPD) i cobrarem subscripcions (dret de desistiment)."
  },
  "p0-migracio": {
-  "col": "todo",
+  "col": "done",
   "order": 1,
   "phase": 0,
   "steps": [

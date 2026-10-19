@@ -187,6 +187,12 @@ ol.sources { font-size: 13px; color: var(--muted); padding-left: 20px } ol.sourc
 .why-days { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px }
 @media (min-width: 760px) { .why-days { grid-template-columns: 1fr 1fr } }
 .why-days .doc-card p { font-size: 14px }
+.vidbox { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; background: var(--accent-2-soft); border-radius: 10px; padding: 10px 12px; font-size: 14px; color: var(--ink) }
+.vidbox code { justify-self: start; font-size: 14px; background: var(--surface); overflow-wrap: anywhere }
+.vidbox-k { font: 600 11px/1.4 var(--text); letter-spacing: .06em; text-transform: uppercase; color: var(--accent-2) }
+.vidbox-dir { font-size: 12px; color: var(--muted) }
+.vidbox.none { background: var(--line) }
+tr.vid-done td { color: var(--muted); text-decoration: line-through }
 </style>
 <header class="topbar">
   <div class="topbar-in">
@@ -375,7 +381,7 @@ ol.sources { font-size: 13px; color: var(--muted); padding-left: 20px } ol.sourc
   <header class="hero">
     <span class="eyebrow">Calendari de publicació · del 26 d'octubre al gener</span>
     <h1>Què publicar, on i quan</h1>
-    <p class="lede">Cada publicació té el dia i l'hora amb més interacció d'aquell lloc, el vídeo que hi va i el text per copiar. Quan l'hagis pujada, marca-la: es guarda per a tothom qui té accés a aquesta pàgina. Les hores són de Madrid.</p>
+    <p class="lede">Cada publicació té un dia orientatiu, el vídeo que hi has de pujar i el text per copiar. Els dies no són obligatoris: el que compta és publicar un matí entre setmana i ser-hi per contestar. Quan l'hagis pujada, marca-la: es guarda per a tothom qui té accés a aquesta pàgina. Les hores són de Madrid.</p>
     <div class="pub-progress"><div class="pub-bar" aria-hidden="true"><i id="pubBar"></i></div><span class="status-line" id="pubStatus" aria-live="polite">Carregant…</span></div>
     <p class="meta">Els vídeos són a l'escriptori, carpeta <code>mai-fitness-videos-2026-10-16</code>. Res surt abans del 3 de novembre: fins al 25 d'octubre són les proves amb amics, i la setmana següent és per preparar.</p>
   </header>
@@ -384,8 +390,8 @@ ol.sources { font-size: 13px; color: var(--muted); padding-left: 20px } ol.sourc
     <span class="eyebrow">Per què aquests dies</span>
     <h2>La regla de cada lloc</h2>
     <div class="why-days">
-      <div class="doc-card"><h3>LinkedIn · dimecres 9:00</h3><p>El dimecres és el dia amb més interacció, seguit de dijous i divendres. Publica a primera hora, quan la gent obre LinkedIn abans de començar a treballar. L'enllaç va al primer comentari, i les dues primeres hores responent comentaris són les que fan que el post arribi lluny.</p></div>
-      <div class="doc-card"><h3>X · dimarts i dimecres al matí</h3><p>En català i castellà, entre les 9 i les 11. En anglès, a les 15:00, que són les 9 del matí a Nova York i encara és tarda a Europa. L'enllaç va a l'últim missatge del fil, perquè X ensenya menys els posts amb enllaços.</p></div>
+      <div class="doc-card"><h3>LinkedIn · en anglès, un matí entre setmana</h3><p>De dimarts a dijous a primera hora va bé, però no cal clavar el dia. Amb un post personal, l'enllaç pot anar al mateix text. El que més ajuda és contestar els comentaris la primera hora o dues.</p></div>
+      <div class="doc-card"><h3>X · en català, al matí</h3><p>Entre les 9 i les 11 d'un dia entre setmana. Un sol post amb el vídeo i l'enllaç, sense fil.</p></div>
       <div class="doc-card"><h3>Instagram · dijous 19:00</h3><p>Funciona millor entre setmana que el divendres o el cap de setmana. Al vespre, la gent de gimnàs ja ha plegat. L'enllaç va a la bio, i una història amb adhesiu d'enllaç porta la gent al Reel.</p></div>
       <div class="doc-card"><h3>TikTok i YouTube Shorts · diumenge 20:00</h3><p>Les visualitzacions pugen al vespre, de 18 a 23 h, i el diumenge és el dia que la gent planifica la setmana d'entrenament. Acaba el text amb una pregunta perquè la gent comenti.</p></div>
       <div class="doc-card"><h3>Reddit i Indie Hackers · entre setmana, 14–16 h</h3><p>r/SideProject té més moviment el dilluns cap a les 13–14 h UTC (14–15 h a Madrid). Demana opinió, no anunciïs res, i respon tots els comentaris.</p></div>
@@ -402,6 +408,13 @@ ol.sources { font-size: 13px; color: var(--muted); padding-left: 20px } ol.sourc
       <label style="grid-column:1/-1"><span>Adreça</span><input id="lk-base" inputmode="url" autocomplete="off" spellcheck="false"></label>
     </div>
     <p class="status-line" id="codesStatus" aria-live="polite"></p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Vídeos</span>
+    <h2>Què has de pujar a cada lloc</h2>
+    <p>Tots els vídeos són a l'escriptori, a la carpeta <code>mai-fitness-videos-2026-10-16</code>. Cada publicació de sota també diu el seu.</p>
+    <div id="pubVideos"></div>
   </section>
 
   <div id="pubWeeks" style="display:flex;flex-direction:column;gap:40px"></div>
@@ -799,7 +812,7 @@ ol.sources { font-size: 13px; color: var(--muted); padding-left: 20px } ol.sourc
   <section id="g-xarxes">
     <span class="eyebrow">Guia 8</span>
     <h2>Presentar l'app a X i LinkedIn</h2>
-    <p><b>Quan:</b> abans de buscar els testers professionals (entrenadors, dietistes-nutricionistes, gent que fa anys que entrena). La presentació serveix perquè et coneguin i perquè aquests testers et trobin. L'última frase de cada text els ho demana directament; treu-la si encara no vols rebre'n.</p>
+    <p><b>El to:</b> personal i sense pressa: l'has fet per a tu, ha anat creixent i potser li serveix a algú més. LinkedIn en anglès i X en català.</p>
 
     <h3>Els vídeos</h3>
     <ul class="check">
@@ -810,23 +823,16 @@ ol.sources { font-size: 13px; color: var(--muted); padding-left: 20px } ol.sourc
       <li><b>Refer-los</b> quan canviï l'app o el domini: <code>scripts/teaser/README.md</code> al repositori.</li>
     </ul>
 
-    <h3>LinkedIn (català)</h3>
-    <div class="callout"><p>Fa uns mesos vaig començar una app per a mi. Volia portar l'entreno i el menjar en un sol pla, i que el pla s'adaptés a la meva setmana real, i no al revés.</p><p>Avui la deixo veure: mAI Fitness.</p><p>→ Et diu què toca avui i hi apuntes cada sèrie en segons. Si un dia no pots, la sessió es mou: la setmana és una llista de coses per fer, no un calendari que falles.<br>→ El menjar ve en grams, calculats per al teu cos, el teu objectiu i el que entrenes aquell dia.<br>→ Si menges una altra cosa, ho dius amb paraules o fas una foto al plat, i la resta del dia s'ajusta.<br>→ Un coach d'IA proposa canvis al programa, a la setmana i als àpats. Tu decideixes si els acceptes.</p><p>Hi ha una decisió de disseny que m'importa molt: els números els calcula l'app amb regles (energia, proteïna, grams per àpat, fins on pot arribar un dèficit). La IA proposa i explica; no s'inventa les calories.</p><p>Funciona al navegador del mòbil, s'instal·la com una app i aguanta sense cobertura al gimnàs. En català, castellà i anglès.</p><p>Ara la fem servir jo i un grup petit d'amics. El pas següent és posar-la a les mans de gent que en sap: entrenadors, dietistes-nutricionistes i gent que fa anys que entrena de debò. Si ets una d'aquestes persones i tens 20 minuts per dir-me què faries diferent, escriu-me.</p><p>Es pot provar gratis: maifitness.netlify.app</p></div>
+    <h3>LinkedIn (anglès)</h3>
+    <div class="callout"><p>A few months ago I started building a small app to keep track of my own training and what I eat. It was just for me.</p><p>It kept growing. Now it writes my training program, tells me what's on each day, suggests meals with the grams for my body and, when I end up doing something else, it rearranges the week.</p><p>I thought someone else might find it useful too. It's free while I keep testing it, and there are still rough edges, so any feedback, good or bad, really helps.</p><p>I made a short video so you can see how it works. If you want to try it: maifitness.netlify.app</p></div>
 
-    <h3>LinkedIn (castellà)</h3>
-    <div class="callout"><p>Hace unos meses empecé una app para mí. Quería llevar el entreno y la comida en un solo plan, y que el plan se adaptara a mi semana real, y no al revés.</p><p>Hoy la enseño: mAI Fitness.</p><p>→ Te dice qué toca hoy y apuntas cada serie en segundos. Si un día no puedes, la sesión se mueve: la semana es una lista de cosas por hacer, no un calendario que fallas.<br>→ La comida viene en gramos, calculados para tu cuerpo, tu objetivo y lo que entrenas ese día.<br>→ Si comes otra cosa, lo dices con palabras o haces una foto al plato, y el resto del día se ajusta.<br>→ Un coach de IA propone cambios en el programa, la semana y las comidas. Tú decides si los aceptas.</p><p>Hay una decisión de diseño que me importa mucho: los números los calcula la app con reglas (energía, proteína, gramos por comida, hasta dónde puede llegar un déficit). La IA propone y explica; no se inventa las calorías.</p><p>Funciona en el navegador del móvil, se instala como una app y aguanta sin cobertura en el gimnasio. En castellano, catalán e inglés.</p><p>Ahora la usamos yo y un grupo pequeño de amigos. El siguiente paso es ponerla en manos de gente que sabe: entrenadores, dietistas-nutricionistas y gente que lleva años entrenando en serio. Si eres una de esas personas y tienes 20 minutos para decirme qué harías distinto, escríbeme.</p><p>Se puede probar gratis: maifitness.netlify.app</p></div>
-
-    <h3>X (fil en anglès, cinc missatges)</h3>
-    <div class="callout"><p><b>1/</b> I built mAI Fitness: training and food in one plan that adapts to your real week, not the other way round.<br><br>Here's what it does 🧵 <i>[vídeo]</i></p><p><b>2/</b> It tells you what's on today and you log each set in seconds. Can't train on Tuesday? Bring the session forward or push it back. The week is a to-do list, not a calendar you fail.</p><p><b>3/</b> Food comes in grams, worked out for your body, your goal and that day's training. Ate something else? Say it in words or snap the plate, and the rest of the day adjusts.</p><p><b>4/</b> The rule I care about most: the app does the maths (energy, protein, grams, how big a deficit can be). The AI coach proposes changes and explains them, and you accept or reject them. It never makes up the calories.</p><p><b>5/</b> It's a web app: open it on your phone, add it to your home screen, and it works with no signal at the gym. In English, Spanish and Catalan.<br><br>Free to try: maifitness.netlify.app<br><br>Coaches and dietitians: I'd love you to tear it apart.</p></div>
-
-    <h3>X (un sol missatge, català o castellà)</h3>
-    <div class="callout"><p>He fet mAI Fitness: l'entreno i el menjar en un sol pla que s'adapta a la teva setmana real.<br><br>Sèries apuntades en segons, menjar en grams i, si menges una altra cosa, ho dius o hi fas una foto i el dia s'ajusta. L'app fa els números; la IA proposa.<br><br>maifitness.netlify.app</p></div>
-    <div class="callout"><p>He hecho mAI Fitness: entreno y comida en un solo plan que se adapta a tu semana real.<br><br>Series apuntadas en segundos, comida en gramos y, si comes otra cosa, lo dices o le haces una foto y el día se ajusta. La app hace los números; la IA propone.<br><br>maifitness.netlify.app</p></div>
+    <h3>X (català)</h3>
+    <div class="callout"><p>M'he estat fent una app per portar l'entreno i el menjar. Era només per a mi, però ha anat creixent.</p><p>He fet un petit vídeo perquè vegeu com funciona. Si algú la vol provar i dir-me què en pensa: maifitness.netlify.app</p></div>
 
     <h3>Consells</h3>
     <ul class="check">
-      <li><b>LinkedIn:</b> des del teu perfil personal, no des d'una pàgina de l'app. Si et preocupa que LinkedIn ensenyi menys les publicacions amb enllaços, posa l'enllaç al primer comentari.</li>
-      <li><b>X:</b> el vídeo va al primer missatge del fil.</li>
+      <li><b>LinkedIn:</b> en anglès, des del teu perfil personal i amb <code>mai-fitness-en-vertical.mp4</code>.</li>
+      <li><b>X:</b> en català, un sol post amb <code>mai-fitness-ca-vertical.mp4</code>.</li>
       <li><b>Comptar qui arriba:</b> si l'enllaç ha de dir d'on ve la gent, crea un codi a Admin → Beta (per exemple "linkedin") i fes servir <code>maifitness.netlify.app/register?invite=CODI</code>.</li>
       <li><b>Feedback:</b> el que et diguin per comentaris o missatges, apunta-ho a Admin → Beta → "Add feedback".</li>
       <li><b>Domini:</b> si el compres abans de publicar, cal canviar l'adreça dels textos i del final dels vídeos.</li>
@@ -1358,50 +1364,28 @@ ol.sources { font-size: 13px; color: var(--muted); padding-left: 20px } ol.sourc
   const MONTHS = ['de gener', 'de febrer', 'de març', "d'abril", 'de maig', 'de juny', 'de juliol', "d'agost", 'de setembre', "d'octubre", 'de novembre', 'de desembre']
 
   // ── Texts ────────────────────────────────────────────────────────────────
-  const LI_CA = `Fa uns mesos vaig començar una app per a mi. Volia portar l'entreno i el menjar en un sol pla, i que el pla s'adaptés a la meva setmana real, i no al revés.
+  const LI_EN = `A few months ago I started building a small app to keep track of my own training and what I eat. It was just for me.
 
-Avui la deixo veure: mAI Fitness.
+It kept growing. Now it writes my training program, tells me what's on each day, suggests meals with the grams for my body and, when I end up doing something else, it rearranges the week.
 
-→ Et diu què toca avui i hi apuntes cada sèrie en segons. Si un dia no pots, la sessió es mou: la setmana és una llista de coses per fer, no un calendari que falles.
-→ El menjar ve en grams, calculats per al teu cos, el teu objectiu i el que entrenes aquell dia.
-→ Si menges una altra cosa, ho dius amb paraules o fas una foto al plat, i la resta del dia s'ajusta.
-→ Un coach d'IA proposa canvis al programa, a la setmana i als àpats. Tu decideixes si els acceptes.
+I thought someone else might find it useful too. It's free while I keep testing it, and there are still rough edges, so any feedback, good or bad, really helps.
 
-Hi ha una decisió de disseny que m'importa molt: els números els calcula l'app amb regles (energia, proteïna, grams per àpat, fins on pot arribar un dèficit). La IA proposa i explica; no s'inventa les calories.
+I made a short video so you can see how it works. If you want to try it: {LINK}`
+  const X_CA = `M'he estat fent una app per portar l'entreno i el menjar. Era només per a mi, però ha anat creixent.
 
-Funciona al navegador del mòbil, s'instal·la com una app i aguanta sense cobertura al gimnàs. En català, castellà i anglès.
+He fet un petit vídeo perquè vegeu com funciona. Si algú la vol provar i dir-me què en pensa: {LINK}`
+  const LI_EN_2 = `A small story from building my training app.
 
-Ara la fem servir jo i un grup petit d'amics. El pas següent és posar-la a les mans de gent que en sap: entrenadors, dietistes-nutricionistes i gent que fa anys que entrena de debò. Si ets una d'aquestes persones i tens 20 minuts per dir-me què faries diferent, escriu-me.
+Last week I swapped a HIIT session for a one-hour walk, and my own app told me I'd only done 3 of 4 sessions. That didn't feel right, so I fixed it.
 
-L'enllaç, al primer comentari 👇`
-  const LI_ES = `Hace unos meses empecé una app para mí. Quería llevar el entreno y la comida en un solo plan, y que el plan se adaptara a mi semana real, y no al revés.
+Now, if you do something else instead of a planned session, it counts by itself, the way a watch would: 30 minutes or more at a moderate pace is a session, and a short stroll is just activity minutes. What counts also depends on your goal: if you just want to stay fit, a basketball game covers a cardio day; if you're training to get better at basketball, a swim doesn't replace your skills session.
 
-Hoy la enseño: mAI Fitness.
+That's the kind of thing you only find by using what you build every day. Still free while I test it: {LINK}`
+  const X_CA_2 = `La setmana passada vaig canviar una sessió de HIIT per una caminada d'una hora, i la meva pròpia app em deia que només havia fet 3 de 4 sessions.
 
-→ Te dice qué toca hoy y apuntas cada serie en segundos. Si un día no puedes, la sesión se mueve: la semana es una lista de cosas por hacer, no un calendario que fallas.
-→ La comida viene en gramos, calculados para tu cuerpo, tu objetivo y lo que entrenas ese día.
-→ Si comes otra cosa, lo dices con palabras o haces una foto al plato, y el resto del día se ajusta.
-→ Un coach de IA propone cambios en el programa, la semana y las comidas. Tú decides si los aceptas.
+Ho he arreglat: ara, si fas una altra cosa en lloc d'una sessió, també compta. Coses que trobes quan fas servir el que construeixes.
 
-Hay una decisión de diseño que me importa mucho: los números los calcula la app con reglas (energía, proteína, gramos por comida, hasta dónde puede llegar un déficit). La IA propone y explica; no se inventa las calorías.
-
-Funciona en el navegador del móvil, se instala como una app y aguanta sin cobertura en el gimnasio. En castellano, catalán e inglés.
-
-Ahora la usamos yo y un grupo pequeño de amigos. El siguiente paso es ponerla en manos de gente que sabe: entrenadores, dietistas-nutricionistas y gente que lleva años entrenando en serio. Si eres una de esas personas y tienes 20 minutos para decirme qué harías distinto, escríbeme.
-
-El enlace, en el primer comentario 👇`
-  const LI_CA_2 = `La setmana passada vaig canviar la sessió de «HIIT o caminar» per una caminada d'una hora. La meva pròpia app em va dir que havia fet 3 de 4 sessions. No era veritat, així que ho he arreglat.
-
-Ara, si fas una altra cosa en lloc d'una sessió, compta sola, com en un rellotge:
-
-→ 30 minuts o més a ritme moderat és una sessió. Un passeig de 15 minuts són minuts d'activitat, no una sessió.
-→ Què compta depèn de l'objectiu. Si vols estar en forma, un partit de bàsquet val per un dia de cardio. Si el que vols és millorar a bàsquet, nedar no substitueix l'entrenament de tècnica.
-→ La regla de cada sessió l'escriu el coach d'IA quan fa el programa. Després l'aplica l'app sola, sense IA i sense preguntar-te res.
-→ El menjar també ho té en compte: les calories de més tornen els dos dies següents si vols guanyar múscul o mantenir-te, la meitat si fas recomposició, i cap si estàs en dèficit.
-
-Són aquests detalls els que fan que una app s'adapti a la teva setmana, en lloc de renyar-te per no seguir-la.
-
-mAI Fitness és gratis durant la beta. L'enllaç, al primer comentari 👇`
+{LINK}`
 
   const P = [
     // ── Preparar
@@ -1411,25 +1395,12 @@ mAI Fitness és gratis durant la beta. L'enllaç, al primer comentari 👇`
     { id: 'prep-captures', week: 'prep', date: '2026-10-30', title: '4–5 captures de pantalla netes', tips: ['Avui, Registre, Menjar, Coach i Progrés, des del mòbil i amb dades que quedin bé.', 'Serveixen per al carrusel d\'Instagram, els directoris i Product Hunt.', 'Fes-ne una també de la setmana amb «Caminar ha comptat com a HIIT o caminar»: és per als posts de la setmana 3.'] },
 
     // ── Setmana 1
-    { id: 'w1-x-en', week: 'w1', date: '2026-11-03', time: '15:00', ch: 'x', lang: 'EN', video: 'mai-fitness-en-vertical.mp4', title: 'Fil a X en anglès (5 missatges)',
-      tips: ['El vídeo va al primer missatge; l\'enllaç només al cinquè.', 'Fixa el fil al perfil i respon tot el que arribi la primera hora.'],
-      texts: [['1/', `I built mAI Fitness: training and food in one plan that adapts to your real week, not the other way round.
-
-Here's what it does 🧵`], ['2/', `It tells you what's on today and you log each set in seconds. Can't train on Tuesday? Bring the session forward or push it back. The week is a to-do list, not a calendar you fail.`], ['3/', `Food comes in grams, worked out for your body, your goal and that day's training. Ate something else? Say it in words or snap the plate, and the rest of the day adjusts.`], ['4/', `The rule I care about most: the app does the maths (energy, protein, grams, how big a deficit can be). The AI coach proposes changes and explains them, and you accept or reject them. It never makes up the calories.`], ['5/', `It's a web app: open it on your phone, add it to your home screen, and it works with no signal at the gym. In English, Spanish and Catalan.
-
-Free during the beta: {LINK}
-
-Coaches and dietitians: I'd love you to tear it apart. #buildinpublic`]] },
-    { id: 'w1-li-ca', week: 'w1', date: '2026-11-04', time: '9:00', ch: 'linkedin', lang: 'CA', video: 'mai-fitness-ca-vertical.mp4', title: 'Presentació a LinkedIn en català',
-      tips: ['Des del teu perfil personal. Puja el vídeo directament, sense enllaç de YouTube.', 'Publica i, de seguida, escriu el primer comentari amb l\'enllaç.', 'Les dues primeres hores, respon cada comentari amb una frase de veritat. No editis el post durant la primera hora.'],
-      texts: [['Post', LI_CA], ['Primer comentari', 'Es pot provar gratis durant la beta: {LINK}']] },
-    { id: 'w1-x-ca', week: 'w1', date: '2026-11-04', time: '10:30', ch: 'x', lang: 'CA', video: 'mai-fitness-ca-vertical.mp4', title: 'Un sol post a X en català',
-      tips: ['Si algú ha contestat el fil en anglès d\'ahir, respon-li abans de publicar aquest.'],
-      texts: [['Post', `He fet mAI Fitness: l'entreno i el menjar en un sol pla que s'adapta a la teva setmana real.
-
-Sèries apuntades en segons, menjar en grams i, si menges una altra cosa, ho dius o hi fas una foto i el dia s'ajusta. L'app fa els números; la IA proposa.
-
-{LINK}`]] },
+    { id: 'w1-li-en', week: 'w1', date: '2026-11-04', time: '9:00', ch: 'linkedin', lang: 'EN', video: 'mai-fitness-en-vertical.mp4', title: 'Presentació a LinkedIn en anglès',
+      tips: ['Des del teu perfil personal. Puja el vídeo directament al post, no un enllaç de YouTube.', 'L\'enllaç pot anar al mateix text: amb aquest to no cal amagar-lo al primer comentari.', 'Si pots, queda\'t una hora o dues per contestar els comentaris.'],
+      texts: [['Post', LI_EN]] },
+    { id: 'w1-x-ca', week: 'w1', date: '2026-11-04', time: '10:30', ch: 'x', lang: 'CA', video: 'mai-fitness-ca-vertical.mp4', title: 'Post a X en català',
+      tips: ['Puja el vídeo al mateix post.', 'Fixa\'l al perfil perquè sigui el primer que vegi qui hi entri.'],
+      texts: [['Post', X_CA]] },
     { id: 'w1-ig-ca', week: 'w1', date: '2026-11-05', time: '19:00', ch: 'instagram', lang: 'CA', video: 'mai-fitness-ca-vertical.mp4', title: 'Reel a Instagram en català, i una història',
       tips: ['Tria una portada amb el titular del vídeo.', 'Comparteix el Reel a la història amb un adhesiu d\'enllaç cap a la web.', 'Entre 3 i 5 etiquetes, no més.'],
       texts: [['Text del Reel', `L'entreno i el menjar en un sol pla que s'adapta a la teva setmana real.
@@ -1460,15 +1431,6 @@ One rule I care about: the app does the maths (energy, protein, grams, deficit l
 It's a PWA, works offline at the gym, in English, Spanish and Catalan. Free during the beta: {LINK}
 
 I'm looking for honest feedback from people who actually train, not signups. What would make you drop it in the first five minutes?`]] },
-    { id: 'w2-x-es', week: 'w2', date: '2026-11-10', time: '10:00', ch: 'x', lang: 'ES', video: 'mai-fitness-es-vertical.mp4', title: 'Un sol post a X en castellà',
-      texts: [['Post', `He hecho mAI Fitness: entreno y comida en un solo plan que se adapta a tu semana real.
-
-Series apuntadas en segundos, comida en gramos y, si comes otra cosa, lo dices o le haces una foto y el día se ajusta. La app hace los números; la IA propone.
-
-{LINK}`]] },
-    { id: 'w2-li-es', week: 'w2', date: '2026-11-11', time: '9:00', ch: 'linkedin', lang: 'ES', video: 'mai-fitness-es-vertical.mp4', title: 'Presentació a LinkedIn en castellà',
-      tips: ['Una setmana després del català, perquè la teva xarxa no vegi el mateix post dos cops seguits.', 'El mateix ritual: enllaç al primer comentari i dues hores responent.'],
-      texts: [['Post', LI_ES], ['Primer comentario', 'Se puede probar gratis durante la beta: {LINK}']] },
     { id: 'w2-ig-es', week: 'w2', date: '2026-11-12', time: '19:00', ch: 'instagram', lang: 'ES', video: 'Captures (sense vídeo)', title: 'Carrusel a Instagram en castellà amb les captures',
       tips: ['Cinc imatges: Avui, Registre, Menjar, Coach, Progrés. A la primera, un titular gran: «Entreno y comida en un solo plan».', 'Els carrusels es guarden i es comparteixen més que un segon Reel amb el mateix vídeo.'],
       texts: [['Text', `Lo que hace mAI Fitness, en cinco pantallas:
@@ -1490,15 +1452,11 @@ Què hi trobes a faltar? 👇
 #gimnàs #fitness #catalunya #entrenament #nutrició`]] },
 
     // ── Setmana 3
-    { id: 'w3-x-en', week: 'w3', date: '2026-11-17', time: '15:00', ch: 'x', lang: 'EN', video: 'Captura: la setmana amb «Walk counted as…»', title: 'Construir en públic a X: el que fas pel teu compte també compta',
+    { id: 'w3-x-ca', week: 'w3', date: '2026-11-17', time: '10:00', ch: 'x', lang: 'CA', video: 'Captura: la setmana amb «Caminar ha comptat com a…»', title: 'X en català: una història petita de l\'app',
       tips: ['Una història petita i real funciona millor que una llista de funcions.'],
-      texts: [['1/', `Last week I swapped my "HIIT or walk" session for a 1 h walk. My own app said 3 of 4 sessions. It was wrong, so I fixed it. 🧵`], ['2/', `Now something done instead of a session counts by itself, like a watch: 30+ min at moderate intensity. A 15-min stroll is activity minutes, not a session.`], ['3/', `What counts depends on the goal. Generic goal: any cardio covers a cardio day. Training for basketball: only basketball covers the skills session.
-
-The AI coach writes that rule when it builds the program. The app applies it, no AI per workout.
-
-{LINK} #buildinpublic`]] },
-    { id: 'w3-li-ca', week: 'w3', date: '2026-11-18', time: '9:00', ch: 'linkedin', lang: 'CA', video: 'Captura: la setmana amb «Caminar ha comptat com a…»', title: 'LinkedIn en català: una història de producte',
-      texts: [['Post', LI_CA_2], ['Primer comentari', '{LINK}']] },
+      texts: [['Post', X_CA_2]] },
+    { id: 'w3-li-en', week: 'w3', date: '2026-11-18', time: '9:00', ch: 'linkedin', lang: 'EN', video: 'Captura: la setmana amb «Walk counted as…»', title: 'LinkedIn en anglès: una història de producte',
+      texts: [['Post', LI_EN_2]] },
     { id: 'w3-ih', week: 'w3', date: '2026-11-19', time: '15:00', ch: 'indiehackers', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4', title: 'Indie Hackers: com va, amb números',
       tips: ['Omple els números des d\'Admin → Beta abans de publicar. La gent d\'Indie Hackers vol xifres reals, encara que siguin petites.'],
       texts: [['Títol', 'Three weeks into a training + food app: what the first users taught me'], ['Text', `I'm building mAI Fitness, a web app that plans training and meals together and adapts to the week you actually have. The app does the maths; an AI coach only proposes changes.
@@ -1572,11 +1530,37 @@ Happy to answer anything about the architecture or the costs. {LINK}`]] },
   const WEEKS = [
     ['prep', 'Preparar', '26 d\'octubre – 1 de novembre'],
     ['w1', 'Setmana 1 · la presentació', '2–8 de novembre'],
-    ['w2', 'Setmana 2 · castellà i comunitats', '9–15 de novembre'],
+    ['w2', 'Setmana 2 · comunitats i castellà', '9–15 de novembre'],
     ['w3', 'Setmana 3 · construir en públic', '16–22 de novembre'],
     ['w4', 'Directoris i premsa catalana', '23 de novembre – 6 de desembre'],
     ['jan', 'Gener · el dia gran (si es compleixen les condicions)', '12–14 de gener'],
   ]
+
+  // The videos on the desktop (scripts/teaser in the app's repo)
+  const VIDEO_DIR = 'Escriptori › mai-fitness-videos-2026-10-16'
+  const VIDEO_INFO = {
+    'mai-fitness-ca-vertical.mp4': 'Català · vertical 1080×1920 · 39 s',
+    'mai-fitness-es-vertical.mp4': 'Castellà · vertical 1080×1920 · 39 s',
+    'mai-fitness-en-vertical.mp4': 'Anglès · vertical 1080×1920 · 39 s',
+    'mai-fitness-ca-horitzontal.mp4': 'Català · horitzontal 1920×1080 · 39 s',
+    'mai-fitness-es-horitzontal.mp4': 'Castellà · horitzontal 1920×1080 · 39 s',
+    'mai-fitness-en-horitzontal.mp4': 'Anglès · horitzontal 1920×1080 · 39 s',
+  }
+  const videoFile = p => (p.video || '').match(/mai-fitness-[a-z]+-[a-z]+\.mp4/)?.[0] || null
+  function videoBox(p) {
+    if (!p.video) return ''
+    const file = videoFile(p)
+    if (file) return `<div class="vidbox"><span class="vidbox-k">Vídeo per pujar</span><code>${esc(file)}</code><span>${esc(VIDEO_INFO[file] || '')}${p.video !== file ? ' · ' + esc(p.video.replace(file, '').replace(/^\s*\+\s*/, 'i ')) : ''}</span><span class="vidbox-dir">${esc(VIDEO_DIR)}</span></div>`
+    const none = /^sense v/i.test(p.video)
+    return `<div class="vidbox${none ? ' none' : ''}"><span class="vidbox-k">${none ? 'Sense vídeo' : 'Imatge per pujar'}</span><span>${esc(none ? p.video.replace(/^sense vídeo:?\s*/i, '') : p.video)}</span></div>`
+  }
+  function videoList() {
+    const rows = P.filter(p => p.ch && p.video && !/^sense v/i.test(p.video))
+    return `<div class="tbl"><table><thead><tr><th>Quan</th><th>On</th><th>Què has de pujar</th></tr></thead><tbody>${rows.map(p => {
+      const file = videoFile(p), done = state[p.id]?.done
+      return `<tr${done ? ' class="vid-done"' : ''}><td class="n">${esc(whenLabel(p))}</td><td>${esc(CH[p.ch])} · ${esc(p.lang)}</td><td>${file ? `<code>${esc(file)}</code>${p.video !== file ? ' ' + esc(p.video.replace(file, '').trim()) : ''}` : esc(p.video)}${done ? ' · fet' : ''}</td></tr>`
+    }).join('')}</tbody></table></div>`
+  }
 
   // ── State ────────────────────────────────────────────────────────────────
   let db = null, state = {}, links = { base: DEFAULT_BASE, codes: {} }, linksVersionTimer = null
@@ -1599,6 +1583,7 @@ Happy to answer anything about the architecture or the costs. {LINK}`]] },
     $('pubStatus').textContent = db ? `${done} de ${P.length} fets` : `${done} de ${P.length} fets · aquí no es pot desar`
     const next = P.find(p => !state[p.id]?.done)
     const openDetails = new Set([...document.querySelectorAll('#pubWeeks details[open]')].map(d => d.dataset.key))
+    $('pubVideos').innerHTML = videoList()
     $('pubWeeks').innerHTML = WEEKS.map(([wk, name, range]) => {
       const items = P.filter(p => p.week === wk)
       const n = items.filter(p => state[p.id]?.done).length
@@ -1623,9 +1608,9 @@ Happy to answer anything about the architecture or the costs. {LINK}`]] },
         <label class="post-title" for="c-${p.id}">${esc(p.title)}</label>
         <div class="meta-row">
           ${p.ch ? `<span class="badge ch">${esc(CH[p.ch])}</span>` : ''}${p.lang ? `<span class="badge">${p.lang}</span>` : ''}
-          ${p.video ? `<span class="badge vid">${esc(p.video)}</span>` : ''}
           ${isNext && !st.done ? '<span class="badge">La següent</span>' : ''}${late ? '<span class="badge late">Pendent</span>' : ''}
         </div>
+        ${videoBox(p)}
         ${p.tips ? `<ul class="tips">${p.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
         ${texts ? `<details data-key="${key}" ${openDetails.has(key) || (isNext && !st.done) ? 'open' : ''}><summary>Text per copiar</summary>${texts}</details>` : ''}
         ${st.done && p.ch ? `<div class="url-row"><label class="status-line" for="u-${p.id}">Enllaç de la publicació</label><input id="u-${p.id}" data-url="${p.id}" inputmode="url" placeholder="Enganxa-hi l'enllaç per trobar-la després" value="${esc(st.url || '')}">${st.url ? `<a href="${esc(/^https?:\/\//.test(st.url) ? st.url : 'https://' + st.url)}" target="_blank" rel="noopener">Obrir</a>` : ''}</div>` : ''}
