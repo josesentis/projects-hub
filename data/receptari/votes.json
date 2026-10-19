@@ -1,0 +1,537 @@
+{
+ "amanida-arros-tonyina": {
+  "at": "2026-10-04T22:00:07.880Z",
+  "note": "",
+  "v": "yes"
+ },
+ "amanida-grega": {
+  "at": "2026-10-04T22:00:13.176Z",
+  "note": "",
+  "v": "yes"
+ },
+ "amanida-llenties": {
+  "at": "2026-10-04T22:00:10.675Z",
+  "note": "",
+  "v": "yes"
+ },
+ "amanida-pasta": {
+  "at": "2026-10-04T22:00:03.527Z",
+  "note": "",
+  "v": "yes"
+ },
+ "arros-cubana": {
+  "at": "2026-10-04T21:56:24.607Z",
+  "note": "",
+  "v": "yes"
+ },
+ "arros-negre": {
+  "at": "2026-10-04T21:56:45.637Z",
+  "note": "Jo no me la cuinaré a mi mateix",
+  "v": "no"
+ },
+ "arros-pollastre": {
+  "at": "2026-10-04T21:56:26.337Z",
+  "note": "",
+  "v": "yes"
+ },
+ "bacalla-samfaina": {
+  "at": "2026-10-04T21:58:14.338Z",
+  "note": "",
+  "v": "yes"
+ },
+ "batut-proteina-platan": {
+  "at": "2026-10-04T21:54:22.410Z",
+  "note": "",
+  "v": "yes"
+ },
+ "batut-proteina": {
+  "at": "2026-10-04T21:55:07.323Z",
+  "note": "Batut de proteina sense llet",
+  "v": "alt"
+ },
+ "bikini": {
+  "at": "2026-10-04T22:01:44.779Z",
+  "note": "",
+  "v": "yes"
+ },
+ "bowl-burrito": {
+  "at": "2026-10-04T22:00:18.833Z",
+  "note": "",
+  "v": "yes"
+ },
+ "bowl-quinoa-pollastre": {
+  "at": "2026-10-04T22:00:17.646Z",
+  "note": "",
+  "v": "yes"
+ },
+ "brou-pollastre": {
+  "at": "2026-10-04T22:01:28.433Z",
+  "note": "",
+  "v": "yes"
+ },
+ "calamars-planxa": {
+  "at": "2026-10-04T21:59:39.544Z",
+  "note": "",
+  "v": "yes"
+ },
+ "canelons": {
+  "at": "2026-10-04T21:56:52.909Z",
+  "note": "Jo no me la cuinaré a mi mateix",
+  "v": "no"
+ },
+ "carbonara": {
+  "at": "2026-10-04T22:01:03.414Z",
+  "note": "",
+  "v": "yes"
+ },
+ "cesar-pollastre": {
+  "at": "2026-10-04T22:00:12.606Z",
+  "note": "",
+  "v": "yes"
+ },
+ "chili": {
+  "at": "2026-10-04T22:00:56.837Z",
+  "note": "",
+  "v": "yes"
+ },
+ "cigrons-espinacs": {
+  "at": "2026-10-04T21:55:31.781Z",
+  "note": "",
+  "v": "no"
+ },
+ "conill-brasa": {
+  "at": "2026-10-04T21:58:00.479Z",
+  "note": "No m'agrada el conill",
+  "v": "no"
+ },
+ "crema-carbasso-ou": {
+  "at": "2026-10-04T22:01:14.822Z",
+  "note": "",
+  "v": "yes"
+ },
+ "crema-verdures-truita": {
+  "at": "2026-10-04T21:56:01.464Z",
+  "note": "",
+  "v": "yes"
+ },
+ "curri-pollastre": {
+  "at": "2026-10-04T22:00:33.089Z",
+  "note": "",
+  "v": "yes"
+ },
+ "cuscus-pollastre": {
+  "at": "2026-10-04T22:01:11.504Z",
+  "note": "",
+  "v": "yes"
+ },
+ "entrepa-gall-dindi": {
+  "at": "2026-10-04T21:54:26.112Z",
+  "note": "",
+  "v": "yes"
+ },
+ "entrepa-pollastre": {
+  "at": "2026-10-04T22:01:54.066Z",
+  "note": "",
+  "v": "yes"
+ },
+ "entrepanet-pernil": {
+  "at": "2026-10-04T21:54:38.645Z",
+  "note": "",
+  "v": "yes"
+ },
+ "escalivada-anxoves": {
+  "at": "2026-10-04T22:01:21.497Z",
+  "note": "",
+  "v": "yes"
+ },
+ "escudella": {
+  "at": "2026-10-04T21:55:37.149Z",
+  "note": "",
+  "v": "no"
+ },
+ "espaguetis-bolonyesa": {
+  "at": "2026-10-04T21:56:16.876Z",
+  "note": "",
+  "v": "yes"
+ },
+ "espinacs-catalana-ou": {
+  "at": "2026-10-04T22:01:19.422Z",
+  "note": "",
+  "v": "no"
+ },
+ "esqueixada": {
+  "at": "2026-10-04T22:00:14.569Z",
+  "note": "",
+  "v": "yes"
+ },
+ "estofat-vedella": {
+  "at": "2026-10-04T21:57:56.846Z",
+  "note": "No m'agrada l'estofat de vedella",
+  "v": "no"
+ },
+ "fabada-lleugera": {
+  "at": "2026-10-04T21:56:09.814Z",
+  "note": "",
+  "v": "no"
+ },
+ "fajitas-vedella": {
+  "at": "2026-10-04T22:00:51.828Z",
+  "note": "",
+  "v": "yes"
+ },
+ "fideua": {
+  "at": "2026-10-04T21:56:34.998Z",
+  "note": "Per que jo no me la cuinaré a mi mateix",
+  "v": "no"
+ },
+ "filet-patata": {
+  "at": "2026-10-04T21:57:44.616Z",
+  "note": "No m'agrada el filet de vedella",
+  "v": "no"
+ },
+ "formatge-codony": {
+  "at": "2026-10-04T21:54:41.963Z",
+  "note": "",
+  "v": "no"
+ },
+ "fricando": {
+  "at": "2026-10-04T21:57:26.565Z",
+  "note": "",
+  "v": "no"
+ },
+ "fruita-fruits-secs": {
+  "at": "2026-10-04T21:54:45.832Z",
+  "note": "",
+  "v": "yes"
+ },
+ "galetes-arros-cacauet": {
+  "at": "2026-10-04T21:54:48.101Z",
+  "note": "",
+  "v": "yes"
+ },
+ "gall-dindi-xampinyons": {
+  "at": "2026-10-04T21:57:46.855Z",
+  "note": "",
+  "v": "yes"
+ },
+ "gambes-all-arros": {
+  "at": "2026-10-04T21:59:31.374Z",
+  "note": "",
+  "v": "no"
+ },
+ "gnocchi-tomaquet": {
+  "at": "2026-10-04T22:01:01.306Z",
+  "note": "",
+  "v": "yes"
+ },
+ "hamburguesa-casolana": {
+  "at": "2026-10-04T21:57:25.793Z",
+  "note": "Comprada",
+  "v": "alt"
+ },
+ "hamburguesa-pa": {
+  "at": "2026-10-04T22:01:51.382Z",
+  "note": "",
+  "v": "yes"
+ },
+ "hummus-pastanaga": {
+  "at": "2026-10-04T21:54:44.184Z",
+  "note": "",
+  "v": "yes"
+ },
+ "iogurt-fruita-civada": {
+  "at": "2026-10-04T21:54:03.606Z",
+  "note": "",
+  "v": "yes"
+ },
+ "iogurt-mel-nous": {
+  "at": "2026-10-04T21:54:33.463Z",
+  "note": "",
+  "v": "yes"
+ },
+ "kebab-pollastre": {
+  "at": "2026-10-04T22:01:07.132Z",
+  "note": "",
+  "v": "no"
+ },
+ "kefir-fruita": {
+  "at": "2026-10-04T21:54:58.039Z",
+  "note": "",
+  "v": "yes"
+ },
+ "lasanya": {
+  "at": "2026-10-04T21:56:55.250Z",
+  "note": "Jo no me la cuinaré a mi mateix",
+  "v": "no"
+ },
+ "llenties-arros": {
+  "at": "2026-10-04T21:56:06.489Z",
+  "note": "",
+  "v": "yes"
+ },
+ "llenties-estofades": {
+  "at": "2026-10-04T21:55:13.321Z",
+  "note": "",
+  "v": "yes"
+ },
+ "llom-escalivada": {
+  "at": "2026-10-04T21:57:16.036Z",
+  "note": "",
+  "v": "yes"
+ },
+ "lluc-forn-patates": {
+  "at": "2026-10-04T21:58:06.929Z",
+  "note": "",
+  "v": "no"
+ },
+ "lluc-salsa-verda": {
+  "at": "2026-10-04T21:59:35.264Z",
+  "note": "",
+  "v": "no"
+ },
+ "macarrons-carn": {
+  "at": "2026-10-04T21:56:12.715Z",
+  "note": "",
+  "v": "yes"
+ },
+ "mandonguilles": {
+  "at": "2026-10-04T21:57:17.821Z",
+  "note": "",
+  "v": "yes"
+ },
+ "mongeta-verda-patata": {
+  "at": "2026-10-04T21:56:08.582Z",
+  "note": "",
+  "v": "no"
+ },
+ "mongetes-botifarra": {
+  "at": "2026-10-04T21:55:41.663Z",
+  "note": "",
+  "v": "yes"
+ },
+ "orada-forn": {
+  "at": "2026-10-04T21:59:30.196Z",
+  "note": "Massa feina",
+  "v": "no"
+ },
+ "ous-plat": {
+  "at": "2026-10-04T21:59:50.904Z",
+  "note": "",
+  "v": "yes"
+ },
+ "ous-remenats-xampinyons": {
+  "at": "2026-10-04T21:59:46.971Z",
+  "note": "",
+  "v": "yes"
+ },
+ "pa-tomaquet-embotit": {
+  "at": "2026-10-04T21:59:53.553Z",
+  "note": "",
+  "v": "yes"
+ },
+ "pad-thai": {
+  "at": "2026-10-04T22:00:59.863Z",
+  "note": "",
+  "v": "yes"
+ },
+ "paella-marisc": {
+  "at": "2026-10-04T21:56:41.372Z",
+  "note": "Jo no me la cuinaré a mi mateix",
+  "v": "no"
+ },
+ "pancakes-civada": {
+  "at": "2026-10-04T21:54:17.108Z",
+  "note": "",
+  "v": "yes"
+ },
+ "pasta-pesto-pollastre": {
+  "at": "2026-10-04T21:56:20.041Z",
+  "note": "",
+  "v": "no"
+ },
+ "pasta-tonyina": {
+  "at": "2026-10-04T21:56:18.132Z",
+  "note": "",
+  "v": "no"
+ },
+ "platan-cacauet": {
+  "at": "2026-10-04T21:54:56.911Z",
+  "note": "",
+  "v": "yes"
+ },
+ "poke-salmo": {
+  "at": "2026-10-04T22:00:15.803Z",
+  "note": "",
+  "v": "yes"
+ },
+ "pollastre-forn-patates": {
+  "at": "2026-10-04T21:57:12.894Z",
+  "note": "Ho podem fer però un altre tipus de pollastre, i per exemple air fryer o planxa.",
+  "v": "alt"
+ },
+ "pollastre-llimona": {
+  "at": "2026-10-04T21:58:02.885Z",
+  "note": "",
+  "v": "yes"
+ },
+ "pollastre-planxa-amanida": {
+  "at": "2026-10-04T21:57:14.487Z",
+  "note": "",
+  "v": "yes"
+ },
+ "pollastre-verdures-forn": {
+  "at": "2026-10-04T21:57:33.117Z",
+  "note": "no m'agraden les cuixes",
+  "v": "no"
+ },
+ "porridge-platan": {
+  "at": "2026-10-04T21:54:07.346Z",
+  "note": "",
+  "v": "yes"
+ },
+ "potatge-bacalla": {
+  "at": "2026-10-04T21:55:58.995Z",
+  "note": "",
+  "v": "no"
+ },
+ "quesadilla-pollastre": {
+  "at": "2026-10-04T21:59:58.986Z",
+  "note": "",
+  "v": "yes"
+ },
+ "ramen-pollastre": {
+  "at": "2026-10-04T22:00:58.293Z",
+  "note": "",
+  "v": "yes"
+ },
+ "risotto-bolets": {
+  "at": "2026-10-04T21:56:50.415Z",
+  "note": "Jo no me la cuinaré a mi mateix",
+  "v": "no"
+ },
+ "salmo-forn-moniato": {
+  "at": "2026-10-04T21:58:09.722Z",
+  "note": "",
+  "v": "yes"
+ },
+ "salmo-planxa-verdures": {
+  "at": "2026-10-04T21:58:08.296Z",
+  "note": "",
+  "v": "yes"
+ },
+ "shakshuka": {
+  "at": "2026-10-04T22:01:04.380Z",
+  "note": "",
+  "v": "yes"
+ },
+ "sipia-pesols": {
+  "at": "2026-10-04T21:59:33.131Z",
+  "note": "",
+  "v": "yes"
+ },
+ "skyr-granola": {
+  "at": "2026-10-04T21:54:05.754Z",
+  "note": "",
+  "v": "yes"
+ },
+ "sopa-miso-tofu": {
+  "at": "2026-10-04T22:01:38.715Z",
+  "note": "",
+  "v": "yes"
+ },
+ "sopa-pollastre-fideus": {
+  "at": "2026-10-04T21:55:45.445Z",
+  "note": "",
+  "v": "yes"
+ },
+ "tacos-pollastre": {
+  "at": "2026-10-04T22:00:35.900Z",
+  "note": "",
+  "v": "yes"
+ },
+ "teriyaki-pollastre": {
+  "at": "2026-10-04T22:00:34.859Z",
+  "note": "",
+  "v": "no"
+ },
+ "tofu-verdures": {
+  "at": "2026-10-04T22:01:37.843Z",
+  "note": "",
+  "v": "yes"
+ },
+ "tonyina-planxa": {
+  "at": "2026-10-04T21:58:21.508Z",
+  "note": "",
+  "v": "yes"
+ },
+ "torrada-formatge-salmo": {
+  "at": "2026-10-04T21:54:12.244Z",
+  "note": "",
+  "v": "yes"
+ },
+ "torrada-sardines": {
+  "at": "2026-10-04T21:59:55.995Z",
+  "note": "",
+  "v": "yes"
+ },
+ "torrades-alvocat-ou": {
+  "at": "2026-10-04T21:54:01.794Z",
+  "note": "",
+  "v": "yes"
+ },
+ "torrades-tomaquet-pernil": {
+  "at": "2026-10-04T21:53:59.647Z",
+  "note": "",
+  "v": "yes"
+ },
+ "tosta-ou-pernil": {
+  "at": "2026-10-04T22:00:01.257Z",
+  "note": "",
+  "v": "yes"
+ },
+ "tosta-tonyina": {
+  "at": "2026-10-04T21:54:54.771Z",
+  "note": "",
+  "v": "yes"
+ },
+ "truita-carbasso": {
+  "at": "2026-10-04T21:59:47.605Z",
+  "note": "",
+  "v": "yes"
+ },
+ "truita-espinacs-amanida": {
+  "at": "2026-10-04T22:01:30.581Z",
+  "note": "",
+  "v": "yes"
+ },
+ "truita-francesa-pa": {
+  "at": "2026-10-04T21:54:08.741Z",
+  "note": "",
+  "v": "yes"
+ },
+ "truita-patates": {
+  "at": "2026-10-04T21:59:48.290Z",
+  "note": "",
+  "v": "yes"
+ },
+ "verdures-planxa-pollastre": {
+  "at": "2026-10-04T22:01:15.679Z",
+  "note": "",
+  "v": "yes"
+ },
+ "wok-pollastre": {
+  "at": "2026-10-04T22:00:28.143Z",
+  "note": "",
+  "v": "yes"
+ },
+ "wok-vedella-fideus": {
+  "at": "2026-10-04T22:00:29.699Z",
+  "note": "",
+  "v": "no"
+ },
+ "wrap-tonyina": {
+  "at": "2026-10-04T22:01:48.585Z",
+  "note": "",
+  "v": "yes"
+ }
+}

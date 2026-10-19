@@ -1,0 +1,40 @@
+/* The hub's own pages (index, prototypes); same tokens as the business plan. */
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap");
+:root {
+  --bg: #f4f5f1; --surface: #ffffff; --ink: #1b2320; --body: #3a4440; --muted: #6b7570; --line: #dfe3dc;
+  --accent: #0f766e; --accent-soft: #dcefeb;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --text: "Instrument Sans", system-ui, -apple-system, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121615; --surface: #1a201e; --ink: #edf1ee; --body: #c9d1cd; --muted: #93a09a; --line: #2c3532;
+  --accent: #4fc3b4; --accent-soft: #163632; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121615; --surface: #1a201e; --ink: #edf1ee; --body: #c9d1cd; --muted: #93a09a; --line: #2c3532;
+  --accent: #4fc3b4; --accent-soft: #163632; color-scheme: dark }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--body); font: 16px/1.55 var(--text) }
+.hub { max-width: 1120px; margin: 0 auto; padding: 40px 16px 96px; display: flex; flex-direction: column; gap: 40px }
+@media (min-width: 1000px) { .hub { padding-inline: 32px } }
+.hero { display: flex; flex-direction: column; gap: 10px }
+.eyebrow { font: 600 12px/1 var(--text); letter-spacing: .08em; text-transform: uppercase; color: var(--accent) }
+h1 { font: 800 clamp(2rem, 5vw, 3rem)/1.05 var(--display); color: var(--ink); margin: 0; letter-spacing: -0.02em }
+h2 { font: 700 1.25rem/1.2 var(--display); color: var(--ink); margin: 0 }
+.lede { font-size: 1.1rem; max-width: 62ch; margin: 0 }
+.meta { font-size: 13px; color: var(--muted); margin: 4px 0 12px }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: var(--body); transition: border-color .15s, transform .15s }
+.card:hover { border-color: var(--accent); transform: translateY(-1px) }
+.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.card p { margin: 0; font-size: 14px }
+.card.big { grid-column: 1 / -1; background: var(--accent-soft); border-color: transparent }
+.tag { align-self: flex-start; font: 600 11px/1 var(--text); letter-spacing: .05em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent) }
+.card.big .tag { background: var(--surface) }
+.screens { display: flex; gap: 24px; overflow-x: auto; padding-bottom: 12px; margin-inline: -16px; padding-inline: 16px }
+.screens figure { margin: 0; flex: none; display: flex; flex-direction: column; gap: 8px }
+.screens iframe { width: 390px; height: 844px; border: 0; border-radius: 28px; background: #F6EFE8; box-shadow: 0 10px 30px rgba(0,0,0,.12) }
+@media (max-width: 440px) { .screens iframe { width: calc(100vw - 48px); } }
+.screens figcaption { font-size: 14px; font-weight: 600 }
+.screens a { color: var(--accent) }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }

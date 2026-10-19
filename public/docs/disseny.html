@@ -1,0 +1,333 @@
+<h1>DESIGN.md — mAI Fitness</h1>
+<p>The app&#39;s design system. Tokens live in <code>app/globals.css</code>, components in <code>app/ui.css</code>. This file explains how to use them.
+Validated prototype (Today, Log, Coach): <a href="https://claude.ai/artifact/5hqDSRiA5wNbdkb9wLV52D">https://claude.ai/artifact/5hqDSRiA5wNbdkb9wLV52D</a></p>
+<hr>
+<h2>1. Atmosphere</h2>
+<p><strong>Warm and calm like <em>Her</em>, clear and fast like Nike Training Club.</strong></p>
+<ul>
+<li>It feels like a mindfulness app: paper surfaces, a warm cream background, plenty of air, no borders, soft shadows.</li>
+<li>It moves like NTC: big confident titles, full-bleed screens, one obvious action, a bottom tab bar, instant navigation.</li>
+<li>The coach is a <strong>voice</strong>, not a form. What the coach says is set in a quiet italic serif; everything else is UI.</li>
+<li>Nothing should look like a template: no grey borders around everything, no CAPS eyebrow labels, no identical chips, no emoji.</li>
+</ul>
+<hr>
+<h2>2. Colour (&quot;Her&quot; palette)</h2>
+<p>Runtime CSS variables (<code>--p-*</code>) mapped to Tailwind tokens. A warm brown night variant follows the system or the user&#39;s theme (scoped to <code>.app-shell</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Token (Tailwind)</th>
+<th>Light</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>bg-canvas</code></td>
+<td>#F6EFE8 cream</td>
+<td>Screen background</td>
+</tr>
+<tr>
+<td><code>bg-surface</code></td>
+<td>#FFFAF5 paper</td>
+<td>Cards, sheets, fields on canvas</td>
+</tr>
+<tr>
+<td><code>bg-sand</code></td>
+<td>#F0E6DC</td>
+<td>Fields inside cards, segmented controls, soft buttons, user bubbles</td>
+</tr>
+<tr>
+<td><code>text-ink</code></td>
+<td>#2B2320</td>
+<td>Text, primary button fill</td>
+</tr>
+<tr>
+<td><code>text-body</code></td>
+<td>#4A3D37</td>
+<td>Long text</td>
+</tr>
+<tr>
+<td><code>text-muted</code></td>
+<td>#6F6058</td>
+<td>Secondary text (5:1 on canvas)</td>
+</tr>
+<tr>
+<td><code>text-faint</code></td>
+<td>#A39388</td>
+<td>Placeholders, inactive</td>
+</tr>
+<tr>
+<td><code>bg-accent</code> / <code>text-accent-text</code></td>
+<td>#E2674A / #B4482C</td>
+<td>Coral: done days, coach orb, focus ring, progress highlights</td>
+</tr>
+<tr>
+<td><code>bg-peach</code> / <code>bg-peach-soft</code> / <code>text-peach-ink</code></td>
+<td>#F2B8A0 / #F6C9B4 / #5A3529</td>
+<td>The &quot;today&quot; card</td>
+</tr>
+<tr>
+<td><code>bg-sage</code> / <code>stroke-sage</code></td>
+<td>#5E8A6C</td>
+<td>Progress (rings, charts) and &quot;done&quot;</td>
+</tr>
+</tbody></table>
+<p>Rules: one dark pill (<code>ui-btn-primary</code>) is the main action on a screen; coral is for meaning, not for buttons with small text (contrast). No pure black, no pure white, no grey.</p>
+<hr>
+<h2>3. Type</h2>
+<ul>
+<li><p><strong>Bricolage Grotesque</strong> (<code>--font-bricolage</code>, the default sans): everything. Numbers use <code>.num</code> (tabular figures, same face).</p>
+</li>
+<li><p>A small scale; hierarchy comes from weight and colour, not size:</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Phone</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ui-title</code></td>
+<td>1.75rem / 720 (2.125rem on desktop)</td>
+<td>Screen title, once per screen</td>
+</tr>
+<tr>
+<td><code>ui-display</code></td>
+<td>1.625rem / 760</td>
+<td>The name of the thing a card is about (today&#39;s session)</td>
+</tr>
+<tr>
+<td><code>ui-h2</code></td>
+<td>1.0625rem / 680</td>
+<td>Sheet and card titles</td>
+</tr>
+<tr>
+<td><code>ui-h3</code></td>
+<td>0.9375rem / 650</td>
+<td>Section headings</td>
+</tr>
+<tr>
+<td>body / rows</td>
+<td>0.9375rem</td>
+<td>List rows, inputs&#39; companions</td>
+</tr>
+<tr>
+<td><code>ui-sub</code></td>
+<td>0.875rem muted</td>
+<td>Secondary lines</td>
+</tr>
+<tr>
+<td><code>ui-label</code></td>
+<td>0.75rem muted</td>
+<td>Field labels</td>
+</tr>
+<tr>
+<td>meta</td>
+<td>0.8125rem</td>
+<td>Dates, counts under a title</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>Instrument Serif italic</strong> (<code>ui-voice</code>): only the coach&#39;s voice — its opening line, empty states where the coach speaks, the &quot;how was it&quot; line on the log. Never for UI chrome.</p>
+</li>
+<li><p>No uppercase labels.</p>
+</li>
+<li><p>This scale is the app&#39;s. The marketing landing (<code>components/landing/*</code>, <code>landing-*</code> classes) has its own and never uses <code>ui-*</code>.</p>
+</li>
+</ul>
+<hr>
+<h2>4. Components (<code>app/ui.css</code>)</h2>
+<p><strong>Rhythm.</strong> Three tokens drive spacing; use them instead of picking numbers:
+<code>--gutter</code> (1rem phone, 1.25rem desktop): screen edge, card padding, sheet content. <code>--gap-section</code> (1.25rem / 1.75rem): between blocks of a screen (<code>ui-stack</code>). <code>--gap-item</code> (0.625rem): between items of a block (<code>ui-group</code>).</p>
+<p><strong>Sizes.</strong> Buttons 40px (<code>-lg</code> 46px for the one main action of a screen, <code>-sm</code> 32px). Icon buttons 36px (<code>ui-icon-btn-sm</code> 30px, quiet, for move/remove inside cards). Pills 36px. Segmented 32px. Fields 42px with 16px text (iOS zoom); selects keep 1.9rem for the chevron and ellipsize. Radii: cards 18px, the hero card 22px, inner tiles 14–16px, fields 12px, sheets 24px.</p>
+<p><strong>Rules.</strong> A sheet&#39;s content owns its gutter (<code>px-[var(--gutter)]</code>); the sheet adds none, so padding never doubles. A radius is never larger than the padding beside it plus ~4px. Two buttons side by side beat two stacked. No borders on cards: surfaces separate by tone.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ui-stack</code>, <code>ui-group</code></td>
+<td>Vertical rhythm: sections / items</td>
+</tr>
+<tr>
+<td><code>ui-title</code>, <code>ui-display</code>, <code>ui-h2</code>, <code>ui-h3</code>, <code>ui-sub</code>, <code>ui-label</code></td>
+<td>Type scale</td>
+</tr>
+<tr>
+<td><code>ui-card</code>, <code>ui-card-peach</code>, <code>ui-list</code> + <code>ui-row</code></td>
+<td>Surfaces; lists are a paper card with soft separators</td>
+</tr>
+<tr>
+<td><code>ui-btn</code> + <code>ui-btn-primary / -coral / -soft / -sand / -ghost</code>, <code>-lg / -sm / -block</code></td>
+<td>Buttons (pill, press scale)</td>
+</tr>
+<tr>
+<td><code>ui-icon-btn</code> (+ <code>ui-icon-btn-sm</code>)</td>
+<td>Round icon button (36px / 30px quiet)</td>
+</tr>
+<tr>
+<td><code>ui-pill</code> (+ <code>aria-pressed</code>)</td>
+<td>Tappable options in a row</td>
+</tr>
+<tr>
+<td><code>ui-seg</code> (children with <code>aria-checked</code> / <code>aria-selected</code>)</td>
+<td>Segmented control, also for tabs</td>
+</tr>
+<tr>
+<td><code>ui-field</code> (input/select/textarea)</td>
+<td>Fields; sand inside cards automatically</td>
+</tr>
+<tr>
+<td><code>ui-scroller</code></td>
+<td>Horizontal row that bleeds to the screen edge</td>
+</tr>
+<tr>
+<td><code>ui-voice</code>, <code>coach-voice</code></td>
+<td>The coach&#39;s voice; <code>coach-voice</code> styles a whole reply</td>
+</tr>
+<tr>
+<td><code>ui-rise</code></td>
+<td>Gentle entrance</td>
+</tr>
+</tbody></table>
+<p>Focus: every control shows a 2.5px coral outline on <code>:focus-visible</code> (built into the classes). Sheets (<code>components/ui/Sheet.tsx</code>) are bottom sheets on phones, centred on desktop, 24px radius.</p>
+<hr>
+<h2>5. Interaction quality — indispensable</h2>
+<p>Every interaction must feel native, finished and high end. Nothing may feel like a website in progress. This is a hard requirement of the project, at the same level as tests:</p>
+<ul>
+<li><strong>Check on a phone.</strong> Use a 390×844 viewport, with the keyboard open where there&#39;s input, before calling a screen done.</li>
+<li><strong>Chats</strong> (<code>components/chat/*</code>):<ul>
+<li>A conversation is a full-screen panel sized to the visual viewport (<code>useVisualViewport</code>). The header and message box keep their place, only the conversation scrolls, and the keyboard pushes the box up rather than covering it. The page behind never scrolls (<code>useLockPageScroll</code>).</li>
+<li>It follows new content only while the reader is at the bottom (<code>useStickToBottom</code>). Otherwise a &quot;latest&quot; button appears.</li>
+<li><code>ChatComposer</code> rests as one line, opens into a textarea when focused, and grows with the text with an animated height. On touch, Return adds a line and the arrow sends; with a keyboard, Return sends. The send button never steals focus, so the keyboard stays open.</li>
+<li>Typing is shown with <code>TypingDots</code>. A failed turn shows the error with &quot;Try again&quot;. A reply the user has read is never removed from the screen.</li>
+</ul>
+</li>
+<li><strong>Sheets</strong> rise from the bottom (fade on the scrim), sit above the keyboard and lock the page behind.</li>
+<li><strong>Motion:</strong><ul>
+<li>Press states (<code>active:scale</code>) on everything tappable; entrances with <code>ui-rise</code>.</li>
+<li>No layout jumps: skeletons keep the shape of what&#39;s loading.</li>
+<li>Easing is <code>cubic-bezier(0.2, 0.7, 0.2, 1)</code>, durations 150–380 ms, and every animation respects <code>prefers-reduced-motion</code>.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>6. Layout &amp; navigation</h2>
+<ul>
+<li>Phone first. Bottom tab bar: Today · Program · Progress · Coach · Profile. No top bar on phones; each screen has its own title (<code>ui-title</code>). Forms put back button, date and question in one row.</li>
+<li>Desktop: a quiet canvas sidebar (active item = sand pill) with the account menu at its foot. No top bar: content starts at the top.</li>
+<li>Today: date + big &quot;Today&quot; → week strip (coral = trained, dark = today, ring = planned) → the peach card &quot;Up today&quot; with one dark &quot;Done it&quot; button → progress line (sage ring) → &quot;Doing something else today?&quot; pills → floating coach bar.</li>
+<li>Logging only records things done: the due session, a sport (duration + effort) or another workout. Never &quot;a free day&quot;.</li>
+</ul>
+<h3>6.1 Desktop layout — one system for every screen</h3>
+<p>Desktop is a dashboard, not the phone column centred on a big screen. Layout expresses the content&#39;s hierarchy with patterns people already know; &quot;two columns&quot; is not a pattern.</p>
+<p><strong>Principles</strong></p>
+<ol>
+<li><strong>Every screen has one primary task.</strong> Decide it first, then the hierarchy; the layout follows from it.</li>
+<li><strong>Equal importance, equal space.</strong> Two areas that matter the same (Today&#39;s training and food) get 6 | 6, never 8 | 4.</li>
+<li><strong>Page-wide actions and inputs</strong> go in the <code>PageHeader</code> actions (top right, primary last) or in the full-width command bar under it (<code>AppPage bar</code>). Never in an aside corner.</li>
+<li><strong>Section actions</strong> go in that section&#39;s header, on the right (<code>SectionHeader action</code>).</li>
+<li><strong>An aside is only secondary context</strong>: metadata, history, a selected item&#39;s detail, &quot;how I eat&quot;. If it is primary content it is a split, not an aside.</li>
+<li><strong>Align to the grid.</strong> Rows of cards stretch to equal heights; an odd last card takes the whole row; tabular data uses real aligned columns (numbers right-aligned, tabular figures); no holes, no masonry gaps.</li>
+<li><strong>One section header</strong> everywhere (<code>SectionHeader</code>: title, optional meta line, action right), so sections side by side start on the same line.</li>
+<li><strong>Readable text</strong>: running text and forms stay under ~70ch / ~720px even on wide screens.</li>
+</ol>
+<p><strong>System</strong> (<code>components/layout/</code>; tokens and grid in <code>app/ui.css</code> › <code>.ui-page*</code>, <code>.ui-section-*</code>, <code>.ui-tabs</code>)</p>
+<ul>
+<li><code>AppPage</code> templates:<ul>
+<li><code>dashboard</code>: main 8 + secondary context 4.</li>
+<li><code>split</code>: two primary areas, 6 | 6 (<code>aside</code> is the second area, rendered as a <code>div</code>).</li>
+<li><code>wide</code>: 12 (or 9 + 3 with an aside).</li>
+<li><code>detail</code>: master–detail, 7 | 5: a compact master (a calendar month) and a wide detail panel for the selected item. Below 1280 the detail stacks under the master, inline (no sheet).</li>
+<li><code>focus</code>: the first 8 columns, left-aligned so the title never moves.</li>
+</ul>
+</li>
+<li><code>AppPage bar</code>: a full-width command bar under the header (page-wide input).</li>
+<li><code>PageHeader</code>: eyebrow · title · subtitle · actions · tabs. Eyebrow line reserved from tablet up, so titles share one baseline.</li>
+<li><code>SectionHeader</code>, <code>AsideSection</code> (secondary block with the same header), <code>PageTabs</code> (underline tabs from tablet up, never scrolling).</li>
+<li><strong>Breakpoints:</strong> phones (&lt;768) one column, exactly as designed for mobile; tablet (768–1279) one wide column (max 45rem) next to an icon sidebar; desktop (≥1280) 12 columns, 24px gaps, max 1200px, left-aligned next to the sidebar.</li>
+</ul>
+<p><strong>Pattern per screen</strong></p>
+<table>
+<thead>
+<tr>
+<th>Screen</th>
+<th>Pattern</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Today</td>
+<td>Command bar (coach, weigh-in) + <strong>split</strong> Training | Food, each with <code>SectionHeader</code> + a summary card (week ring | day&#39;s kcal)</td>
+<td>The coach talks about both areas; training and food weigh the same. Food off → <code>focus</code> with training only.</td>
+</tr>
+<tr>
+<td>Program</td>
+<td><code>wide</code>: header actions (Calendar, New program, <strong>Talk to the coach</strong> primary), block <strong>timeline</strong> (widths ∝ weeks), session cards in an equal-height 2-column grid whose exercises are a <strong>table</strong> (exercise | sets × reps | load), history <strong>table</strong> at the end</td>
+<td>A weekly template is tabular data; history is reference, read last.</td>
+</tr>
+<tr>
+<td>Calendar</td>
+<td><code>detail</code> 7 + 5: compact month (two lanes per day: training glyph + name, a thin food bar) with a <strong>Setmana</strong> summary column, and a wide <strong>day panel</strong>: header (date, phase chip, day-type chip, prev/next), a summary strip (eaten vs target, estimated spend and balance, protein, training minutes/sets/volume, weight vs 7-day average), training (what was done, or the planned session), food, body and feelings, what happened. Phones: month on top, day inline below with prev/next and swipe; Month/Week toggle.</td>
+<td>Master–detail on a date; the day panel answers &quot;how did that day go&quot; before the details.</td>
+</tr>
+<tr>
+<td>Food › Week</td>
+<td><code>wide</code>: header actions (Edit the plan, Talk to the coach); targets <strong>strip</strong> (goal + note | four numbers); seven <strong>day columns</strong></td>
+<td>The week is the object; targets summarise it.</td>
+</tr>
+<tr>
+<td>Food › Plan</td>
+<td><code>wide</code>: the plan as a <strong>table</strong> (days × meals) with rotation and versions as secondary context</td>
+<td>Editing a grid.</td>
+</tr>
+<tr>
+<td>Food › Recipes</td>
+<td><code>dashboard</code>: filter bar + <strong>card grid</strong>; &quot;how I eat&quot; as secondary context</td>
+<td>Browsing.</td>
+</tr>
+<tr>
+<td>Food › Recipe</td>
+<td><code>dashboard</code>: steps (primary) + ingredient panel with grams</td>
+<td>Cooking reads steps; amounts are the reference.</td>
+</tr>
+<tr>
+<td>Progress</td>
+<td><code>wide</code>: KPI row, then a <strong>bento</strong> of equal-height rows (pairs of similar cards; a wide card takes a full row); Exercises is <strong>master–detail</strong> (list 4 | detail 8)</td>
+<td>Scan, then drill in.</td>
+</tr>
+<tr>
+<td>Coach</td>
+<td><strong>Split view</strong>: threads | conversation</td>
+<td>Messaging pattern.</td>
+</tr>
+<tr>
+<td>Profile</td>
+<td><strong>Settings</strong>: sticky section index (3) + one form column (7) and Save in the header</td>
+<td>Long forms need one reading line.</td>
+</tr>
+<tr>
+<td>Log</td>
+<td><code>focus</code> form, exercises two across</td>
+<td>A task flow.</td>
+</tr>
+<tr>
+<td>Admin</td>
+<td><code>wide</code> data tables and charts</td>
+<td>Operations.</td>
+</tr>
+</tbody></table>
+<p><code>tests/layout-contract.test.ts</code> fails if a dashboard page doesn&#39;t render <code>AppPage</code> + <code>PageHeader</code>.</p>
+<hr>
+<h2>7. Charts</h2>
+<p>Single-series data uses <code>--color-chart</code> (sage). Bars and rings have rounded ends, recessive gridlines, text in ink tokens. Validate any new palette with the dataviz validator.</p>
+<hr>
+<h2>8. Performance is part of the design</h2>
+<ul>
+<li><code>app/(dashboard)/loading.tsx</code> shows a skeleton immediately; <code>experimental.staleTimes</code> keeps visited pages for instant back-and-forth.</li>
+<li>Pages load in parallel and avoid repeated queries (React <code>cache</code> for the user and the active program). Use <code>DB_LOG=1</code> to count queries.</li>
+</ul>

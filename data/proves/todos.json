@@ -1,0 +1,464 @@
+{
+ "t01": {
+  "area": "Avui",
+  "done": false,
+  "how": "Avui → \"+ Afegir menjar\" → escriu \"2 cerveses i un croissant a mig matí\" → revisa → Afegir al dia. Ha de sortir una fila \"Extra\" i sumar al total del dia; la ✕ la treu.",
+  "order": 1,
+  "text": "Afegir menjar"
+ },
+ "t02": {
+  "area": "Avui",
+  "done": false,
+  "how": "Després del pròxim desplegament. Si encara surt: Perfil → App → Actualitza.",
+  "order": 2,
+  "text": "El calendari ja no surt a Avui"
+ },
+ "t03": {
+  "area": "Avui",
+  "done": false,
+  "how": "Quan el coach vol parlar de menjar ha de sortir una targeta discreta (Parlar-ne / Més tard), no una finestra a sobre.",
+  "order": 3,
+  "text": "Avisos de menjar del coach no bloquegen Avui"
+ },
+ "t04": {
+  "area": "Avui",
+  "done": false,
+  "how": "Amb 3 pesos en una setmana, després de la revisió setmanal surt \"He pujat/baixat X kcal perquè…\". Prova Desfer.",
+  "order": 4,
+  "text": "Nota d'ajust setmanal amb Desfer"
+ },
+ "t05": {
+  "area": "Entrenament",
+  "done": false,
+  "how": "Registra una sessió de peses amb durada (p. ex. 60 min) i una caminada de 40. A Progrés i a Avui ha de sumar 100 min.",
+  "order": 1,
+  "text": "Els entrenaments guarden el temps"
+ },
+ "t06": {
+  "area": "Entrenament",
+  "done": false,
+  "how": "Avui → \"Avançar [sessió]\": l'etiqueta del menjar passa a \"Dia d'entrenament +X kcal\"; el dia d'origen perd el llampec a Menjar → Setmana.",
+  "order": 2,
+  "text": "Moure una sessió i que el menjar la segueixi"
+ },
+ "t07": {
+  "area": "Menjar",
+  "done": false,
+  "how": "Menjar → Setmana → ⇄ en un àpat → tria una alternativa → \"A partir d'ara\". A Menjar → Pla ha de sortir una versió nova.",
+  "order": 1,
+  "text": "Canviar un plat \"A partir d'ara\""
+ },
+ "t08": {
+  "area": "Menjar",
+  "done": false,
+  "how": "Menjar → Pla: canvia un àpat, treu un plat de la rotació, mou-ne un de dia.",
+  "order": 2,
+  "text": "Editar el pla a mà"
+ },
+ "t09": {
+  "area": "Menjar",
+  "done": false,
+  "how": "Cor = preferida. \"No me la tornis a suggerir\" l'amaga. \"Canviar-la\" obre el coach amb un abans → després.",
+  "order": 3,
+  "text": "Receptes: preferides, amagar i \"Canviar-la\""
+ },
+ "t10": {
+  "area": "Menjar",
+  "done": false,
+  "how": "Menjar → Receptes → fitxa \"Com menjo\": edita, esborra i afegeix una línia.",
+  "order": 4,
+  "text": "Com menjo"
+ },
+ "t11": {
+  "area": "Menjar",
+  "done": false,
+  "how": "Perfil → Com fas servir l'app → Menjar: Precís. A Avui → ⇄ → \"He menjat una altra cosa\": busca aliments i posa grams.",
+  "order": 5,
+  "text": "Mode Precís: registrar aliment per aliment"
+ },
+ "t12": {
+  "area": "Coach",
+  "done": false,
+  "how": "Demana: \"recomposició ara i guanyar múscul d'aquí un mes\". Ha de proposar 2 etapes; accepta-les i mira Progrés → Objectiu.",
+  "order": 1,
+  "text": "Etapes d'objectiu amb el coach"
+ },
+ "t13": {
+  "area": "Coach",
+  "done": false,
+  "how": "Les noves versions de programa, resums de propostes i noms de plans han de sortir en català (els antics es queden com estan).",
+  "order": 2,
+  "text": "Textos del coach en català"
+ },
+ "t14": {
+  "area": "Coach",
+  "done": false,
+  "how": "Fes 3–4 converses normals (\"tinc poc temps\", canviar un sopar). Apunta si el català t'emprenya o si s'equivoca.",
+  "order": 3,
+  "text": "Qualitat del model barat al dia a dia"
+ },
+ "t15": {
+  "area": "Coach",
+  "done": false,
+  "how": "Quan el coach fa servir eines a mig missatge, els trossos han de sortir en paràgrafs separats (no \"…sobre.Ara…\").",
+  "order": 4,
+  "text": "Text del coach no s'enganxa"
+ },
+ "t16": {
+  "area": "Progrés",
+  "done": false,
+  "how": "Progrés → Cos: posa pes + mesures i un sol \"Desar\".",
+  "order": 1,
+  "text": "Cos → Mesures d'un sol cop"
+ },
+ "t17": {
+  "area": "Progrés",
+  "done": false,
+  "how": "Amb el menjar en nivell Pla. Progrés → Objectiu.",
+  "order": 2,
+  "text": "Objectiu: historial d'ajustos i \"setmana atípica\""
+ },
+ "t18": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Perfil → Recursos: enllaços al pla de negoci, la llista de proves, el receptari, Analytics, Beta i els serveis.",
+  "order": 1,
+  "text": "Recursos (només tu)"
+ },
+ "t19": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Perfil → Com fas servir l'app: prova Només entreno, Exigent i Personalitzat; torna a Equilibrat sense perdre res.",
+  "order": 2,
+  "text": "Perfils d'ús, inclòs Personalitzat"
+ },
+ "t20": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Obre /plans i Perfil → Pla. Sense claus de Stripe ha de dir \"properament\".",
+  "order": 3,
+  "text": "Pàgina de plans i secció Pla"
+ },
+ "t21": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Quan tinguis Stripe configurat (tauler de tasques): targeta 4242 4242 4242 4242, canviar de pla i cancel·lar al portal.",
+  "order": 4,
+  "text": "Pagament de prova amb Stripe"
+ },
+ "t22": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Perfil: envia un feedback de prova amb NPS; a baix hi ha la frase per esborrar el compte.",
+  "order": 5,
+  "text": "Botó de feedback i nota d'esborrar compte"
+ },
+ "t23": {
+  "area": "Escriptori",
+  "done": false,
+  "how": "Avui 50/50, Programa amb el coach a la capçalera, Progrés sense forats, Menjar en graelles, Perfil amb índex fix.",
+  "order": 1,
+  "text": "Maquetació d'escriptori pantalla per pantalla"
+ },
+ "t24": {
+  "area": "Escriptori",
+  "done": false,
+  "how": "Fes la finestra estreta: menú només amb icones, res trencat.",
+  "order": 2,
+  "text": "Mida tauleta"
+ },
+ "t25": {
+  "area": "Admin",
+  "done": false,
+  "how": "Admin → Analytics: gràfic de 12 mesos, previsió del mes, tocar un mes mostra el detall.",
+  "order": 1,
+  "text": "Analytics: històric de 12 mesos"
+ },
+ "t26": {
+  "area": "Admin",
+  "done": false,
+  "how": "Crea un codi d'invitació de prova i mira que el registre amb /register?invite=CODI posa el grup.",
+  "order": 2,
+  "text": "Admin → Beta"
+ },
+ "t27": {
+  "area": "Altres",
+  "done": false,
+  "how": "Llegeix la landing en català i les pàgines legals; apunta canvis.",
+  "order": 1,
+  "text": "Landing i textos legals"
+ },
+ "t28": {
+  "area": "Altres",
+  "done": false,
+  "how": "Mode avió al gimnàs: registrar una sessió i marcar un àpat; en tornar la cobertura s'han d'enviar sols.",
+  "order": 2,
+  "text": "App instal·lada al mòbil sense cobertura"
+ },
+ "t29": {
+  "area": "Menjar",
+  "done": false,
+  "how": "Calendari: cada dia passat porta un anell de com d'a prop del pla has menjat i \"+N\" si hi ha extres. Toca un dia: surten els àpats, els extres i els totals.",
+  "order": 6,
+  "text": "Calendari: el menjar de cada dia"
+ },
+ "t30": {
+  "area": "Menjar",
+  "done": false,
+  "how": "Calendari → un dia dels últims 14 → marca un àpat, \"He menjat una altra cosa\" (⇄) i \"Afegir menjar\". Els dies més antics només es poden mirar.",
+  "order": 7,
+  "text": "Registrar menjar d'un dia anterior"
+ },
+ "t31": {
+  "area": "Admin",
+  "done": false,
+  "how": "Després del pròxim push: Netlify → Deploys ha de sortir \"Published\" i /api/version ha de dir l'últim commit.",
+  "order": 3,
+  "text": "El desplegament de Netlify torna a funcionar"
+ },
+ "t32": {
+  "area": "Altres",
+  "done": false,
+  "how": "A la landing: secció Preus (4 plans, selector mensual/anual, 14 dies de prova), les 12 preguntes freqüents i el peu amb contacte i idioma. Comprova també el tema fosc amb el botó de la lluna.",
+  "order": 3,
+  "text": "Landing: plans i preguntes"
+ },
+ "t33": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Perfil: la secció Recursos surt a dalt de tot amb els enllaços al pla de negoci, la llista de proves i els panells. Un usuari normal no la veu.",
+  "order": 6,
+  "text": "Recursos a dalt del Perfil (tots els admins)"
+ },
+ "t34": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "A baix del Perfil (esborrar compte), als textos legals i al peu de la landing.",
+  "order": 7,
+  "text": "Correu de contacte jose@josesentis.com"
+ },
+ "t35": {
+  "area": "Menjar",
+  "done": false,
+  "how": "Al detall d'un dia, \"Registrar un altre entrenament\" i \"Afegir menjar\" han de tenir el mateix estil (botó a tot l'ample amb +).",
+  "order": 8,
+  "text": "Calendari: botons d'entrenament i de menjar iguals"
+ },
+ "t36": {
+  "area": "Admin",
+  "done": false,
+  "how": "Admin → Users: activa \"Full access\" a un usuari. Al seu Perfil → Pla ha de sortir \"Accés complet (convidat)\" i no ha de veure plans ni prova.",
+  "order": 4,
+  "text": "Accés complet per a un amic"
+ },
+ "t37": {
+  "area": "Admin",
+  "done": false,
+  "how": "Admin → Users → Edit: canvia el nom, l'idioma, el perfil d'ús i el límit d'IA i desa. Prova que no et deixa posar un correu repetit ni treure't a tu mateix d'admin.",
+  "order": 5,
+  "text": "Editar un usuari"
+ },
+ "t38": {
+  "area": "Admin",
+  "done": false,
+  "how": "Que el teu amic es registri; activa-li l'accés complet; comprova que fa servir l'app sencera.",
+  "order": 6,
+  "text": "Registre d'un amic sense procés comercial"
+ },
+ "t39": {
+  "area": "Coach",
+  "done": false,
+  "how": "Coach: al mòbil llisca una conversa cap a l'esquerra → paperera → Esborrar; a l'ordinador passa el ratolí per sobre → paperera. Recarrega: no ha de tornar a sortir.",
+  "order": 5,
+  "text": "Esborrar una conversa del coach"
+ },
+ "t40": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Perfil → Com fas servir l'app → Personalitzat → canvia un nivell (encara que quedi igual que Equilibrat). Ha de continuar marcat Personalitzat.",
+  "order": 8,
+  "text": "Personalitzat es manté"
+ },
+ "t41": {
+  "area": "Admin",
+  "done": false,
+  "how": "Quan estigui publicat: el dilluns ha d'arribar el resum (cost d'IA, usuaris, errors del coach, mida de la base de dades, versió).",
+  "order": 7,
+  "text": "Resum setmanal per correu als admins"
+ },
+ "t42": {
+  "area": "Admin",
+  "done": false,
+  "how": "Posa ADMIN_AI_BUDGET_EUR a Netlify amb un valor baix de prova i comprova que arriba l'avís de cost; després torna'l al valor real.",
+  "order": 8,
+  "text": "Avisos automàtics als admins"
+ },
+ "t43": {
+  "area": "Admin",
+  "done": false,
+  "how": "Si vols que el resum inclogui la despesa real d'Anthropic i l'estat de Netlify: ANTHROPIC_ADMIN_KEY i NETLIFY_API_TOKEN a Netlify (et passaré on aconseguir-les).",
+  "order": 9,
+  "text": "Claus opcionals per a més automatisme"
+ },
+ "t44": {
+  "area": "Admin",
+  "done": false,
+  "how": "La pàgina d'administració nova amb les xifres en directe i els últims resums enviats.",
+  "order": 10,
+  "text": "Salut de l'app (administració)"
+ },
+ "t45": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Perfil → Notificacions: graella de temes × correu/mòbil. Subscripció i compte per correu no es pot treure; Novetats ve desactivat.",
+  "order": 9,
+  "text": "Notificacions per temes"
+ },
+ "t46": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Registra un usuari nou: ha d'arribar la benvinguda. Treu-li l'accés complet a un usuari: ha de rebre el correu de 14 dies de prova.",
+  "order": 10,
+  "text": "Correus de prova i de pla"
+ },
+ "t47": {
+  "area": "Altres",
+  "done": false,
+  "how": "Després d'actualitzar l'app ha de sortir un cop la fitxa \"Novetats\". Si canvien els textos legals, s'han d'acceptar en entrar.",
+  "order": 4,
+  "text": "Novetats i acceptar textos legals"
+ },
+ "t48": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "En entrar després de publicar, ha de sortir la finestra per acceptar privacitat i termes nous (6/10/2026). També arriba un correu.",
+  "order": 11,
+  "text": "Acceptar els textos legals nous"
+ },
+ "t49": {
+  "area": "Admin",
+  "done": false,
+  "how": "Admin → Users → Edit: a baix surt la llista de correus i avisos enviats a aquell usuari.",
+  "order": 11,
+  "text": "Comunicacions d'un usuari"
+ },
+ "t50": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Quan hi hagi Stripe: cancel·la una subscripció de prova; en acabar el període, les funcions del pla (p. ex. menjar Precís) han de quedar bloquejades i tornar si tornes a pagar.",
+  "order": 12,
+  "text": "Pla rebaixat si no es paga"
+ },
+ "t51": {
+  "area": "Avui",
+  "done": false,
+  "how": "Registra la sessió d'avui: a Avui ha de sortir \"Fet avui\" amb cada exercici (sèries i millor sèrie), durada, kcal, RPE, notes i \"Rècord\" si n'has fet. Edit obre el registre.",
+  "order": 5,
+  "text": "Avui després d'entrenar"
+ },
+ "t52": {
+  "area": "Progrés",
+  "done": false,
+  "how": "Perfil → Notificacions → activa Progrés per correu. L'1 de mes ha d'arribar el resum del mes anterior (sessions, temps, rècords, pes, menjar).",
+  "order": 3,
+  "text": "Resum mensual per correu"
+ },
+ "t53": {
+  "area": "Admin",
+  "done": false,
+  "how": "Després del proper push: a GitHub, marca verda al commit; al log de Netlify, \"No pending migrations\" abans del build.",
+  "order": 12,
+  "text": "Tests a GitHub i migracions automàtiques"
+ },
+ "t54": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "En entrar després de publicar: una sola vegada, la finestra de consentiment. Si la tanques i després guardes un pes, ha de tornar a sortir i, en acceptar, el pes es guarda sol.",
+  "order": 13,
+  "text": "Consentiment de dades de salut"
+ },
+ "t55": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Perfil → Privacitat → Exportar: es descarrega un fitxer amb totes les teves dades (sense contrasenyes ni claus).",
+  "order": 14,
+  "text": "Privacitat: exportar dades"
+ },
+ "t56": {
+  "area": "Perfil i plans",
+  "done": false,
+  "how": "Amb un usuari de prova, no el teu: Perfil → Privacitat → Esborrar el compte, escriu ESBORRAR. Ha de sortir de l'app i arribar el correu de confirmació.",
+  "order": 15,
+  "text": "Privacitat: esborrar el compte (amb un compte de prova!)"
+ },
+ "t57": {
+  "area": "Admin",
+  "done": false,
+  "how": "Obre /register?invite=CODI i registra't amb Google amb un compte nou: a Admin → Beta ha de comptar a la cohort del codi.",
+  "order": 13,
+  "text": "Codi d'invitació amb Google"
+ },
+ "t58": {
+  "area": "Altres",
+  "done": false,
+  "how": "Després de publicar: Avui i Menjar haurien de carregar clarament més ràpid, sobretot la primera vegada del dia. Si veus una llista vella, s'ha d'actualitzar sola en uns segons.",
+  "order": 5,
+  "text": "L'app va més ràpida"
+ },
+ "t59": {
+  "area": "Altres",
+  "done": false,
+  "how": "Amb l'app instal·lada: obre-la amb cobertura un moment, tanca-la, posa el mòbil en mode avió i torna-la a obrir. Ha d'obrir Avui; registra un entrenament i marca un àpat; en tornar la cobertura s'han d'enviar sols.",
+  "order": 6,
+  "text": "Sense cobertura al gimnàs (després de l'arreglo)"
+ },
+ "t60": {
+  "area": "Menjar",
+  "done": false,
+  "how": "Avui → ⇄ en un àpat: 8 alternatives + \"Veure'n més\"; al final escriu el que has menjat, revisa-ho i desa. L'àpat ha de quedar com a \"una altra cosa\" amb les seves calories.",
+  "order": 9,
+  "text": "Canviar un àpat: llista llarga i \"He menjat una altra cosa\""
+ },
+ "t61": {
+  "area": "Avui",
+  "done": false,
+  "how": "A Avui el botó de la sessió ha de dir \"Registrar entrenament\" (amb un llapis), no \"Ja l'he fet\".",
+  "order": 6,
+  "text": "Botó \"Registrar entrenament\""
+ },
+ "t62": {
+  "area": "Altres",
+  "done": false,
+  "how": "Amb poca cobertura (no mode avió): canviar de pestanya no s'ha de quedar penjat; en 4 s ha d'obrir la còpia guardada i sortir la píndola \"sense connexió\".",
+  "order": 7,
+  "text": "Cobertura fluixa al gimnàs"
+ },
+ "t63": {
+  "area": "Entrenament",
+  "done": false,
+  "how": "Toca un dia passat: capçalera amb etapa i tipus de dia, i les xifres (menjat, gastat estimat, balanç estimat, proteïna, entrenament, pes). Fletxes i lliscar canvien de dia.",
+  "order": 3,
+  "text": "Calendari nou: el resum del dia"
+ },
+ "t64": {
+  "area": "Entrenament",
+  "done": false,
+  "how": "Columna \"Setmana\" (escriptori) o línia \"Aquesta setmana\" (mòbil): sessions fetes/previstes, kcal mitjanes i canvi de pes. Una sessió del programa feta un altre dia no s'ha de comptar dues vegades.",
+  "order": 4,
+  "text": "Calendari: resum de la setmana"
+ },
+ "t65": {
+  "area": "Entrenament",
+  "done": false,
+  "how": "Selector Mes/Setmana. Des del detall d'un dia dels últims 14, registra el pes d'aquell dia.",
+  "order": 5,
+  "text": "Calendari: vista Setmana i pes d'un dia anterior"
+ },
+ "t66": {
+  "area": "Altres",
+  "done": false,
+  "how": "Al mòbil, toca Més: el menú entra des de l'esquerra en 1 s, ocupa tota la pantalla, té una X a dalt i els mateixos elements que el menú lateral de l'ordinador (inclosa l'administració i el compte al peu). En tancar, surt en mig segon.",
+  "order": 8,
+  "text": "Menú del mòbil: Més obre el menú lateral"
+ }
+}

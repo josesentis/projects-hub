@@ -1,0 +1,1790 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><script src="assets/store.js" data-ns="negoci"></script><script src="assets/hub-bar.js"></script>
+<title>mAI Fitness · Negoci</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column (~760px) with full-bleed tables and charts; sticky section index on wide screens. */
+:root {
+  --bg: #f4f5f1; --surface: #ffffff; --ink: #1b2320; --body: #3a4440; --muted: #6b7570; --line: #dfe3dc;
+  --accent: #0f766e; --accent-soft: #dcefeb; --accent-2: #b45309; --accent-2-soft: #fbeedd; --bad: #b42318; --bad-soft: #fbe3df; --good: #1f7a3a;
+  --bar: #0f766e; --bar-muted: #b9c4bf; --bar-2: #d97706;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --text: "Instrument Sans", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121615; --surface: #1a201e; --ink: #edf1ee; --body: #c9d1cd; --muted: #93a09a; --line: #2c3532;
+  --accent: #4fc3b4; --accent-soft: #163632; --accent-2: #f2a54a; --accent-2-soft: #3a2a16; --bad: #f08a7c; --bad-soft: #3d1f1b; --good: #6fcf8a;
+  --bar: #4fc3b4; --bar-muted: #4a5753; --bar-2: #f2a54a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121615; --surface: #1a201e; --ink: #edf1ee; --body: #c9d1cd; --muted: #93a09a; --line: #2c3532;
+  --accent: #4fc3b4; --accent-soft: #163632; --accent-2: #f2a54a; --accent-2-soft: #3a2a16; --bad: #f08a7c; --bad-soft: #3d1f1b; --good: #6fcf8a;
+  --bar: #4fc3b4; --bar-muted: #4a5753; --bar-2: #f2a54a; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--body); font: 16px/1.6 var(--text); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px }
+@media (min-width: 1000px) { .wrap { grid-template-columns: 200px minmax(0, 1fr); padding-inline: 32px } }
+nav.toc { display: none }
+@media (min-width: 1000px) { nav.toc { display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 80px); align-self: start; font-size: 13px } }
+nav.toc a { display: block; color: var(--muted); text-decoration: none; padding: 5px 0 5px 12px; border-left: 2px solid var(--line) }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--ink); border-left-color: var(--accent); outline: none }
+main { min-width: 0; display: flex; flex-direction: column; gap: 56px }
+header.hero { display: flex; flex-direction: column; gap: 12px }
+.eyebrow { font: 600 12px/1 var(--text); letter-spacing: .08em; text-transform: uppercase; color: var(--accent) }
+h1 { font: 800 clamp(2rem, 5vw, 3.1rem)/1.05 var(--display); color: var(--ink); margin: 0; letter-spacing: -0.02em; text-wrap: balance }
+h2 { font: 700 1.6rem/1.15 var(--display); color: var(--ink); margin: 0 0 6px; letter-spacing: -0.01em; text-wrap: balance }
+h3 { font: 700 1.05rem/1.3 var(--text); color: var(--ink); margin: 24px 0 8px }
+p { margin: 0 0 12px; max-width: 70ch }
+.lede { font-size: 1.12rem; color: var(--body); max-width: 62ch }
+.meta { font-size: 13px; color: var(--muted) }
+section { display: flex; flex-direction: column; gap: 4px; scroll-margin-top: 80px }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 16px }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px }
+.kpi b { display: block; font: 700 1.3rem/1.2 var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.02em }
+.kpi span { font-size: 13px; color: var(--muted) }
+.callout { border-radius: 14px; padding: 16px 18px; background: var(--accent-soft); color: var(--ink); max-width: 76ch; margin: 8px 0 }
+.callout.warn { background: var(--accent-2-soft) }
+.callout.bad { background: var(--bad-soft) }
+.callout p:last-child { margin: 0 }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); margin: 8px 0 }
+table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 560px }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; background: var(--surface) }
+tr:last-child td { border-bottom: 0 }
+td.n, th.n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap }
+tr.us td { background: var(--accent-soft); color: var(--ink) }
+.pos { color: var(--good); font-weight: 600 } .neg { color: var(--bad); font-weight: 600 }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 8px 0 }
+.chart svg { display: block; width: 100%; height: auto }
+.chart .cap { font-size: 13px; color: var(--muted); margin-top: 8px }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--body); margin-bottom: 8px }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin: 8px 0 }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 6px }
+.card.rec { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset }
+.card .price { font: 700 1.6rem/1.1 var(--mono); color: var(--ink) }
+.card .price small { font: 500 13px var(--text); color: var(--muted) }
+.card ul { margin: 6px 0 0; padding-left: 18px; font-size: 14px }
+.tag { align-self: flex-start; font: 600 11px/1 var(--text); letter-spacing: .05em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent) }
+ul.check { list-style: none; padding: 0; margin: 4px 0 }
+ul.check li { padding: 8px 0 8px 28px; border-bottom: 1px solid var(--line); position: relative; max-width: 80ch }
+ul.check li::before { content: ""; position: absolute; left: 4px; top: 13px; width: 12px; height: 12px; border: 2px solid var(--accent); border-radius: 3px }
+ul.check li b { color: var(--ink) }
+.src { font-size: 13px; color: var(--muted) } .src a { color: var(--accent); overflow-wrap: anywhere }
+a { color: var(--accent) }
+code { font-family: var(--mono); font-size: .88em; background: var(--accent-soft); color: var(--ink); padding: 1px 5px; border-radius: 4px }
+ol.sources { font-size: 13px; color: var(--muted); padding-left: 20px } ol.sources li { margin: 4px 0; overflow-wrap: anywhere }
+.two { display: grid; grid-template-columns: minmax(0,1fr); gap: 12px } @media (min-width: 760px) { .two { grid-template-columns: 1fr 1fr } }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important } }
+
+/* Site shell: a top bar with the four pages; one page visible at a time. */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line) }
+.topbar-in { max-width: 1120px; margin: 0 auto; padding-inline: 16px; display: flex; align-items: center; gap: 16px; min-height: 56px; flex-wrap: wrap }
+@media (min-width: 1000px) { .topbar-in { padding-inline: 32px } }
+.brand { font: 800 1.05rem/1 var(--display); color: var(--ink); letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; white-space: nowrap }
+.brand i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-2); display: inline-block }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; margin-inline: -4px; padding: 8px 4px }
+.tabs a { font: 600 14px/1 var(--text); color: var(--muted); text-decoration: none; padding: 9px 12px; border-radius: 999px; white-space: nowrap }
+.tabs a:hover { color: var(--ink) }
+.tabs a[aria-current="page"] { background: var(--ink); color: var(--bg) }
+.page[hidden] { display: none !important }
+.page-simple { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 40px 96px; display: flex; flex-direction: column; gap: 48px }
+@media (min-width: 1000px) { .page-simple { padding-inline: 32px } }
+.page-simple > section { max-width: 900px }
+
+/* Phases */
+.phases { display: flex; flex-direction: column; gap: 16px; counter-reset: ph }
+.phase { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr) }
+@media (min-width: 820px) { .phase { grid-template-columns: 220px minmax(0, 1fr) } }
+.phase-head .num { font: 700 12px/1 var(--mono); color: var(--accent); letter-spacing: .06em; text-transform: uppercase }
+.phase-head h3 { margin: 6px 0 4px; font: 700 1.2rem/1.2 var(--display); color: var(--ink) }
+.phase-head .when { font-size: 13px; color: var(--muted) }
+.phase dl { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px 16px; margin: 0 }
+@media (min-width: 620px) { .phase dl { grid-template-columns: 150px minmax(0, 1fr) } }
+.phase dt { font: 600 12px/1.5 var(--text); color: var(--muted); text-transform: uppercase; letter-spacing: .05em }
+.phase dd { margin: 0; font-size: 15px }
+.phase dd ul { margin: 0; padding-left: 18px }
+.phase.now { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset }
+.pill { display: inline-block; font: 600 11px/1 var(--text); padding: 5px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); letter-spacing: .04em; text-transform: uppercase }
+
+/* Docs */
+.doc-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px }
+@media (min-width: 760px) { .doc-grid { grid-template-columns: 1fr 1fr } }
+.doc-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px }
+.doc-card h3 { margin: 0 0 6px }
+.doc-card p:last-child { margin-bottom: 0 }
+.term { font-weight: 600; color: var(--ink) }
+
+/* Board */
+.board-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center }
+.chip { font: 600 13px/1 var(--text); border: 1px solid var(--line); background: var(--surface); color: var(--body); padding: 8px 12px; border-radius: 999px; cursor: pointer }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink) }
+.btn { font: 600 14px/1 var(--text); border: 0; background: var(--accent); color: #fff; padding: 10px 14px; border-radius: 10px; cursor: pointer }
+.btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--line) }
+.btn:disabled { opacity: .5; cursor: default }
+.board { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start }
+@media (min-width: 900px) { .board { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
+.col { background: color-mix(in srgb, var(--surface) 55%, var(--bg)); border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 120px }
+.col.drop { outline: 2px dashed var(--accent); outline-offset: -4px }
+.col-head { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 4px 0 }
+.col-head h3 { margin: 0; font: 700 15px/1.2 var(--display); color: var(--ink) }
+.col-head span { font: 600 12px/1 var(--mono); color: var(--muted) }
+.cardt { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; cursor: grab }
+.cardt[aria-expanded="true"] { cursor: default; box-shadow: 0 6px 20px rgba(0,0,0,.06) }
+.cardt .meta-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center }
+.cardt .t { font: 600 15px/1.35 var(--text); color: var(--ink); background: none; border: 0; padding: 0; text-align: left; cursor: pointer }
+.badge { font: 600 11px/1 var(--text); padding: 4px 7px; border-radius: 6px; background: var(--accent-soft); color: var(--accent) }
+.badge.who { background: var(--accent-2-soft); color: var(--accent-2) }
+.badge.urgent { background: var(--bad-soft); color: var(--bad) }
+.cardt .why { font-size: 14px; color: var(--body); margin: 0 }
+.cardt ol { margin: 0; padding-left: 20px; font-size: 14px; display: flex; flex-direction: column; gap: 4px }
+.cardt code { overflow-wrap: anywhere }
+.cardt textarea, .newcard textarea, .newcard input, .newcard select { width: 100%; font: 14px/1.4 var(--text); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px }
+.cardt .acts { display: flex; gap: 6px; flex-wrap: wrap }
+.cardt .acts button { font: 600 12px/1 var(--text); border: 1px solid var(--line); background: transparent; color: var(--body); padding: 7px 9px; border-radius: 8px; cursor: pointer }
+.cardt .acts button:hover { color: var(--ink); border-color: var(--ink) }
+.newcard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 8px; max-width: 640px }
+.status-line { font-size: 13px; color: var(--muted) }
+.empty-col { font-size: 13px; color: var(--muted); padding: 8px 4px }
+
+/* Publishing calendar: weeks of posts, each with a checkbox kept in the shared store. */
+.pub-progress { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 8px }
+.pub-bar { flex: 1 1 220px; height: 8px; border-radius: 999px; background: var(--line); overflow: hidden }
+.pub-bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s }
+.pub-week { display: flex; flex-direction: column; gap: 10px }
+.pub-week-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap }
+.pub-week-head h2 { margin: 0 }
+.pub-week-head span { font: 600 12px/1 var(--mono); color: var(--muted) }
+.post { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 4px 12px }
+.post.next { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset }
+.post.done { background: color-mix(in srgb, var(--surface) 60%, var(--bg)) }
+.post.done .post-title { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--bar-muted) }
+.post input[type=checkbox] { width: 24px; height: 24px; margin: 2px 0 0; accent-color: var(--accent); cursor: pointer }
+.post input[type=checkbox]:disabled { cursor: default }
+.post-body { min-width: 0; display: flex; flex-direction: column; gap: 6px }
+.post-when { font: 600 13px/1.3 var(--mono); color: var(--accent); font-variant-numeric: tabular-nums }
+.post-title { font: 600 16px/1.35 var(--text); color: var(--ink); cursor: pointer }
+.post .meta-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center }
+.badge.ch { background: var(--ink); color: var(--bg) }
+.badge.late { background: var(--accent-2-soft); color: var(--accent-2) }
+.badge.vid { background: transparent; border: 1px solid var(--line); color: var(--body); font-family: var(--mono); font-weight: 400 }
+.post ul.tips { margin: 0; padding-left: 18px; font-size: 14px; color: var(--body) }
+.post details { border-top: 1px solid var(--line); padding-top: 8px }
+.post summary { font: 600 13px/1.4 var(--text); color: var(--accent); cursor: pointer; list-style-position: inside }
+.copybox { position: relative; margin-top: 8px }
+.copybox .txt { white-space: pre-wrap; font: 14px/1.55 var(--text); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 12px 44px; overflow-wrap: anywhere }
+.copybox .lbl { font: 600 12px/1 var(--text); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin: 10px 0 6px }
+.copybox button { position: absolute; right: 8px; bottom: 8px }
+.btn.sm { padding: 8px 10px; font-size: 13px }
+.post .url-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap }
+.post .url-row input { flex: 1 1 220px; min-width: 0; font: 14px/1.4 var(--text); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px }
+.codes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px }
+@media (min-width: 700px) { .codes { grid-template-columns: 1fr 1fr } }
+.codes label { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 8px; align-items: center; font-size: 14px; color: var(--ink) }
+.codes input { width: 100%; font: 14px/1.4 var(--mono); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; text-transform: uppercase }
+.codes input#lk-base { text-transform: none }
+.why-days { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px }
+@media (min-width: 760px) { .why-days { grid-template-columns: 1fr 1fr } }
+.why-days .doc-card p { font-size: 14px }
+</style>
+<header class="topbar">
+  <div class="topbar-in">
+    <span class="brand"><i aria-hidden="true"></i>mAI Fitness · Negoci</span>
+    <nav class="tabs" aria-label="Seccions del document">
+      <a href="#pla">Pla de negoci</a>
+      <a href="#publicar">Publicar</a>
+      <a href="#docs">Com funciona l'app</a>
+      <a href="#tasques">Tasques</a>
+      <a href="#guies">Guies</a>
+      <a href="#estudi">Estudi de mercat</a>
+      <a href="#documents">Documents</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ───────────────────────── PLA DE NEGOCI ───────────────────────── -->
+<div class="page" id="page-pla">
+<div class="page-simple">
+  <header class="hero">
+    <span class="eyebrow">Pla de negoci · V1 · actualitzat el 16 d'octubre de 2026 · calendari de publicació afegit</span>
+    <h1>De l'app acabada a un negoci que es paga sol</h1>
+    <p class="lede">mAI Fitness és un entrenador personal amb IA que porta l'entrenament i el menjar a la vegada. Funciona per subscripció mensual o anual. Aquest pla explica les quatre fases per arribar-hi. Cada fase té un objectiu, el que cal fer, quant costa i com sabrem que podem passar a la següent.</p>
+    <div class="kpis">
+      <div class="kpi"><b>3 plans</b><span>4,99 · 9,99 · 16,99 € al mes (IVA inclòs)</span></div>
+      <div class="kpi"><b>≈0,01 $</b><span>cost d'IA d'un missatge normal al coach (abans 0,06–0,18 $)</span></div>
+      <div class="kpi"><b>≈55 €/mes</b><span>costos fixos (servidors, base de dades, correu)</span></div>
+      <div class="kpi"><b>~10–15</b><span>subscriptors per cobrir els costos fixos</span></div>
+    </div>
+  </header>
+
+  <section>
+    <span class="eyebrow">Com guanya diners</span>
+    <h2>El model en quatre frases</h2>
+    <ul class="check">
+      <li><b>Subscripció en tres plans</b> que corresponen a com fa servir l'app cadascú: <b>Entrena</b> (només entrenament), <b>Coach</b> (entrenament i menjar) i <b>Coach+</b> (tot, amb comptatge al gram i seguiment setmanal).</li>
+      <li><b>14 dies de prova amb tot obert</b>, sense targeta. Després, qui no paga passa al <b>pla gratuït</b>: registre d'entrenaments i calendari, el primer programa dissenyat pel coach i 5 missatges al mes.</li>
+      <li><b>Anuncis només al pla gratuït</b>, i desactivats fins que tinguem un gestor de consentiment certificat per Google. Aporten cèntims, així que no són prioritaris.</li>
+      <li><b>La IA és el cost principal</b>, i per això cada tipus de missatge fa servir el model més barat que el resol bé. Els límits de missatges de cada pla impedeixen que un usuari costi més del que paga.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Números per subscriptor</span>
+    <h2>Quant ens queda de cada pagament</h2>
+    <p>Estimació amb el repartiment de models nou: Haiku per al dia a dia i Sonnet per definir objectius. Està mesurada amb 8 converses reals. Del preu es resten l'IVA (21 %), les comissions de Stripe (≈2,7 % + 0,25 € per cobrament) i el cost d'IA.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Pla</th><th class="n">Preu</th><th class="n">Sense IVA</th><th class="n">Comissions</th><th class="n">IA al mes</th><th class="n">Ens queda</th></tr></thead>
+      <tbody>
+        <tr><td>Entrena · mensual</td><td class="n">4,99 €</td><td class="n">4,12 €</td><td class="n">0,36 €</td><td class="n">≈0,17 €</td><td class="n pos">≈3,6 €</td></tr>
+        <tr><td>Coach · mensual</td><td class="n">9,99 €</td><td class="n">8,26 €</td><td class="n">0,47 €</td><td class="n">≈0,40 €</td><td class="n pos">≈7,4 €</td></tr>
+        <tr><td>Coach+ · mensual</td><td class="n">16,99 €</td><td class="n">14,04 €</td><td class="n">0,63 €</td><td class="n">≈0,80 €</td><td class="n pos">≈12,6 €</td></tr>
+        <tr><td>Coach · anual (per mes)</td><td class="n">6,67 €</td><td class="n">5,51 €</td><td class="n">0,20 €</td><td class="n">≈0,40 €</td><td class="n pos">≈4,9 €</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn"><p><b>Ull:</b> el cost d'IA per usuari és una estimació feta amb poques converses. La beta servirà per mesurar-lo de debò a Admin → Beta i Admin → Analytics. Si un usuari fa servir molt el coach, el límit de missatges del seu pla el frena abans que surti car.</p></div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Les fases</span>
+    <h2>Quatre fases, una darrere l'altra</h2>
+    <div class="phases">
+      <article class="phase now">
+        <div class="phase-head"><span class="num">Fase 0 · ara</span><h3>Tancar la V1</h3><span class="when">Octubre 2026 · 2–4 setmanes</span><p style="margin-top:8px"><span class="pill">En curs</span></p></div>
+        <dl>
+          <dt>Objectiu</dt><dd>L'app està llesta i és legal per obrir-la a gent de fora, i els pagaments ja funcionen en mode de proves.</dd>
+          <dt>Què cal fer</dt><dd><ul><li>Acabar les proves amb amics (fins al 25 d'octubre) i arreglar el que surti.</li><li>Preparar el llançament (26 d'octubre – 1 de novembre): domini, comptes d'Instagram, TikTok i YouTube, un codi d'invitació per canal i 4–5 captures. Són les primeres caselles de la pestanya <a href="#publicar">Publicar</a>.</li><li>Revisió legal (privacitat, termes, dades de salut).</li><li>Crear el compte de Stripe, activar l'IVA automàtic i fer l'alta a l'OSS.</li><li>Configurar els plans a Stripe en mode de proves i fer un pagament de prova.</li></ul></dd>
+          <dt>Cost</dt><dd>~55 € al mes d'infraestructura, més l'advocat (pressupost a part) i el gestor per a l'alta d'IVA.</dd>
+          <dt>Per passar a la següent</dt><dd>Un pagament de prova funciona de cap a cap i els textos legals estan revisats.</dd>
+        </dl>
+      </article>
+      <article class="phase">
+        <div class="phase-head"><span class="num">Fase 1</span><h3>Beta amb 40 persones</h3><span class="when">6 setmanes</span></div>
+        <dl>
+          <dt>Objectiu</dt><dd>Saber si la gent torna, quant costa de veritat cada tipus d'usuari i quant estaria disposada a pagar.</dd>
+          <dt>Què cal fer</dt><dd><ul><li><b>Primer, presentar l'app</b> seguint el <a href="#publicar">calendari de publicació</a>: LinkedIn, X, Instagram, TikTok i YouTube a partir del 3 de novembre, Reddit i Indie Hackers després, directoris a finals de novembre i Product Hunt i Hacker News al gener. Serveix per arribar als testers professionals: entrenadors, dietistes-nutricionistes i gent que fa anys que entrena.</li><li>Buscar 40 testers en tres grups: 12 que només entrenen, 18 equilibrats i 10 exigents.</li><li>Enviar-los un codi d'invitació. Cada codi els posa al seu grup i els dona el preu fundador.</li><li>Fer seguiment setmanal a Admin → Beta i respondre el feedback en menys de 48 h.</li><li>Fer les enquestes de les setmanes 2, 4 (preu) i 6, i 6–8 entrevistes curtes.</li></ul></dd>
+          <dt>Cost</dt><dd>IA: menys d'1 € al mes per tester (estimat). Temps: unes 2 hores a la setmana.</dd>
+          <dt>Per passar a la següent</dt><dd>Activació ≥ 60 %, retenció D30 ≥ 15 %, NPS ≥ 30 i una mediana de preu acceptable ≥ 8 €. Amb les dades, et preparo l'informe final.</dd>
+        </dl>
+      </article>
+      <article class="phase">
+        <div class="phase-head"><span class="num">Fase 2</span><h3>Llançament amb pagaments</h3><span class="when">Després de la beta</span></div>
+        <dl>
+          <dt>Objectiu</dt><dd>Els primers subscriptors de pagament i cobrir els costos fixos.</dd>
+          <dt>Què cal fer</dt><dd><ul><li>Fixar els preus finals amb les dades de la beta.</li><li>Passar Stripe a mode real.</li><li>Convertir els testers amb el preu fundador (30 % de descompte per sempre).</li><li>Anunciar-ho: xarxes, gimnasos, boca-orella.</li></ul></dd>
+          <dt>Cost</dt><dd>Infraestructura i IA dels usuaris. Si hi ha màrqueting de pagament, va a part.</dd>
+          <dt>Per passar a la següent</dt><dd>Més d'uns 15 subscriptors (cobreixen els costos fixos) i una baixa mensual inferior al 10 %.</dd>
+        </dl>
+      </article>
+      <article class="phase">
+        <div class="phase-head"><span class="num">Fase 3</span><h3>Créixer</h3><span class="when">Mesos 3–12</span></div>
+        <dl>
+          <dt>Objectiu</dt><dd>Arribar als 120–1.200 subscriptors l'any 1, segons l'escenari de l'estudi.</dd>
+          <dt>Què cal fer</dt><dd><ul><li>Mirar cada mes el cost per usuari i ajustar els límits o els models.</li><li>Millorar el que la gent fa servir més.</li><li>Valorar publicar l'app a les botigues d'Apple i Google, que cobren un 15–30 % de comissió.</li><li>Valorar els anuncis al pla gratuït si hi ha prou usuaris gratuïts.</li></ul></dd>
+          <dt>Cost</dt><dd>Creix amb els usuaris. L'IA ronda l'1 € per subscriptor al mes.</dd>
+          <dt>Referència</dt><dd>A l'escenari base de l'estudi, 400 subscriptors al mes 12 deixen ≈9.400 € l'any, abans de màrqueting. Amb el cost d'IA nou, més baix, hauria de ser més.</dd>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Competència</span>
+    <h2>Contra qui competim</h2>
+    <p>Hi ha dues famílies d'apps. Les <b>apps amb IA</b> generen entrenaments o comptes de calories de manera automàtica, però gairebé cap porta l'entrenament i el menjar alhora amb un coach que parla. Les <b>apps sense IA</b> són llibretes molt bones (registrar sèries, comptar calories) on tota la feina de pensar la fas tu. Preus de les botigues dels EUA, octubre de 2026; a Espanya solen ser similars en euros.</p>
+
+    <h3>Apps amb IA</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>App</th><th>Què fa</th><th class="n">Preu</th><th>Què li falta respecte a nosaltres</th></tr></thead>
+      <tbody>
+        <tr><td><b>Freeletics Coach</b></td><td>Entrenaments generats per IA, sobretot pes corporal</td><td class="n">79,99 €/any</td><td>No fa pla de menjar amb grams; poc gimnàs amb màquines</td></tr>
+        <tr><td><b>Fitbod</b></td><td>Rutines de força amb algoritme segons el que has fet</td><td class="n">15,99 $/mes · 95,99 $/any</td><td>Sense menjar ni conversa; no entén "avui tinc poc temps"</td></tr>
+        <tr><td><b>Zing AI</b></td><td>Coach d'entrenament amb IA, casa i gimnàs</td><td class="n">19,99 $/mes · 59,99 $/any</td><td>Sense pla de menjar real ni objectius per etapes</td></tr>
+        <tr><td><b>Planfit</b></td><td>Plans de gimnàs amb IA, freemium</td><td class="n">Gratis + Premium (&lt;20 $/mes)</td><td>Només entrenament</td></tr>
+        <tr><td><b>Cal AI</b></td><td>Comptar calories fent una foto al plat</td><td class="n">9,99 $/mes · 29,99 $/any</td><td>Només compta; no et diu què menjar ni s'adapta a l'entrenament</td></tr>
+        <tr><td><b>MacroFactor</b></td><td>Nutrició que aprèn el teu manteniment real (algoritme)</td><td class="n">11,99 $/mes · 71,99 $/any</td><td>Cal registrar-ho tot; el mòdul d'entrenament va a part; sense conversa</td></tr>
+        <tr><td><b>Noom</b></td><td>Pèrdua de pes amb psicologia i IA</td><td class="n">≈209 $/any</td><td>Car; centrat en perdre pes, no en entrenar</td></tr>
+        <tr><td><b>WHOOP Coach</b></td><td>Polsera + coach amb IA sobre son i recuperació</td><td class="n">180–360 €/any</td><td>Cal comprar el dispositiu; no fa rutines ni menús</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Apps sense IA</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>App</th><th>Què fa</th><th class="n">Preu</th><th>Què li falta respecte a nosaltres</th></tr></thead>
+      <tbody>
+        <tr><td><b>Hevy</b></td><td>Llibreta de gimnàs social, molt popular</td><td class="n">23,99 $/any · 74,99 $ per sempre</td><td>No et diu què fer ni com progressar</td></tr>
+        <tr><td><b>Strong</b></td><td>Llibreta de gimnàs clàssica</td><td class="n">29,99 $/any · 99,99 $ per sempre</td><td>Igual: registres, però tu planifiques</td></tr>
+        <tr><td><b>JEFIT</b></td><td>Llibreta + biblioteca d'exercicis i rutines</td><td class="n">12,99 $/mes · 69,99 $/any</td><td>Rutines genèriques, no fetes per a tu</td></tr>
+        <tr><td><b>MyFitnessPal</b></td><td>Comptar calories amb una base enorme d'aliments</td><td class="n">19,99 $/mes · 79,99 $/any</td><td>Comptar és feina teva; no hi ha pla ni entrenament</td></tr>
+        <tr><td><b>Yazio / Lifesum</b></td><td>Comptar calories, receptes i dejuni</td><td class="n">≈45 €/any</td><td>Plans genèrics; sense entrenament</td></tr>
+        <tr><td><b>Strava</b></td><td>Córrer i bici, social</td><td class="n">79,99 $/any</td><td>Sense gimnàs ni menjar</td></tr>
+        <tr><td><b>Nike Training Club</b></td><td>Classes en vídeo</td><td class="n">Gratis</td><td>Res personalitzat</td></tr>
+        <tr><td><b>Future / Ladder</b></td><td>Entrenador humà o programes de coach</td><td class="n">180–1.800 $/any</td><td>Molt cars; sense menjar amb grams</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Què ofereix cadascú</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>App</th><th class="n">Entrenament per a tu</th><th class="n">Pla de menjar amb grams</th><th class="n">S'adapta sol</th><th class="n">Conversa amb un coach</th><th class="n">Entrenament + menjar junts</th><th class="n">Català</th></tr></thead>
+      <tbody>
+        <tr class="us"><td><b>mAI Fitness</b></td><td class="n">✓</td><td class="n">✓</td><td class="n">✓</td><td class="n">✓</td><td class="n">✓</td><td class="n">✓</td></tr>
+        <tr><td>Freeletics Coach</td><td class="n">✓</td><td class="n">—</td><td class="n">½</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Fitbod</td><td class="n">✓</td><td class="n">—</td><td class="n">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Zing AI</td><td class="n">✓</td><td class="n">—</td><td class="n">½</td><td class="n">½</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>MacroFactor</td><td class="n">½</td><td class="n">½</td><td class="n">✓</td><td class="n">—</td><td class="n">½</td><td class="n">—</td></tr>
+        <tr><td>Cal AI</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Noom</td><td class="n">—</td><td class="n">½</td><td class="n">½</td><td class="n">½</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Hevy / Strong</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>MyFitnessPal</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Future (humà)</td><td class="n">✓</td><td class="n">½</td><td class="n">½</td><td class="n">✓</td><td class="n">½</td><td class="n">—</td></tr>
+      </tbody>
+    </table></div>
+    <p class="meta">✓ sí · ½ en part · — no. "Entrenament per a tu" vol dir una rutina generada per a la persona, no un catàleg. Valoració nostra a partir de les fitxes de les botigues i les webs oficials.</p>
+
+    <h3>On encaixem</h3>
+    <ul class="check">
+      <li><b>El nostre buit al mercat:</b> ningú combina un coach que parla, una rutina que evoluciona i un pla de menjar amb grams fet amb plats reals, tot lligat al mateix objectiu i que s'adapta sol. Ara mateix la gent ho resol amb 2–3 apps (per exemple Hevy + MyFitnessPal), o pagant un entrenador.</li>
+      <li><b>Preu:</b> Coach (9,99 €) costa menys que Fitbod o Zing i molt menys que un entrenador, i substitueix dues apps.</li>
+      <li><b>Avantatges:</b> menjar sense obligació (no cal comptar res), es pot fer servir amb poc compromís, català i castellà nadius, funciona sense cobertura al gimnàs. I si fas una altra cosa en lloc d'una sessió (una caminada d'una hora, un partit), <b>compta sola</b> segons l'objectiu, sense preguntar res. Des del mòbil, una <b>foto del plat</b> es converteix en aliments i grams que ajusten la resta del dia: no només compta, com Cal AI, sinó que reequilibra el pla.</li>
+      <li><b>Febleses:</b> marca desconeguda, sense app a les botigues (és web/PWA), sense polseres ni rellotges, i el català del model barat no és perfecte.</li>
+      <li><b>Amenaces:</b> que les grans (MyFitnessPal, Freeletics, Strava) afegeixin un coach amb IA; i apps barates com Cal AI que acostumen la gent a pagar poc.</li>
+    </ul>
+    <p class="src">Fonts: <a href="https://www.eesel.ai/en/blog/cal-ai-pricing">Cal AI (eesel.ai)</a> · <a href="https://apppricinglab.com/iap/apple/1552207792">Zing AI (apppricinglab)</a> · <a href="https://planfit.ai/blog/best-workout-app">Planfit</a> · <a href="https://www.sensai.fit/blog/jefit-vs-hevy-2026">JEFIT i Hevy (sensai.fit)</a> · <a href="https://www.boostcamp.app/best/workout-apps">Strong (Boostcamp)</a> · la resta a l'<a href="#mercat">estudi de mercat</a>.</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Riscos</span>
+    <h2>Què pot sortir malament i què fem</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Risc</th><th>Què fem</th></tr></thead>
+      <tbody>
+        <tr><td>La gent no torna després de la primera setmana</td><td>La beta ho mesura per grup. Es reforça la pantalla Avui i els avisos del coach.</td></tr>
+        <tr><td>El cost d'IA és més alt del previst</td><td>Els límits per pla. Admin → Analytics ho mostra per funció i mes. Els models es canvien sense tocar codi.</td></tr>
+        <tr><td>El català del model barat no és perfecte</td><td>Està acceptat a canvi del cost. Si molesta, es canvia a Sonnet (~0,02 $ el missatge).</td></tr>
+        <tr><td>Temes legals (dades de salut, desistiment)</td><td>Revisió d'un advocat abans de cobrar. Les dades són a la UE i es fa servir un consentiment explícit.</td></tr>
+        <tr><td>Els anuncis espanten la gent que paga</td><td>Només al pla gratuït, i ara desactivats.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</div>
+</div>
+
+<!-- ───────────────────────── PUBLICAR ───────────────────────── -->
+<div class="page" id="page-publicar" hidden>
+<div class="page-simple" style="gap:40px">
+  <header class="hero">
+    <span class="eyebrow">Calendari de publicació · del 26 d'octubre al gener</span>
+    <h1>Què publicar, on i quan</h1>
+    <p class="lede">Cada publicació té el dia i l'hora amb més interacció d'aquell lloc, el vídeo que hi va i el text per copiar. Quan l'hagis pujada, marca-la: es guarda per a tothom qui té accés a aquesta pàgina. Les hores són de Madrid.</p>
+    <div class="pub-progress"><div class="pub-bar" aria-hidden="true"><i id="pubBar"></i></div><span class="status-line" id="pubStatus" aria-live="polite">Carregant…</span></div>
+    <p class="meta">Els vídeos són a l'escriptori, carpeta <code>mai-fitness-videos-2026-10-16</code>. Res surt abans del 3 de novembre: fins al 25 d'octubre són les proves amb amics, i la setmana següent és per preparar.</p>
+  </header>
+
+  <section>
+    <span class="eyebrow">Per què aquests dies</span>
+    <h2>La regla de cada lloc</h2>
+    <div class="why-days">
+      <div class="doc-card"><h3>LinkedIn · dimecres 9:00</h3><p>El dimecres és el dia amb més interacció, seguit de dijous i divendres. Publica a primera hora, quan la gent obre LinkedIn abans de començar a treballar. L'enllaç va al primer comentari, i les dues primeres hores responent comentaris són les que fan que el post arribi lluny.</p></div>
+      <div class="doc-card"><h3>X · dimarts i dimecres al matí</h3><p>En català i castellà, entre les 9 i les 11. En anglès, a les 15:00, que són les 9 del matí a Nova York i encara és tarda a Europa. L'enllaç va a l'últim missatge del fil, perquè X ensenya menys els posts amb enllaços.</p></div>
+      <div class="doc-card"><h3>Instagram · dijous 19:00</h3><p>Funciona millor entre setmana que el divendres o el cap de setmana. Al vespre, la gent de gimnàs ja ha plegat. L'enllaç va a la bio, i una història amb adhesiu d'enllaç porta la gent al Reel.</p></div>
+      <div class="doc-card"><h3>TikTok i YouTube Shorts · diumenge 20:00</h3><p>Les visualitzacions pugen al vespre, de 18 a 23 h, i el diumenge és el dia que la gent planifica la setmana d'entrenament. Acaba el text amb una pregunta perquè la gent comenti.</p></div>
+      <div class="doc-card"><h3>Reddit i Indie Hackers · entre setmana, 14–16 h</h3><p>r/SideProject té més moviment el dilluns cap a les 13–14 h UTC (14–15 h a Madrid). Demana opinió, no anunciïs res, i respon tots els comentaris.</p></div>
+      <div class="doc-card"><h3>Product Hunt i Hacker News · gener</h3><p>Product Hunt comença el dia a les 00:01 de Califòrnia, que són les 9:01 a Madrid, i el millor és un dimarts. A Show HN, al migdia dels EUA (20:00 a Madrid). Són un sol tret: només si es compleixen les condicions de la fase.</p></div>
+    </div>
+    <p class="src">Fonts: <a href="https://buffer.com/library/best-time-to-post-social-media/">Buffer, 52 milions de publicacions (2026)</a> · <a href="https://www.socialpilot.co/blog/best-times-to-post-on-social-med">SocialPilot (2026)</a> · <a href="https://notifier.so/reddit/subreddit_analysis/SideProject">activitat de r/SideProject (Notifier)</a>. Les dades són de tot el món i no sempre coincideixen: és un punt de partida. Al cap de tres setmanes, el que manen són els teus números: les estadístiques de cada xarxa i la columna "Used" dels codis a Admin → Beta.</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Enllaços</span>
+    <h2>Un codi per canal, per saber d'on ve la gent</h2>
+    <p>Crea un codi a Admin → Beta per a cada canal (grup B, i el nom del canal a "Note") i enganxa'l aquí. Els textos de sota ja porten l'enllaç amb el codi. Sense codi, l'enllaç va a l'app i prou. Si compres el domini, canvia l'adreça i tots els textos s'actualitzen.</p>
+    <div class="codes" id="codes">
+      <label style="grid-column:1/-1"><span>Adreça</span><input id="lk-base" inputmode="url" autocomplete="off" spellcheck="false"></label>
+    </div>
+    <p class="status-line" id="codesStatus" aria-live="polite"></p>
+  </section>
+
+  <div id="pubWeeks" style="display:flex;flex-direction:column;gap:40px"></div>
+</div>
+</div>
+
+<!-- ───────────────────────── DOCUMENTACIÓ ───────────────────────── -->
+<div class="page" id="page-docs" hidden>
+<div class="page-simple">
+  <header class="hero">
+    <span class="eyebrow">Documentació · per entendre l'app sense ser tècnic</span>
+    <h1>Com funciona mAI Fitness</h1>
+    <p class="lede">Un coach amb IA que et fa el programa d'entrenament i el pla de menjar amb grams per al teu cos i el teu objectiu. Aprèn de com entrenes i com menges, i ho va ajustant. Funciona al mòbil com una app (PWA), també sense cobertura al gimnàs, i en català, castellà i anglès.</p>
+  </header>
+
+  <section>
+    <span class="eyebrow">Les pantalles</span>
+    <h2>Què hi ha a cada pestanya</h2>
+    <div class="doc-grid">
+      <div class="doc-card"><h3>Avui</h3><p>La pantalla del dia: la sessió que toca, alternatives si falta una màquina, i el menjar d'avui amb un check d'un sol toc per marcar-lo. A dalt hi ha "Explica'm com estàs" per parlar amb el coach.</p></div>
+      <div class="doc-card"><h3>Programa</h3><p>La rutina setmanal, els blocs (per exemple 5 setmanes + 1 de descàrrega) i l'historial de versions. Cada canvi crea una versió nova i mai s'esborra la d'abans.</p></div>
+      <div class="doc-card"><h3>Menjar</h3><p>La setmana de menjar, el pla base (que es pot editar), el receptari i la llista de la compra. Serveix per consultar i canviar; on es marca el que has menjat és a Avui.</p></div>
+      <div class="doc-card"><h3>Progrés</h3><p>L'objectiu i les etapes, els exercicis (força estimada), el cardio, el cos (pes i mesures) i el menjar. També el resum de si vas bé.</p></div>
+      <div class="doc-card"><h3>Coach</h3><p>Les converses amb el coach. Les propostes de canvi surten com a targetes i s'accepten o es rebutgen una a una.</p></div>
+      <div class="doc-card"><h3>Perfil</h3><p>Dades personals, com vols fer servir l'app, el pla de pagament, l'idioma i el botó de feedback. Per esborrar el compte, s'envia un correu.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Conceptes clau</span>
+    <h2>Les idees que fan diferent l'app</h2>
+    <ul class="check">
+      <li><b>Perfils d'ús.</b> Cadascú tria quant vol fer servir l'app. <b>Només entreno</b>: la rutina i prou. <b>Equilibrat</b>: rutina i un pla de menjar flexible. <b>Exigent</b>: tot al gram i seguiment de prop. També hi ha l'opció <b>Personalitzat</b>. El que està desactivat no apareix ni molesta.</li>
+      <li><b>Etapes d'objectiu.</b> Cada rutina serveix un objectiu durant un temps, per exemple "recomposició fins a novembre i després guanyar múscul". L'etapa següent es pot deixar programada.</li>
+      <li><b>El pla de menjar és un suggeriment, no una obligació.</b> L'entrenament sí que es marca com a fet; el menjar, si no dius res, es dona per menjat. Si menges una altra cosa, l'app reequilibra la resta del dia i de la setmana.</li>
+      <li><b>Menjar que s'adapta.</b> Cada setmana l'app mira la tendència del pes (no un sol dia) i el que entrenes. Si l'ajust és petit (±150 kcal), l'aplica sol amb una nota i un botó per desfer-lo. Si és gran, el coach t'ho proposa. Els dies d'entrenament es menja una mica més.</li>
+      <li><b>Els números els fa l'app, no la IA.</b> Calories, grams i progressions es calculen amb fórmules. La IA tria i explica, però no inventa xifres ni plats: els plats surten d'un receptari real de 85 receptes i de les teves.</li>
+      <li><b>Fer una altra cosa també compta.</b> Si en lloc d'una sessió fas 30 minuts o més d'una activitat a ritme moderat, la sessió es dona per feta, com un rellotge. Què compta depèn de l'objectiu: amb un objectiu genèric, qualsevol cardio substitueix un dia de cardio; si l'objectiu és un esport, només aquell esport. Ho decideix l'app amb regles, sense IA; la regla de cada sessió l'escriu el coach quan fa el programa.</li>
+      <li><b>Funciona sense cobertura.</b> El que registres al gimnàs es guarda al mòbil i s'envia quan torna la connexió, sense duplicats.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Plans de pagament</span>
+    <h2>Què inclou cada pla</h2>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th>Gratuït</th><th>Entrena</th><th>Coach</th><th>Coach+</th></tr></thead>
+      <tbody>
+        <tr><td><b>Preu al mes</b></td><td class="n">0 €</td><td class="n">4,99 €</td><td class="n">9,99 €</td><td class="n">16,99 €</td></tr>
+        <tr><td><b>Preu a l'any</b></td><td class="n">—</td><td class="n">39,99 €</td><td class="n">79,99 €</td><td class="n">149,99 €</td></tr>
+        <tr><td>Pensat per al perfil</td><td>—</td><td>Només entreno</td><td>Equilibrat</td><td>Exigent</td></tr>
+        <tr><td>Missatges al coach al mes</td><td class="n">5 (+ el 1r programa)</td><td class="n">60</td><td class="n">150</td><td class="n">400</td></tr>
+        <tr><td>Programa d'entrenament i registre</td><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+        <tr><td>Pla de menjar</td><td>No</td><td>No</td><td>Guia o Pla</td><td>Guia, Pla o Precís</td></tr>
+        <tr><td>Pes i mesures</td><td>Pes setmanal</td><td>Pes setmanal</td><td>Complet</td><td>Complet</td></tr>
+        <tr><td>Coach que revisa cada setmana</td><td>No</td><td>No</td><td>No</td><td>Sí</td></tr>
+        <tr><td>Fotos del plat al mes (només al mòbil)</td><td class="n">—</td><td class="n">—</td><td class="n">10</td><td class="n">80</td></tr>
+        <tr><td>Anuncis</td><td>Sí (quan s'activin)</td><td>No</td><td>No</td><td>No</td></tr>
+      </tbody>
+    </table></div>
+    <ul class="check">
+      <li><b>Prova de 14 dies</b> amb tot obert (com Coach+), en registrar-se i sense targeta.</li>
+      <li><b>Preu fundador:</b> els testers de la beta tenen un 30 % de descompte per sempre (cupó <code>FOUNDER30</code>).</li>
+      <li><b>Límit del mes:</b> quan s'acaben els missatges surt un avís amable per millorar el pla. Es reinicia cada mes.</li>
+      <li><b>Fotos del plat:</b> Coach en té 10 al mes i Coach+ 80. Uns 60 àpats principals al mes fan que 10 fotos cobreixin els dies fora del pla de la majoria de gent, i que qui en vulgui més tingui un motiu per passar a Coach+. La prova de 14 dies, l'accés complet i la beta en tenen 80. Quan s'acaben, dir-ho amb paraules continua funcionant, sense límit. Cada foto costa ≈1 cèntim (pitjor cas: 0,10 € al mes a Coach, 0,80 € a Coach+). Només es poden fer des del mòbil o la tauleta, no des de l'ordinador.</li>
+      <li><b>Cobrament:</b> per web amb Stripe, IVA automàtic per país. Cada client pot cancel·lar o canviar de pla al seu portal.</li>
+      <li>Els preus porten l'IVA inclòs i es poden canviar a Stripe sense tocar l'app.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Intel·ligència artificial</span>
+    <h2>Quin model d'IA respon cada tipus de missatge</h2>
+    <p>Hi ha models més potents i cars i models més ràpids i barats. L'app tria per a cada missatge el més barat que el resol bé.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Tipus de missatge</th><th>Model</th><th class="n">Cost aprox.</th><th>Per què</th></tr></thead>
+      <tbody>
+        <tr><td>"Què passa avui" (poc temps, màquina ocupada, cansament, vacances)</td><td>Haiku 4.5</td><td class="n">≈0,01 $</td><td>Opcions limitades; un model bàsic ho fa bé</td></tr>
+        <tr><td>Canviar un plat o una recepta</td><td>Haiku 4.5</td><td class="n">≈0,01 $</td><td>Tria del receptari; els grams els calcula l'app</td></tr>
+        <tr><td>Generar o canviar el pla de menjar</td><td>Haiku 4.5</td><td class="n">≈0,01 $</td><td>Igual: tria plats, l'app fa els números</td></tr>
+        <tr><td>Generar un programa d'entrenament i revisions de bloc</td><td>Haiku 4.5</td><td class="n">≈0,01 $</td><td>Prou bo; de vegades repeteix alguna cosa</td></tr>
+        <tr><td>Definir objectius: etapes, calories objectiu, ajustos grans del menjar</td><td>Sonnet 5.5</td><td class="n">≈0,09 $</td><td>Cal raonar bé i detectar incoherències</td></tr>
+        <tr><td>Llegir una foto del plat (aliments i grams)</td><td>Sonnet 5.5</td><td class="n">≈0,01 $</td><td>Calcular racions a partir d'una imatge és difícil; els grams i les calories els calcula l'app</td></tr>
+        <tr><td>Títol automàtic dels xats</td><td>Haiku 4.5</td><td class="n">≈0,0001 $</td><td>Una frase curta</td></tr>
+      </tbody>
+    </table></div>
+    <ul class="check">
+      <li><b>Escalada automàtica:</b> si un missatge "barat" acaba tocant objectius, el coach passa sol a Sonnet.</li>
+      <li><b>Idioma:</b> Haiku escriu un català acceptable, però de vegades hi cola paraules en castellà o anglès. Està acceptat a canvi del cost. Si cal, es canvia el model del dia a dia a Sonnet (≈0,02 $ el missatge) amb una variable a Netlify (<code>COACH_MODEL_DEFAULT</code>), sense tocar codi.</li>
+      <li><b>Qui fa servir la seva pròpia clau d'IA</b> no té límits i no ens costa res.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Costos</span>
+    <h2>Quant costa mantenir l'app</h2>
+    <div class="two">
+      <div class="tbl"><table>
+        <thead><tr><th>Fixos</th><th class="n">Al mes</th></tr></thead>
+        <tbody>
+          <tr><td>Netlify (allotjament i funcions)</td><td class="n">≈17,5 €</td></tr>
+          <tr><td>Supabase (base de dades i fotos)</td><td class="n">≈23 €</td></tr>
+          <tr><td>Resend (correus)</td><td class="n">0–18 €</td></tr>
+          <tr><td>Domini i imprevistos</td><td class="n">≈14 €</td></tr>
+          <tr><td><b>Total</b></td><td class="n"><b>≈55 €</b></td></tr>
+        </tbody>
+      </table></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Variable: IA per usuari actiu</th><th class="n">Al mes</th></tr></thead>
+        <tbody>
+          <tr><td>Només entreno</td><td class="n">≈0,2 €</td></tr>
+          <tr><td>Equilibrat</td><td class="n">≈0,4 €</td></tr>
+          <tr><td>Exigent</td><td class="n">≈0,8 €</td></tr>
+          <tr><td>Gratuït</td><td class="n">&lt;0,05 €</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <p class="meta">Estimació amb el repartiment de models nou. Abans, amb el model car a tot arreu, era d'1,5 a 10 € al mes. El valor real es mesura a Admin → Analytics (per funció i mes) i a Admin → Beta (per grup).</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Proveïdors</span>
+    <h2>Serveis externs que fem servir</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Servei</th><th>Per a què</th><th>Qui en té el compte</th></tr></thead>
+      <tbody>
+        <tr><td>Anthropic (Claude)</td><td>La IA del coach</td><td>Tu</td></tr>
+        <tr><td>Supabase</td><td>Base de dades i fotos (a la UE)</td><td>Tu</td></tr>
+        <tr><td>Netlify</td><td>Publicar l'app i executar el coach en segon pla</td><td>Tu</td></tr>
+        <tr><td>Stripe</td><td>Cobraments, factures, IVA, portal de client</td><td>Pendent de crear</td></tr>
+        <tr><td>Resend</td><td>Correus (verificació, contrasenya)</td><td>Tu</td></tr>
+        <tr><td>Google Analytics / AdSense</td><td>Estadístiques de la web; anuncis (desactivats)</td><td>Tu</td></tr>
+        <tr><td>Tally</td><td>Enquestes de la beta</td><td>Pendent de crear</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <span class="eyebrow">On mirar les coses</span>
+    <h2>Panells d'administració</h2>
+    <ul class="check">
+      <li><b>Admin → Analytics:</b> el cost d'IA dels últims 12 mesos per funció, la previsió del mes i el detall per usuari.</li>
+      <li><b>Admin → Beta:</b> codis d'invitació, grups, activació, retenció (D1/D7/D30), missatges i cost per usuari, NPS i feedback.</li>
+      <li><b>Admin → Users:</b> els usuaris.</li>
+      <li><b>Banner de migracions:</b> quan hi ha canvis de base de dades pendents, surt a dalt per als administradors.</li>
+      <li><b>Documentació tècnica</b> (per a desenvolupadors): <code>ai/AGENTS.md</code>, <code>ai/DESIGN.md</code>, <code>ai/BETA.md</code> i <code>ai/ROADMAP.md</code> al repositori.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Dades i privacitat</span>
+    <h2>Resum per explicar-ho</h2>
+    <ul class="check">
+      <li>El pes, les mesures, les lesions i el menjar són <b>dades de salut</b>. Es demana un consentiment explícit i es guarden a la UE.</li>
+      <li>La IA rep el context necessari per respondre, i Anthropic no fa servir aquestes dades per entrenar els seus models. Pendent de confirmar a la revisió legal.</li>
+      <li><b>Fotos del plat:</b> s'envien un sol cop a Anthropic per reconèixer els aliments i es descarten. No es desen mai; el mòbil n'esborra la ubicació abans d'enviar-les. La política de privacitat i les condicions ho diuen des del 15 d'octubre de 2026, i tothom les ha hagut de tornar a acceptar.</li>
+      <li>L'app <b>no és consell mèdic</b>. Té límits de seguretat (dèficits màxims, mínims d'energia) i ho diu clarament.</li>
+      <li>Per esborrar el compte o demanar una còpia de les dades, s'escriu a <b>jose@josesentis.com</b>.</li>
+      <li>Els textos legals estan actualitzats, però <b>els ha de revisar un advocat</b> abans de cobrar.</li>
+    </ul>
+  </section>
+</div>
+</div>
+
+<!-- ───────────────────────── TASQUES ───────────────────────── -->
+<div class="page" id="page-tasques" hidden>
+<div class="page-simple" style="gap:20px">
+  <header class="hero">
+    <span class="eyebrow">Tasques · el que heu de fer vosaltres</span>
+    <h1>Tauler de tasques</h1>
+    <p class="lede">Cada targeta explica què és, per què cal i els passos. Moveu-les entre columnes amb les fletxes o arrossegant-les. Els canvis es guarden i els veu tothom qui té accés a aquesta pàgina.</p>
+  </header>
+  <div class="board-tools" role="toolbar" aria-label="Filtres del tauler">
+    <span class="status-line" style="margin-right:4px">Fase:</span>
+    <button class="chip" data-phase="all" aria-pressed="true">Totes</button>
+    <button class="chip" data-phase="0" aria-pressed="false">0 · Tancar V1</button>
+    <button class="chip" data-phase="1" aria-pressed="false">1 · Beta</button>
+    <button class="chip" data-phase="2" aria-pressed="false">2 · Llançament</button>
+    <button class="chip" data-phase="3" aria-pressed="false">3 · Créixer</button>
+    <span style="flex:1"></span>
+    <button class="btn ghost" id="newBtn" type="button">+ Nova tasca</button>
+  </div>
+  <form class="newcard" id="newForm" hidden>
+    <label class="status-line" for="nf-title">Títol</label><input id="nf-title" required maxlength="140">
+    <label class="status-line" for="nf-why">Per què / notes</label><textarea id="nf-why" rows="3"></textarea>
+    <div class="two">
+      <div><label class="status-line" for="nf-phase">Fase</label><select id="nf-phase"><option value="0">0 · Tancar V1</option><option value="1">1 · Beta</option><option value="2">2 · Llançament</option><option value="3">3 · Créixer</option></select></div>
+      <div><label class="status-line" for="nf-who">Qui</label><input id="nf-who" placeholder="Jose, amic…" maxlength="40"></div>
+    </div>
+    <div style="display:flex;gap:8px"><button class="btn" type="submit">Afegir</button><button class="btn ghost" type="button" id="nf-cancel">Cancel·lar</button></div>
+  </form>
+  <p class="status-line" id="boardStatus" aria-live="polite">Carregant les tasques…</p>
+  <div class="board" id="board"></div>
+</div>
+</div>
+
+
+<!-- ───────────────────────── GUIES ───────────────────────── -->
+<div class="page" id="page-guies" hidden>
+<div class="page-simple">
+  <header class="hero">
+    <span class="eyebrow">Guies · tota la documentació operativa, sense tecnicismes</span>
+    <h1>Com es fa cada cosa</h1>
+    <p class="lede">Aquí hi ha les guies pas a pas: la beta, els pagaments, els anuncis, com es publica una versió nova, les variables de configuració i el que queda per fer. Les tasques concretes són a la pestanya Tasques; aquí hi ha el perquè i el com.</p>
+    <nav class="kpis" aria-label="Guies" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+      <a class="kpi" href="#g-beta" style="text-decoration:none"><b style="font-size:1rem">1 · La beta</b><span>Setmana a setmana i la pàgina Beta</span></a>
+      <a class="kpi" href="#g-pagaments" style="text-decoration:none"><b style="font-size:1rem">2 · Pagaments</b><span>Stripe pas a pas</span></a>
+      <a class="kpi" href="#g-anuncis" style="text-decoration:none"><b style="font-size:1rem">3 · Anuncis</b><span>Només al pla gratuït</span></a>
+      <a class="kpi" href="#g-publicar" style="text-decoration:none"><b style="font-size:1rem">4 · Publicar</b><span>Migracions, Netlify, actualitzar</span></a>
+      <a class="kpi" href="#g-config" style="text-decoration:none"><b style="font-size:1rem">5 · Configuració</b><span>Què és cada variable</span></a>
+      <a class="kpi" href="#g-revisio" style="text-decoration:none"><b style="font-size:1rem">7 · Revisions</b><span>Serveis, cada mes</span></a>
+      <a class="kpi" href="#g-roadmap" style="text-decoration:none"><b style="font-size:1rem">6 · Què queda</b><span>Pendents i idees</span></a>
+      <a class="kpi" href="#g-xarxes" style="text-decoration:none"><b style="font-size:1rem">8 · Xarxes</b><span>Presentar l'app a X i LinkedIn</span></a>
+    </nav>
+  </header>
+
+  <section id="g-beta">
+    <span class="eyebrow">Guia 1</span>
+    <h2>Com fer la beta</h2>
+    <p><b>Objectiu:</b> abans d'obrir els pagaments, saber si la gent torna, quant costa de veritat cada tipus d'usuari i quant pagaria. Són <b>40 testers en 3 grups durant 6 setmanes</b>, amb un 30 % de descompte per sempre si després es fan subscriptors.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Grup</th><th class="n">Testers</th><th>Perfil inicial</th><th>Qui buscar</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td class="n">12</td><td>Només entreno</td><td>Gent de gimnàs que vol una rutina i prou</td></tr>
+        <tr><td>B</td><td class="n">18</td><td>Equilibrat</td><td>Volen perdre greix o recompondre sense obsessionar-se</td></tr>
+        <tr><td>C</td><td class="n">10</td><td>Exigent</td><td>Ja compten macros (MyFitnessPal, MacroFactor)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Abans de començar (una sola vegada)</h3>
+    <ul class="check">
+      <li><b>Enquesta:</b> crear un formulari a Tally amb dos camps ocults, <code>week</code> i <code>cohort</code>, i posar-ne l'enllaç a Netlify com a <code>BETA_SURVEY_URL</code>. L'app el mostra als testers a Avui les setmanes 2, 4 i 6.</li>
+      <li><b>Pagaments (opcional):</b> Stripe en mode de proves, si vols que vegin els plans al final. Sense Stripe, els plans surten com a "properament" i no es cobra res.</li>
+      <li><b>Codis d'invitació:</b> a <b>Admin → Beta</b>, crear un codi per grup amb tants usos com testers (A: 12, B: 18, C: 10) i "preu fundador" activat. L'enllaç per enviar és <code>https://&lt;domini&gt;/register?invite=CODI</code>. El codi posa el grup, el preu fundador i el perfil d'ús inicial (el tester el pot canviar).</li>
+      <li><b>Atenció:</b> registrar-se amb Google o Apple encara no llegeix el codi. Demana als testers que es registrin amb correu.</li>
+    </ul>
+
+    <h3>Setmana a setmana</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Setmana</th><th>Què fer</th><th>Què mirar a Admin → Beta</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>Enviar les invitacions amb un missatge curt: què és l'app, que és una beta, i que el feedback es deixa a Perfil.</td><td>Codis usats i registres per grup</td></tr>
+        <tr><td>1</td><td>Respondre el feedback en menys de 48 h. Al dia 3, missatge personal a qui no ha començat.</td><td>Activació (objectiu ≥ 60 %), D1 (≥ 40 %)</td></tr>
+        <tr><td>2</td><td>Surt l'enquesta 1 a Avui (NPS, què funciona, què falta).</td><td>D7 (≥ 25 %), missatges al coach per persona</td></tr>
+        <tr><td>3</td><td>Arreglar el que bloqueja la gent (el feedback més repetit).</td><td>Cost d'IA per persona i grup (A ≤ 1 €, B ≤ 2 €, C ≤ 5 € al mes)</td></tr>
+        <tr><td>4</td><td>Enquesta 2: preguntes de preu (a sota).</td><td>Visites a la pàgina de plans</td></tr>
+        <tr><td>6</td><td>Enquesta 3 (NPS una altra vegada), entrevistes de 15 minuts amb 6–8 testers, i demanar-me l'informe.</td><td>D30 (≥ 15 %), NPS (≥ 30)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>La pàgina Admin → Beta</h3>
+    <p>És el panell de control de la beta; no és documentació. Té un selector a dalt a la dreta:</p>
+    <ul class="check">
+      <li><b>Testers:</b> només la gent que s'ha registrat amb un codi d'invitació, separada per grup (A, B, C). És la vista per seguir la beta i fer l'informe.</li>
+      <li><b>Everyone:</b> <b>tots els usuaris de l'app</b>, amb codi o sense (inclòs tu i qualsevol que s'hagi registrat pel seu compte). Els que no tenen codi surten a la fila "No cohort". Després de la beta, aquesta vista serveix de panell de salut de l'app.</li>
+      <li><b>Definicions:</b> <i>Activat</i> = ha creat un programa i registrat una sessió en 72 h. <i>D1/D7/D30</i> = de la gent que fa almenys 1/7/30 dies que es va registrar, quants hi han tornat aquell dia o després. <i>Cost d'IA</i> = últims 30 dies. <i>NPS</i> = % de notes 9–10 menys % de notes 0–6.</li>
+      <li>També hi ha els codis d'invitació, les subscripcions i tot el feedback rebut.</li>
+    </ul>
+
+    <h3>Preguntes de preu (enquesta de la setmana 4)</h3>
+    <ol>
+      <li>A quin preu mensual mAI Fitness et semblaria tan barata que dubtaries de la qualitat?</li>
+      <li>A quin preu et semblaria una ganga?</li>
+      <li>A quin preu començaria a semblar-te car, però encara el pagaries?</li>
+      <li>A quin preu seria massa car per pagar-lo?</li>
+      <li>Si haguessis de triar avui: gratuït, Entrena (4,99 €), Coach (9,99 €) o Coach+ (16,99 €)? I si fos anual?</li>
+      <li>Què et faria pagar l'any sencer per avançat?</li>
+    </ol>
+
+    <h3>L'informe final (el faig jo amb les dades)</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Apartat</th><th>Contingut</th></tr></thead>
+      <tbody>
+        <tr><td>1. Resum</td><td>3 xifres clau, la decisió de preu i què canviem</td></tr>
+        <tr><td>2. Embut</td><td>Registres → activats → D7 → D30, per grup</td></tr>
+        <tr><td>3. Cost real</td><td>€ per persona i mes, per grup i per funció, comparat amb l'estudi</td></tr>
+        <tr><td>4. Ús</td><td>Funcions més i menys usades; recorreguts que es trenquen</td></tr>
+        <tr><td>5. Preu</td><td>Corbes de les preguntes de preu, interval acceptable, pla triat per grup</td></tr>
+        <tr><td>6. Veu dels testers</td><td>NPS, 5 cites, les 5 queixes més repetides</td></tr>
+        <tr><td>7. Decisions</td><td>Preus finals, límits, què construir abans del llançament</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="g-pagaments">
+    <span class="eyebrow">Guia 2</span>
+    <h2>Configurar els pagaments (Stripe)</h2>
+    <p>L'app ja està preparada per cobrar. Sense les claus de Stripe, els plans surten com a "properament" i no passa res. Per activar-ho:</p>
+    <ol>
+      <li><b>Compte:</b> crear el compte de Stripe (dades de l'empresa o autònom, compte bancari) i activar <b>Stripe Tax</b> amb el registre d'IVA espanyol.</li>
+      <li><b>IVA europeu (OSS):</b> donar-se d'alta a l'Agència Tributària amb el model 035 per vendre a particulars d'altres països de la UE. Stripe Tax aplica l'IVA de cada país. Millor amb el gestor.</li>
+      <li><b>Productes i preus:</b> en mode de proves, executar <code>STRIPE_SECRET_KEY=sk_test_… npm run stripe:setup</code>. Crea els 3 productes, els 6 preus (IVA inclòs) i el cupó <code>FOUNDER30</code>, i imprimeix unes línies de variables.</li>
+      <li><b>Netlify:</b> posar <code>STRIPE_SECRET_KEY</code>, els sis <code>STRIPE_PRICE_…</code> i <code>STRIPE_COUPON_FOUNDER</code>, i tornar a desplegar.</li>
+      <li><b>Webhook:</b> a Stripe → Developers → Webhooks, afegir <code>https://&lt;domini&gt;/api/billing/webhook</code> amb els esdeveniments <code>checkout.session.completed</code>, <code>customer.subscription.created</code>, <code>customer.subscription.updated</code>, <code>customer.subscription.deleted</code> i <code>invoice.payment_failed</code>. Copiar el "signing secret" a Netlify com a <code>STRIPE_WEBHOOK_SECRET</code>.</li>
+      <li><b>Portal de client:</b> a Stripe → Settings → Billing → Customer portal, permetre cancel·lar (al final del període), canviar de pla i de mensual/anual, i actualitzar la targeta.</li>
+      <li><b>Provar-ho:</b> amb la targeta 4242 4242 4242 4242. Quan funcioni, repetir els passos 3–6 en mode real (<code>npm run stripe:setup -- --live</code> amb la clau real).</li>
+      <li><b>Legal:</b> que l'advocat revisi la renovació, la cancel·lació i el dret de desistiment de 14 dies abans de cobrar diners reals.</li>
+    </ol>
+  </section>
+
+  <section id="g-anuncis">
+    <span class="eyebrow">Guia 3</span>
+    <h2>Anuncis</h2>
+    <p>Només surten al <b>pla gratuït</b> i ara estan <b>apagats</b>. Per servir anuncis a la UE cal, per aquest ordre:</p>
+    <ul class="check">
+      <li>Un gestor de consentiment <b>certificat per Google</b> (IAB TCF 2.2). El banner de galetes actual no ho és.</li>
+      <li>Consent Mode v2 activat.</li>
+      <li>L'aprovació d'AdSense.</li>
+      <li>Posar <code>ADS_ENABLED=true</code> a Netlify.</li>
+    </ul>
+    <p class="meta">Aporten cèntims per usuari al mes; no són prioritaris (vegeu l'estudi).</p>
+  </section>
+
+  <section id="g-publicar">
+    <span class="eyebrow">Guia 4</span>
+    <h2>Com es publica una versió nova</h2>
+    <ol>
+      <li><b>Migracions primer.</b> Quan hi ha canvis a la base de dades, s'han d'aplicar a producció <b>abans</b> que el codi nou hi arribi. Primer la prova en sec (executa i desfà, no canvia res): <code>npm run db:dry-run</code> amb la base de dades de producció. Si surt bé: <code>npm run db:apply -- --production</code>. També es pot fer des del banner vermell que veuen els administradors a l'app.</li>
+      <li><b>Pujar el codi</b> (<code>git push</code> a <code>main</code>). Netlify ho detecta sol.</li>
+      <li><b>Netlify construeix i publica.</b> Abans de publicar passa tots els tests: si n'hi ha un que falla, <b>no publica res</b> i producció es queda amb la versió anterior. A Netlify → Deploys l'últim ha de sortir "Published"; si surt "Failed", el log diu per què.</li>
+      <li><b>Comprovar la versió:</b> <code>https://&lt;domini&gt;/api/version</code> diu quin commit hi ha publicat.</li>
+      <li><b>Al mòbil:</b> l'app avisa amb una píndola "Actualitza". També a Perfil → App. Si no, tancar l'app i tornar-la a obrir.</li>
+    </ol>
+    <div class="callout"><p><b>Nou (quan es publiqui):</b> les migracions s'apliquen soles en publicar. Netlify passa els tests, prova en sec les migracions pendents i, si només afegeixen coses (columnes, taules), les aplica abans de construir l'app. Si alguna esborra o canvia de nom coses (marcada com a "destructiva"), el desplegament s'atura amb un missatge clar i l'has d'aplicar tu (banner o <code>npm run db:apply -- --production</code>). Cada push també passa els tests a GitHub amb una configuració com la de Netlify, així que un error surt com una creu vermella a GitHub en lloc de bloquejar els desplegaments en silenci. I si hi ha una migració pendent, l'app continua carregant i el banner continua accessible.</p></div>
+    <div class="callout warn"><p><b>Lliçó d'aquests dies:</b> durant uns dies cap versió nova arribava a producció perquè una variable de Netlify (<code>COACH_MONTHLY_TOKEN_LIMIT</code>) estava buida i feia fallar uns tests només allà. Ja està arreglat. Si un dia "no veus" un canvi, el primer és mirar Netlify → Deploys.</p></div>
+    <div class="callout bad"><p><b>Mai</b> provar l'app en local contra la base de dades de producció amb codi que encara no s'ha publicat: pot demanar columnes que encara no existeixen i fer petar l'app.</p></div>
+  </section>
+
+  <section id="g-config">
+    <span class="eyebrow">Guia 5</span>
+    <h2>Les variables de configuració (Netlify)</h2>
+    <p>Es posen a Netlify → Site configuration → Environment variables. Després de canviar-ne una, cal tornar a desplegar.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Variable</th><th>Per a què</th><th>Estat</th></tr></thead>
+      <tbody>
+        <tr><td><code>NEXT_PUBLIC_APP_URL</code></td><td>L'adreça pública de l'app (correus, enllaços)</td><td>Posada</td></tr>
+        <tr><td><code>DATABASE_URL</code> · <code>SUPABASE_…</code></td><td>Base de dades i fitxers</td><td>Posada</td></tr>
+        <tr><td><code>JWT_SECRET</code> · <code>APP_SESSION_ID</code></td><td>Sessions d'usuari (no tocar)</td><td>Posada</td></tr>
+        <tr><td><code>ANTHROPIC_API_KEY</code></td><td>La IA del coach</td><td>Posada</td></tr>
+        <tr><td><code>COACH_MONTHLY_TOKEN_LIMIT</code></td><td>Límit de tokens al mes per usuari quan no hi ha plans de pagament. Buit o 0 = 2 milions</td><td>Opcional</td></tr>
+        <tr><td><code>COACH_MODEL_DEFAULT</code> · <code>COACH_MODEL_GOALS</code></td><td>Canviar els models del coach sense tocar codi (p. ex. Sonnet per al dia a dia si el català de Haiku molesta)</td><td>Opcional</td></tr>
+        <tr><td><code>RESEND_API_KEY</code> · <code>RESEND_FROM</code></td><td>Correus (verificació, contrasenya)</td><td>Posada</td></tr>
+        <tr><td><code>GOOGLE_…</code> · <code>APPLE_…</code></td><td>Entrar amb Google i Apple</td><td>Posada</td></tr>
+        <tr><td><code>CRON_SECRET</code></td><td>Les tasques automàtiques (revisió setmanal, avisos del coach)</td><td>Posada</td></tr>
+        <tr><td><code>NEXT_PUBLIC_GA_ID</code></td><td>Google Analytics de la web</td><td>Posada</td></tr>
+        <tr><td><code>STRIPE_…</code> (9 variables)</td><td>Pagaments (guia 2)</td><td>Pendent</td></tr>
+        <tr><td><code>BETA_SURVEY_URL</code></td><td>Enquesta de la beta (guia 1)</td><td>Pendent</td></tr>
+        <tr><td><code>ADS_ENABLED</code></td><td>Encendre anuncis al pla gratuït (guia 3)</td><td>Apagada</td></tr>
+        <tr><td><code>OWNER_EMAIL</code></td><td>El teu correu: els Recursos del Perfil només els veus tu encara que hi hagi més administradors</td><td>Recomanada</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+
+  <section id="g-revisio">
+    <span class="eyebrow">Guia 7</span>
+    <h2>Revisions periòdiques dels serveis</h2>
+    <p>L'app depèn de diversos serveis amb límits i costos. Cada mes (al tauler hi ha la targeta "Revisió mensual dels serveis"):</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Servei</th><th>Què mirar</th><th>On</th><th>Alerta si…</th></tr></thead>
+      <tbody>
+        <tr><td>IA (Anthropic)</td><td>Cost del mes, previsió, cost per usuari</td><td>Admin → Analytics · Anthropic Console → Usage</td><td>La previsió supera el que vols gastar, o el cost per usuari puja</td></tr>
+        <tr><td>Netlify</td><td>Minuts de build, invocacions de funcions, ample de banda</td><td>Netlify → Team → Usage</td><td>&gt; 80 % del pla; desplegaments "Failed"</td></tr>
+        <tr><td>Supabase</td><td>Mida de la base de dades, fitxers (fotos), connexions</td><td>Supabase → Project → Usage</td><td>&gt; 80 % (8 GB de base de dades al Pro)</td></tr>
+        <tr><td>Resend</td><td>Correus enviats</td><td>Resend → Usage</td><td>A prop de 3.000/mes (pla gratuït)</td></tr>
+        <tr><td>Stripe</td><td>Pagaments fallats, baixes, disputes</td><td>Stripe → Home / Billing</td><td>Qualsevol disputa; moltes baixes</td></tr>
+      </tbody>
+    </table></div>
+    <p class="meta">Pendent: que l'app enviï als administradors un resum setmanal per correu amb aquestes xifres i avisos automàtics quan es passi d'un llindar (vegeu "Què queda").</p>
+  </section>
+  <section id="g-roadmap">
+    <span class="eyebrow">Guia 6</span>
+    <h2>Què queda per fer</h2>
+    <h3>Pendents coneguts</h3>
+    <ul class="check">
+      <li><b>Invitacions amb Google/Apple:</b> que el codi d'invitació també funcioni si el tester es registra amb Google o Apple.</li>
+      <li><b>Consentiment explícit de dades de salut:</b> una casella la primera vegada que s'introdueixen dades de salut (RGPD art. 9). Lligat a la revisió legal.</li>
+      <li><b>Mode d'entrenament guiat:</b> sèrie a sèrie amb temporitzador, també sense cobertura.</li>
+      <li><b>Avisos del coach per notificació</b> al mòbil i un resum mensual per correu.</li>
+      <li><b>Sessions fetes a Avui:</b> mostrar el que s'ha fet (sèries, rècords) en lloc del següent objectiu.</li>
+      <li><b>Alertes per als administradors:</b> un resum setmanal per correu (cost d'IA, usuaris nous, errors del coach, mida de la base de dades) i avisos quan es passi d'un llindar.</li>
+      <li><b>Altres:</b> fotos de progrés, importar de Strava / Salut d'Apple, unitats en lliures, editar el programa a mà, esborrar les taules antigues de la v1 quan tot estigui comprovat.</li>
+    </ul>
+    <h3>Idees de widgets per a Avui (per quan no sapiguem com millorar)</h3>
+    <ul class="check">
+      <li><b>Calendari d'una altra manera:</b> una fila "aquesta setmana" plegada, un mapa de constància de les últimes setmanes, o un compte enrere fins a la propera sessió.</li>
+      <li><b>Entrenament:</b> indicador de recuperació, barra de progrés de l'etapa ("setmana 3 de 8"), rècord de la setmana, volum per múscul sobre el cos, mapa de molèsties.</li>
+      <li><b>Menjar i cos:</b> anelles de macros (mode Precís), tendència del pes, aigua, llista d'hàbits (creatina, passos, son), recordatori de compra.</li>
+      <li><b>Coach:</b> una frase del dia; un resum quan el pla canvia.</li>
+      <li><b>Integracions:</b> Salut d'Apple / Google Fit, el temps per sortir a córrer, widgets a la pantalla d'inici (app nativa).</li>
+      <li><b>Personalització:</b> que cadascú triï i ordeni els widgets d'Avui.</li>
+    </ul>
+  </section>
+
+  <section id="g-xarxes">
+    <span class="eyebrow">Guia 8</span>
+    <h2>Presentar l'app a X i LinkedIn</h2>
+    <p><b>Quan:</b> abans de buscar els testers professionals (entrenadors, dietistes-nutricionistes, gent que fa anys que entrena). La presentació serveix perquè et coneguin i perquè aquests testers et trobin. L'última frase de cada text els ho demana directament; treu-la si encara no vols rebre'n.</p>
+
+    <h3>Els vídeos</h3>
+    <ul class="check">
+      <li><b>On són:</b> a l'escriptori, carpeta <code>mai-fitness-videos-2026-10-16</code>. N'hi ha sis, en català, castellà i anglès, cadascun en vertical (1080×1920) i horitzontal (1920×1080), i duren 39 segons.</li>
+      <li><b>Què ensenyen:</b> Avui en un dia de descans → avançar la sessió i obrir-la → apuntar sèries → canviar un exercici (només en proposa dels mateixos músculs) → una conversa amb el coach → el menjar del dia en grams → un sopar menjat amb un iogurt de més, que ajusta la resta del dia → Progrés. Són gravacions reals de l'app amb dades de prova; la conversa del coach és un exemple escrit.</li>
+      <li><b>Quin a cada lloc, i quin dia:</b> a la pestanya <a href="#publicar">Publicar</a>, publicació per publicació.</li>
+      <li><b>Falta:</b> la foto del plat. Amb una foto real d'un plat s'hi pot afegir l'escena.</li>
+      <li><b>Refer-los</b> quan canviï l'app o el domini: <code>scripts/teaser/README.md</code> al repositori.</li>
+    </ul>
+
+    <h3>LinkedIn (català)</h3>
+    <div class="callout"><p>Fa uns mesos vaig començar una app per a mi. Volia portar l'entreno i el menjar en un sol pla, i que el pla s'adaptés a la meva setmana real, i no al revés.</p><p>Avui la deixo veure: mAI Fitness.</p><p>→ Et diu què toca avui i hi apuntes cada sèrie en segons. Si un dia no pots, la sessió es mou: la setmana és una llista de coses per fer, no un calendari que falles.<br>→ El menjar ve en grams, calculats per al teu cos, el teu objectiu i el que entrenes aquell dia.<br>→ Si menges una altra cosa, ho dius amb paraules o fas una foto al plat, i la resta del dia s'ajusta.<br>→ Un coach d'IA proposa canvis al programa, a la setmana i als àpats. Tu decideixes si els acceptes.</p><p>Hi ha una decisió de disseny que m'importa molt: els números els calcula l'app amb regles (energia, proteïna, grams per àpat, fins on pot arribar un dèficit). La IA proposa i explica; no s'inventa les calories.</p><p>Funciona al navegador del mòbil, s'instal·la com una app i aguanta sense cobertura al gimnàs. En català, castellà i anglès.</p><p>Ara la fem servir jo i un grup petit d'amics. El pas següent és posar-la a les mans de gent que en sap: entrenadors, dietistes-nutricionistes i gent que fa anys que entrena de debò. Si ets una d'aquestes persones i tens 20 minuts per dir-me què faries diferent, escriu-me.</p><p>Es pot provar gratis: maifitness.netlify.app</p></div>
+
+    <h3>LinkedIn (castellà)</h3>
+    <div class="callout"><p>Hace unos meses empecé una app para mí. Quería llevar el entreno y la comida en un solo plan, y que el plan se adaptara a mi semana real, y no al revés.</p><p>Hoy la enseño: mAI Fitness.</p><p>→ Te dice qué toca hoy y apuntas cada serie en segundos. Si un día no puedes, la sesión se mueve: la semana es una lista de cosas por hacer, no un calendario que fallas.<br>→ La comida viene en gramos, calculados para tu cuerpo, tu objetivo y lo que entrenas ese día.<br>→ Si comes otra cosa, lo dices con palabras o haces una foto al plato, y el resto del día se ajusta.<br>→ Un coach de IA propone cambios en el programa, la semana y las comidas. Tú decides si los aceptas.</p><p>Hay una decisión de diseño que me importa mucho: los números los calcula la app con reglas (energía, proteína, gramos por comida, hasta dónde puede llegar un déficit). La IA propone y explica; no se inventa las calorías.</p><p>Funciona en el navegador del móvil, se instala como una app y aguanta sin cobertura en el gimnasio. En castellano, catalán e inglés.</p><p>Ahora la usamos yo y un grupo pequeño de amigos. El siguiente paso es ponerla en manos de gente que sabe: entrenadores, dietistas-nutricionistas y gente que lleva años entrenando en serio. Si eres una de esas personas y tienes 20 minutos para decirme qué harías distinto, escríbeme.</p><p>Se puede probar gratis: maifitness.netlify.app</p></div>
+
+    <h3>X (fil en anglès, cinc missatges)</h3>
+    <div class="callout"><p><b>1/</b> I built mAI Fitness: training and food in one plan that adapts to your real week, not the other way round.<br><br>Here's what it does 🧵 <i>[vídeo]</i></p><p><b>2/</b> It tells you what's on today and you log each set in seconds. Can't train on Tuesday? Bring the session forward or push it back. The week is a to-do list, not a calendar you fail.</p><p><b>3/</b> Food comes in grams, worked out for your body, your goal and that day's training. Ate something else? Say it in words or snap the plate, and the rest of the day adjusts.</p><p><b>4/</b> The rule I care about most: the app does the maths (energy, protein, grams, how big a deficit can be). The AI coach proposes changes and explains them, and you accept or reject them. It never makes up the calories.</p><p><b>5/</b> It's a web app: open it on your phone, add it to your home screen, and it works with no signal at the gym. In English, Spanish and Catalan.<br><br>Free to try: maifitness.netlify.app<br><br>Coaches and dietitians: I'd love you to tear it apart.</p></div>
+
+    <h3>X (un sol missatge, català o castellà)</h3>
+    <div class="callout"><p>He fet mAI Fitness: l'entreno i el menjar en un sol pla que s'adapta a la teva setmana real.<br><br>Sèries apuntades en segons, menjar en grams i, si menges una altra cosa, ho dius o hi fas una foto i el dia s'ajusta. L'app fa els números; la IA proposa.<br><br>maifitness.netlify.app</p></div>
+    <div class="callout"><p>He hecho mAI Fitness: entreno y comida en un solo plan que se adapta a tu semana real.<br><br>Series apuntadas en segundos, comida en gramos y, si comes otra cosa, lo dices o le haces una foto y el día se ajusta. La app hace los números; la IA propone.<br><br>maifitness.netlify.app</p></div>
+
+    <h3>Consells</h3>
+    <ul class="check">
+      <li><b>LinkedIn:</b> des del teu perfil personal, no des d'una pàgina de l'app. Si et preocupa que LinkedIn ensenyi menys les publicacions amb enllaços, posa l'enllaç al primer comentari.</li>
+      <li><b>X:</b> el vídeo va al primer missatge del fil.</li>
+      <li><b>Comptar qui arriba:</b> si l'enllaç ha de dir d'on ve la gent, crea un codi a Admin → Beta (per exemple "linkedin") i fes servir <code>maifitness.netlify.app/register?invite=CODI</code>.</li>
+      <li><b>Feedback:</b> el que et diguin per comentaris o missatges, apunta-ho a Admin → Beta → "Add feedback".</li>
+      <li><b>Domini:</b> si el compres abans de publicar, cal canviar l'adreça dels textos i del final dels vídeos.</li>
+    </ul>
+    <p class="meta">Els textos també són a <code>ai/LAUNCH.md</code> al repositori.</p>
+  </section>
+</div>
+</div>
+
+<!-- ───────────────────────── ESTUDI ───────────────────────── -->
+<div class="page" id="page-estudi" hidden>
+<div class="wrap">
+<nav class="toc" aria-label="Seccions">
+  <a href="#resum">Resum executiu</a>
+  <a href="#cost">1 · Cost real per usuari</a>
+  <a href="#mercat">2 · Mercat i competència</a>
+  <a href="#opcions">3 · Opcions de monetització</a>
+  <a href="#recomanacio">4 · Recomanació i preus</a>
+  <a href="#escenaris">5 · Escenaris a 12 mesos</a>
+  <a href="#implementar">6 · Què cal implementar</a>
+  <a href="#beta">7 · Pla de beta i informe</a>
+  <a href="#fonts">Fonts i supòsits</a>
+</nav>
+
+<main>
+<header class="hero" id="resum">
+  <span class="eyebrow">Estudi de monetització · v1 · 5 d'octubre de 2026</span>
+  <h1>Com cobrar mAI Fitness sense perdre diners amb la IA</h1>
+  <p class="lede">La IA del coach és el producte i també el cost principal. Amb les dades reals d'aquests dies, un usuari actiu ens costa entre <b>1,5 €</b> i <b>10 €</b> al mes segons com faci servir l'app. Això fa inviable un model gratuït amb anuncis i obliga a una subscripció amb límits clars, i a abaratir la IA abans de llançar.</p>
+  <div class="kpis">
+    <div class="kpi"><b>0,11–0,18 $</b><span>cost real per missatge al coach (mesurat a producció)</span></div>
+    <div class="kpi"><b>1,5 / 4,0 / 9,9 €</b><span>cost IA al mes: Només entreno · Equilibrat · Exigent</span></div>
+    <div class="kpi"><b>4,99 / 9,99 / 16,99 €</b><span>preus mensuals recomanats (IVA inclòs)</span></div>
+    <div class="kpi"><b>13–28</b><span>subscriptors per cobrir els costos fixos (≈55 €/mes)</span></div>
+  </div>
+  <div class="callout">
+    <p><b>Recomanació en una frase:</b> subscripció en tres nivells que coincideixen amb els perfils d'ús (Entrena 4,99 €, Coach 9,99 €, Coach+ 16,99 €/mes, amb 3–4 mesos gratis si es paga l'any), 14 dies de prova amb tot obert, un pla gratuït sense IA de conversa, sense anuncis, i cobrament amb Stripe des de la PWA. Abans de llançar, cal reduir el cost per missatge a la meitat (enrutar els missatges senzills a Sonnet i aprimar el context).</p>
+  </div>
+</header>
+
+<section id="cost">
+  <span class="eyebrow">1 · Economia unitària</span>
+  <h2>Quant costa un usuari actiu</h2>
+  <p>Dades reals de producció de l'1 al 5 d'octubre, extretes només com a agregats (sense dades personals): <b>76 crides a la IA</b>, <b>49 missatges</b> d'usuari i <b>5,41 $</b> de cost. La mostra és petita i és sobretot ús de desenvolupament, però dona la mida de cada peça.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Funció</th><th>Model</th><th class="n">Crides</th><th class="n">Cost</th><th class="n">Per crida</th><th class="n">Entrada mitjana</th></tr></thead>
+    <tbody>
+      <tr><td>Xat amb el coach (usuari)</td><td>Opus 5.5</td><td class="n">40</td><td class="n">3,61 $</td><td class="n">0,090 $</td><td class="n">58.200 tok</td></tr>
+      <tr><td>Revisions proactives</td><td>Opus 5.5</td><td class="n">28</td><td class="n">1,53 $</td><td class="n">0,055 $</td><td class="n">27.800 tok</td></tr>
+      <tr><td>Generació de programa</td><td>Opus 5.5</td><td class="n">7</td><td class="n">0,27 $</td><td class="n">0,038 $</td><td class="n">10.800 tok</td></tr>
+      <tr><td>Títol del xat</td><td>Haiku 4.5</td><td class="n">1</td><td class="n">0,0001 $</td><td class="n">0,0001 $</td><td class="n">66 tok</td></tr>
+    </tbody>
+  </table></div>
+  <p>Un missatge de l'usuari provoca de mitjana 1,5–2 crides (el coach fa servir eines i torna a pensar). Per això el cost per <b>missatge</b> és de 0,18 $ al xat i de 0,10 $ a les revisions. El context ja es desa en memòria cau (<i>prompt caching</i>): sense aquesta memòria, cada crida de xat costaria uns 0,26 $ en lloc de 0,09 $.</p>
+
+  <h3>Tres perfils d'ús, cost IA al mes</h3>
+  <div class="legend"><span><i style="background:var(--bar-muted)"></i>Avui</span><span><i style="background:var(--bar)"></i>Optimitzat (−55 %)</span></div>
+  <div class="chart" id="chart-cost" role="img" aria-label="Cost IA al mes per perfil: avui i optimitzat"></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Perfil</th><th>Ús típic al mes</th><th class="n">Avui</th><th class="n">Optimitzat</th></tr></thead>
+    <tbody>
+      <tr><td><b>Només entreno</b></td><td>6 missatges, 2 revisions, un programa nou cada 3 mesos</td><td class="n">1,47 €</td><td class="n">0,66 €</td></tr>
+      <tr><td><b>Equilibrat</b></td><td>12 missatges, 4 revisions, 6 de pla de menjar, 2 canvis de recepta</td><td class="n">3,97 €</td><td class="n">1,79 €</td></tr>
+      <tr><td><b>Exigent</b></td><td>35 missatges, revisió cada dilluns, 10 de menjar, 4 receptes</td><td class="n">9,88 €</td><td class="n">4,45 €</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">Marge raonable: ×0,5 a ×1,6 sobre aquests valors. Un usuari intens sense límit pot superar els 20 €/mes.</p>
+
+  <h3>Què domina el cost i com reduir-lo</h3>
+  <ul class="check">
+    <li><b>La mida del context (~58.000 tokens d'entrada per crida).</b> El prompt, les eines (entrenament + menjar) i la "foto" de l'usuari pesen molt. Si s'aprima la foto (receptari complet, historial), s'envien només les eines del tema de la conversa i es retalla el sistema: <b>−30–40 %</b>.</li>
+    <li><b>El model.</b> Opus 5.5 per a tot. Si els missatges senzills ("tinc poc temps", "canvia'm el sopar") van a Sonnet 5.5 (la meitat de preu) i Opus es reserva per dissenyar programes i plans: <b>−25–35 %</b>.</li>
+    <li><b>L'esforç.</b> Els xats ja van a esforç mitjà. Posar esforç baix als canvis ràpids redueix sortida i rondes d'eines.</li>
+    <li><b>La freqüència de les revisions proactives.</b> El perfil "A prop" fa una revisió cada dilluns. Es poden agrupar en una sola crida i limitar per pla.</li>
+    <li><b>Un límit mensual per pla.</b> Ja existeix (<code>COACH_MONTHLY_TOKEN_LIMIT</code>, 2 M de tokens per defecte, i <code>users.aiMonthlyTokenLimit</code>). Cal lligar-lo al pla de pagament perquè cap usuari no costi més del que paga.</li>
+  </ul>
+  <p>Els factors combinats (×0,45) són una estimació. Cal validar-los amb l'eina d'analytics de cost que ja tenim (Admin → Analytics, per funció i per mes).</p>
+
+  <h3>Infraestructura (costos fixos)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Servei</th><th>Pla</th><th class="n">Al mes</th><th>Nota</th></tr></thead>
+    <tbody>
+      <tr><td>Netlify</td><td>Pro</td><td class="n">≈17,5 €</td><td>19 $; les funcions en segon pla consumeixen crèdits</td></tr>
+      <tr><td>Supabase</td><td>Pro</td><td class="n">≈23 €</td><td>25 $, 8 GB de BD, 100.000 MAU inclosos</td></tr>
+      <tr><td>Resend</td><td>Free → Pro</td><td class="n">0–18 €</td><td>Gratuït fins a 3.000 correus/mes</td></tr>
+      <tr><td>Domini i marge</td><td></td><td class="n">≈14 €</td><td>Imprevistos, sobreconsum</td></tr>
+      <tr><td><b>Total</b></td><td></td><td class="n"><b>≈55 €</b></td><td>Fins a uns quants milers d'usuaris</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="mercat">
+  <span class="eyebrow">2 · Mercat</span>
+  <h2>Què cobren els altres</h2>
+  <p>El mercat paga sobretot <b>anual</b>. A Salut i fitness, el 60,6 % dels ingressos per subscripció són plans anuals, l'única categoria on això passa. Les apps d'entrenament o nutrició amb IA es mouen entre 4 i 8 € al mes en pla anual. La coaching humana (Future, Ladder) és 5–20 vegades més cara.</p>
+  <div class="legend"><span><i style="background:var(--bar-muted)"></i>Competidors (pla anual, €/mes)</span><span><i style="background:var(--bar)"></i>mAI Fitness (proposta)</span></div>
+  <div class="chart" id="chart-market" role="img" aria-label="Preu mensual equivalent del pla anual de competidors i de mAI Fitness"></div>
+  <p class="meta">Future (149 $/mes amb entrenador humà) no surt al gràfic perquè no hi cap: és 10 vegades més car que la resta.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>App</th><th>Què ofereix</th><th class="n">Mensual</th><th class="n">Anual</th><th>Font</th></tr></thead>
+    <tbody>
+      <tr><td>Fitbod</td><td>Entrenament de força amb algoritme</td><td class="n">15,99 $</td><td class="n">95,99 $</td><td class="src"><a href="https://www.sensai.fit/blog/fitbod-review-2026">sensai.fit, 2026</a></td></tr>
+      <tr><td>MacroFactor</td><td>Nutrició adaptativa (manteniment après)</td><td class="n">11,99 $</td><td class="n">71,99 $ (89,99 $ amb Workouts)</td><td class="src"><a href="https://help.macrofactorapp.com/en/articles/393-how-macrofactor-subscriptions-and-bundles-work">MacroFactor Help</a></td></tr>
+      <tr><td>Freeletics Coach</td><td>Coach d'entrenament amb IA</td><td class="n">—</td><td class="n">79,99 €</td><td class="src"><a href="https://subger.com/en/service/freeletics">subger.com</a></td></tr>
+      <tr><td>MyFitnessPal Premium</td><td>Comptar calories i macros</td><td class="n">19,99 $</td><td class="n">79,99 $ (Premium+: 99,99 €)</td><td class="src"><a href="https://nutriscan.app/pt/blog/posts/myfitnesspal-pricing-2026-guide-2ff09c399a">nutriscan.app</a> · <a href="https://subger.com/en/gb/service/myfitnesspal">subger</a></td></tr>
+      <tr><td>Yazio PRO</td><td>Nutrició, receptes, dejuni</td><td class="n">6,99 €</td><td class="n">44,99 €</td><td class="src"><a href="https://nutrola.app/en/blog/is-yazio-premium-worth-it-2026">nutrola.app</a></td></tr>
+      <tr><td>Lifesum</td><td>Nutrició i plans</td><td class="n">8–10 €</td><td class="n">—</td><td class="src"><a href="https://nutrola.app/en/blog/why-is-lifesum-so-expensive-now">nutrola.app</a></td></tr>
+      <tr><td>Strava</td><td>Rutes i dades, sense coach</td><td class="n">11,99 $</td><td class="n">79,99 $</td><td class="src"><a href="https://subger.com/de/sports-outdoor">subger.com</a></td></tr>
+      <tr><td>Hevy Pro</td><td>Registre de gimnàs</td><td class="n">2,99 $</td><td class="n">23,99 $ · vitalici 74,99 $</td><td class="src"><a href="https://www.sensai.fit/pt/blog/hevy-review-2026">sensai.fit</a></td></tr>
+      <tr><td>Noom</td><td>Pèrdua de pes amb psicologia</td><td class="n">59–70 $</td><td class="n">≈209 $</td><td class="src"><a href="https://nutrola.app/en/blog/how-much-does-noom-cost-now-2026">nutrola.app</a></td></tr>
+      <tr><td>Ladder</td><td>Programes amb entrenador</td><td class="n">29,99 $</td><td class="n">179,99 $</td><td class="src"><a href="https://apppricinglab.com/iap/apple/1502936453">apppricinglab</a></td></tr>
+      <tr><td>WHOOP</td><td>Wearable + coach</td><td class="n">—</td><td class="n">180–360 €</td><td class="src"><a href="https://www.runnerspicks.com/blog/whoop-pricing-2026-membership-explained/">runnerspicks</a></td></tr>
+      <tr><td>Future</td><td>Entrenador humà</td><td class="n">199 $</td><td class="n">149 $/mes</td><td class="src"><a href="https://www.sensai.fit/blog/future-app-review-2026">sensai.fit</a></td></tr>
+      <tr class="us"><td><b>mAI Fitness</b></td><td>Coach IA d'entrenament <i>i</i> menjar amb grams, etapes</td><td class="n">4,99–16,99 €</td><td class="n">39,99–149,99 €</td><td>Proposta</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">No he trobat preus fiables de Caliber Pro. Els preus en dòlars són els de la botiga dels EUA; a Espanya solen ser similars en euros.</p>
+
+  <h3>Comportament dels usuaris de fitness</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Mètrica</th><th class="n">Valor</th><th>Font</th></tr></thead>
+    <tbody>
+      <tr><td>Conversió de prova a pagament, Salut i fitness (mediana)</td><td class="n">35,0 %</td><td class="src"><a href="https://www.revenuecat.com/state-of-subscription-apps">RevenueCat SOSA 2026</a></td></tr>
+      <tr><td>Proves de 17–32 dies vs. menys de 4 dies</td><td class="n">42,5 % vs 25,5 %</td><td class="src"><a href="https://saastr.com/the-top-10-learnings-from-revenuecats-state-of-subscription-apps-how-115000-mobile-apps-deliver-16b-in-revenue-whats-working-whats-quietly-killing-growth">SaaStr sobre SOSA 2026</a></td></tr>
+      <tr><td>Cancel·lacions de proves de 3 dies fetes el dia 0</td><td class="n">55 %</td><td class="src">Ídem</td></tr>
+      <tr><td>Baixa al primer any: anual vs mensual</td><td class="n">48 % vs 79 %</td><td class="src">Ídem</td></tr>
+      <tr><td>Retenció D1 / D7 / D30 (apps de fitness, mediana)</td><td class="n">27 / 13 / 8 %</td><td class="src"><a href="https://unstar.app/blog/app-retention-benchmarks-2026">unstar.app, 2026</a></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="opcions">
+  <span class="eyebrow">3 · Opcions</span>
+  <h2>Sis maneres de cobrar, comparades</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Model</th><th>Ingrés per usuari/mes</th><th>Marge sobre el cost IA</th><th>Riscos</th><th>Encaix de marca</th></tr></thead>
+    <tbody>
+      <tr><td><b>Gratis + anuncis</b></td><td class="n">0,04–0,18 €</td><td class="neg">−1,4 a −9,8 €</td><td>Els anuncis cobreixen entre l'1 % i el 10 % del cost IA. Cal un gestor de consentiment certificat per Google per servir anuncis a la UE.</td><td class="neg">Dolent: trenca l'estètica premium</td></tr>
+      <tr><td><b>Freemium amb límit de missatges</b></td><td class="n">0 € (lliure)</td><td class="neg">−0,3 a −1,5 € per usuari gratuït</td><td>Si hi ha 9 usuaris gratuïts per cada un de pagament, els gratuïts es mengen el marge.</td><td>Bo, si el límit és honest</td></tr>
+      <tr><td><b>Subscripció per perfils</b></td><td class="n">4,99–16,99 €</td><td class="pos">+1,2 a +8,9 €</td><td>Cal reduir el cost abans de llançar els plans anuals.</td><td class="pos">Excel·lent: el preu segueix l'ús</td></tr>
+      <tr><td><b>Pagament únic (vitalici)</b></td><td class="n">Un sol cobrament</td><td class="neg">Negatiu als 12–24 mesos</td><td>La IA costa cada mes; només funciona sense IA o amb clau pròpia.</td><td>Neutre</td></tr>
+      <tr><td><b>Clau pròpia (BYOK)</b></td><td class="n">2–3 € de quota</td><td class="pos">≈ tot marge</td><td>Nínxol tècnic; molt pocs usuaris tenen clau d'Anthropic.</td><td>Neutre (per a usuaris avançats)</td></tr>
+      <tr><td><b>Híbrid recomanat</b></td><td class="n">7,75 € de mitjana</td><td class="pos">+2,0 € avui · +4,2 € optimitzat</td><td>Complexitat moderada: prova, plans i límits.</td><td class="pos">Excel·lent</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout bad"><p><b>Per què no anuncis:</b> amb un eCPM de banner de ~1 $ a Europa occidental (<a href="https://www.monetizemore.com/blog/how-much-ad-revenue-can-apps-generate/">MonetizeMore 2026</a>), un usuari que obre l'app 10 dies al mes genera ~0,04 €. Encara que hi afegíssim un intersticial diari (5–8 $ d'eCPM), serien 0,18 €. Un sol missatge al coach ja costa 0,15 €. A més, la recollida de dades de salut (art. 9 del RGPD) i la publicitat personalitzada no combinen bé. Recomanació: <b>treure els anuncis de l'app</b> (<code>AdBanner</code>, <code>AdBlockDetector</code>).</p></div>
+</section>
+
+<section id="recomanacio">
+  <span class="eyebrow">4 · Recomanació</span>
+  <h2>Plans i preus</h2>
+  <p>Els preus porten l'IVA inclòs (21 % a Espanya; amb Stripe Tax i el règim OSS, s'aplica l'IVA del país de cada client de la UE). Els marges són nets d'IVA i de comissions (Stripe 1,5 % + 0,25 €, Billing 0,7 %, Tax 0,5 %).</p>
+  <div class="cards">
+    <div class="card"><span class="tag">Gratuït</span><div class="price">0 €</div><p>Registre d'entrenaments, calendari, programa manual. <b>Sense xat amb el coach</b>, tret del disseny d'un primer programa i 5 missatges al mes.</p></div>
+    <div class="card"><span class="tag">Entrena</span><div class="price">4,99 € <small>/mes · 39,99 €/any</small></div><p>Perfil "Només entreno". Coach d'entrenament i revisions de bloc.</p><ul><li>Límit: ~60 missatges/mes</li><li>Marge: 2,27 € mensual · 1,17 € anual (avui)</li></ul></div>
+    <div class="card rec"><span class="tag">Coach · recomanat</span><div class="price">9,99 € <small>/mes · 79,99 €/any</small></div><p>Perfil "Equilibrat". Entrenament i menjar, receptari, adaptació setmanal.</p><ul><li>Límit: ~150 missatges/mes</li><li>Marge: 3,77 € mensual · 1,34 € anual (avui) → 5,95 € / 3,52 € optimitzat</li></ul></div>
+    <div class="card"><span class="tag">Coach+</span><div class="price">16,99 € <small>/mes · 149,99 €/any</small></div><p>Perfil "Exigent". Mode Precís, coach "A prop", revisió cada setmana.</p><ul><li>Límit: ~400 missatges/mes</li><li>Marge: 3,45 € mensual · 0,09 € anual (avui) → 8,88 € / 5,52 € optimitzat</li></ul></div>
+  </div>
+  <h3>Marge per pla i facturació</h3>
+  <div class="legend"><span><i style="background:var(--bar-muted)"></i>Avui</span><span><i style="background:var(--bar)"></i>Optimitzat</span></div>
+  <div class="chart" id="chart-margin" role="img" aria-label="Marge net mensual per pla i tipus de facturació"></div>
+  <div class="callout warn"><p><b>Condició:</b> amb el cost d'avui, els plans anuals de Coach i Coach+ gairebé no deixen marge. Abans d'obrir els pagaments cal fer l'optimització (enrutar els missatges senzills a Sonnet i aprimar el context), i els límits de cada pla han de tallar abans que l'usuari surti car.</p></div>
+  <ul class="check">
+    <li><b>Prova de 14 dies amb tot obert (Coach+)</b>, sense targeta. Les proves llargues converteixen un 70 % més que les curtes. Al dia 14, l'app suggereix el pla segons l'ús real.</li>
+    <li><b>Preu fundador:</b> un 30 % de descompte de per vida per als testers de la beta que es facin subscriptors. Fidelitza i premia el feedback.</li>
+    <li><b>Destacar el pla anual</b>, amb ~26–33 % d'estalvi i el missatge "fins a 4 mesos gratis", com a la landing. El mercat ja ho espera, i la baixa al primer any és molt menor.</li>
+    <li><b>Punt d'equilibri dels costos fixos:</b> 28 subscriptors avui, 13 amb l'optimització. Per guanyar 2.000 € nets al mes calen uns 470 subscriptors amb el cost optimitzat.</li>
+  </ul>
+</section>
+
+<section id="escenaris">
+  <span class="eyebrow">5 · Escenaris</span>
+  <h2>Els primers 12 mesos</h2>
+  <p>Llançament a Catalunya i la resta d'Espanya amb creixement orgànic. Mix de plans: 30 % Entrena, 55 % Coach, 15 % Coach+, amb un 60 % de pagaments anuals. Ingrés mitjà de 7,75 € per subscriptor al mes, amb IVA. No inclou màrqueting ni el teu temps.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Escenari</th><th class="n">Subscriptors al mes 12</th><th class="n">Ingrés recurrent al mes 12</th><th class="n">Ingrés de l'any (amb IVA)</th><th class="n">IA de l'any</th><th class="n">Contribució neta de l'any</th></tr></thead>
+    <tbody>
+      <tr><td>Conservador</td><td class="n">120</td><td class="n">930 €</td><td class="n">5.600 €</td><td class="n">1.330 €</td><td class="n">≈2.400 €</td></tr>
+      <tr><td><b>Base</b></td><td class="n">400</td><td class="n">3.100 €</td><td class="n">18.600 €</td><td class="n">4.440 €</td><td class="n">≈9.400 €</td></tr>
+      <tr><td>Optimista</td><td class="n">1.200</td><td class="n">9.300 €</td><td class="n">55.800 €</td><td class="n">13.300 €</td><td class="n">≈29.200 €</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">La contribució resta l'IVA, les comissions, la IA (cost optimitzat de 1,85 € per subscriptor al mes) i la infraestructura. Els usuaris gratuïts costen ~0,02 € al mes perquè no tenen xat.</p>
+</section>
+
+<section id="implementar">
+  <span class="eyebrow">6 · Implementació</span>
+  <h2>Què cal fer a l'app</h2>
+  <div class="two">
+    <div>
+      <h3>Pagaments</h3>
+      <ul class="check">
+        <li><b>Stripe Checkout + Billing + Customer Portal.</b> La PWA cobra per web i s'estalvia el 15–30 % de les botigues d'apps. Si un dia hi ha app nativa a les botigues, caldrà la compra integrada (amb RevenueCat).</li>
+        <li><b>Webhooks:</b> <code>checkout.session.completed</code>, <code>customer.subscription.updated/deleted</code>, <code>invoice.payment_failed</code>. Cal que siguin idempotents (ja hi ha <code>idempotency_keys</code>).</li>
+        <li><b>Stripe Tax + alta a l'OSS de l'IVA</b> per vendre a consumidors de tota la UE. Factures automàtiques.</li>
+        <li><b>Taula <code>subscriptions</code>:</b> client, estat, pla, període, final de prova, final del període actual.</li>
+      </ul>
+      <h3>Drets d'ús i límits</h3>
+      <ul class="check">
+        <li><b><code>lib/billing/entitlements.ts</code>:</b> pla → perfils d'ús permesos, pressupost mensual de tokens (substitueix el <code>DEFAULT_MONTHLY_TOKENS</code> fix) i funcions (Precís, coach "A prop").</li>
+        <li><b>Pantalla de plans</b> i avís d'"has arribat al límit" amb opció de millorar el pla, amb el mateix to de suggeriment.</li>
+        <li><b>Enrutar models:</b> Sonnet 5.5 per als missatges senzills, Opus 5.5 per dissenyar; aprimar la foto del context; esforç baix per als canvis ràpids.</li>
+        <li><b>Netejar camps antics:</b> <code>weeklyCredits</code> (llegat), <code>noAds</code> (ja no cal sense anuncis). <code>aiApiKey</code> es pot mantenir per als usuaris amb clau pròpia.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Legal</h3>
+      <ul class="check">
+        <li><b>Condicions:</b> renovació automàtica, cancel·lació en un clic des de Perfil i preus amb IVA.</li>
+        <li><b>Dret de desistiment de 14 dies.</b> La renúncia exigeix un consentiment exprés, separat i confirmat per correu. Atenció: una sentència del TJUE de juliol de 2026 tracta els serveis "dinàmics" com a servei i no com a contingut digital. Per seguretat, convé retornar la part proporcional dins els 14 dies (<a href="https://osborneclarke.com/insights/withdrawal-right">Osborne Clarke</a>).</li>
+        <li><b>Dades de salut (art. 9 RGPD):</b> pes, lesions i menjar són dades de salut. Calen un consentiment explícit a l'alta, una avaluació d'impacte (DPIA), acords de tractament de dades amb Anthropic, Supabase i Netlify, i les dades a la UE.</li>
+        <li><b>Avís mèdic:</b> l'app no és consell mèdic. Ja té límits de seguretat en el dèficit calòric.</li>
+      </ul>
+      <h3>Anuncis (si es mantinguessin)</h3>
+      <ul class="check">
+        <li><b>Gestor de consentiment certificat per Google</b> (IAB TCF 2.2+) amb Consent Mode v2 (<a href="https://flexyconsent.com/blog/google-certified-cmp-list-requirements/">flexyconsent</a>). El <code>CookieBanner</code> propi d'ara no compleix. Recomanació: no posar anuncis.</li>
+      </ul>
+      <h3>Analytics per validar el preu</h3>
+      <ul class="check">
+        <li><b>Esdeveniments de producte</b> (PostHog EU o una taula pròpia): alta, programa creat, primera sessió registrada, missatge al coach, àpat marcat, canvi de plat, paywall vist, prova iniciada, pagament.</li>
+        <li><b>Cost per usuari i per pla</b> a Admin → Analytics, a partir de <code>usage_events</code>, que ja existeix.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="beta">
+  <span class="eyebrow">7 · Beta</span>
+  <h2>Pla de beta i informe</h2>
+  <p><b>Objectiu:</b> validar que la gent torna (retenció), quant costa de debò cada perfil i quant estaria disposada a pagar, abans d'obrir els pagaments.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Grup</th><th class="n">Testers</th><th>Perfil</th><th>Qui buscar</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td class="n">12</td><td>Només entreno</td><td>Gent de gimnàs que vol una rutina i prou</td></tr>
+      <tr><td>B</td><td class="n">18</td><td>Equilibrat</td><td>Volen perdre greix o recompondre, sense obsessionar-se</td></tr>
+      <tr><td>C</td><td class="n">10</td><td>Exigent</td><td>Ja compten macros (usuaris de MyFitnessPal o MacroFactor)</td></tr>
+      <tr><td><b>Total</b></td><td class="n"><b>40</b></td><td></td><td>Amb 40 testers en queden ~25 actius a la setmana 6</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Calendari (6 setmanes)</h3>
+  <ul class="check">
+    <li><b>Setmana 0:</b> preparar els esdeveniments d'analytics, un botó de feedback a Perfil, l'enquesta (Tally) i els límits de beta generosos però amb sostre (300 missatges/mes).</li>
+    <li><b>Setmana 1:</b> alta acompanyada (missatge de benvinguda i conversa inicial amb el coach) i enquesta curta del dia 3.</li>
+    <li><b>Setmana 2:</b> primera enquesta NPS.</li>
+    <li><b>Setmana 4:</b> preguntes de preu (Van Westendorp i tria de pla).</li>
+    <li><b>Setmana 6:</b> segona enquesta NPS, entrevistes de 15 minuts amb 6–8 testers i informe final.</li>
+  </ul>
+  <h3>Què mesurem</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Mètrica</th><th>Definició</th><th class="n">Objectiu</th></tr></thead>
+    <tbody>
+      <tr><td>Activació</td><td>Programa creat i 1a sessió registrada en 72 h</td><td class="n">≥ 60 %</td></tr>
+      <tr><td>Retenció D1 / D7 / D30</td><td>Obre l'app aquell dia o després</td><td class="n">40 / 25 / 15 %</td></tr>
+      <tr><td>Sessions a la setmana</td><td>Entrenaments registrats per usuari actiu</td><td class="n">≥ 2,5</td></tr>
+      <tr><td>Missatges al coach</td><td>Per usuari actiu a la setmana, per grup</td><td class="n">Referència</td></tr>
+      <tr><td>Cost IA per usuari</td><td>De <code>usage_events</code>, per grup i per setmana</td><td class="n">A ≤1, B ≤2, C ≤5 €/mes</td></tr>
+      <tr><td>Ús de funcions</td><td>Àpats marcats, canvis de plat, receptes canviades, etapes</td><td class="n">Referència</td></tr>
+      <tr><td>NPS</td><td>"Recomanaries mAI Fitness a un amic?" (0–10)</td><td class="n">≥ 30</td></tr>
+      <tr><td>Disposició a pagar</td><td>Van Westendorp i tria de pla</td><td class="n">Mediana ≥ 8 €</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Preguntes de preu (setmana 4)</h3>
+  <ol>
+    <li>A quin preu mensual mAI Fitness et semblaria tan barata que dubtaries de la qualitat?</li>
+    <li>A quin preu et semblaria una ganga?</li>
+    <li>A quin preu començaria a semblar-te car, però encara el pagaries?</li>
+    <li>A quin preu seria massa car per pagar-lo?</li>
+    <li>Si avui haguessis de triar: gratuït, Entrena (4,99 €), Coach (9,99 €) o Coach+ (16,99 €)? I si fos anual?</li>
+    <li>Què et faria pagar l'any sencer per avançat?</li>
+  </ol>
+  <h3>Plantilla de l'informe final</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Apartat</th><th>Contingut</th></tr></thead>
+    <tbody>
+      <tr><td>1. Resum</td><td>3 xifres clau, decisió de preu i el que canviem</td></tr>
+      <tr><td>2. Embut</td><td>Altes → activats → D7 → D30, per grup</td></tr>
+      <tr><td>3. Cost real</td><td>€ per usuari i mes, per grup i per funció; comparació amb aquest estudi</td></tr>
+      <tr><td>4. Ús</td><td>Funcions més i menys usades; recorreguts que es trenquen</td></tr>
+      <tr><td>5. Preu</td><td>Corbes de Van Westendorp, interval acceptable, pla triat per grup</td></tr>
+      <tr><td>6. Veu dels testers</td><td>NPS, 5 cites, 5 queixes més repetides</td></tr>
+      <tr><td>7. Decisions</td><td>Preus finals, límits, què construir abans del llançament</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fonts">
+  <span class="eyebrow">Fonts i supòsits</span>
+  <h2>D'on surten les xifres</h2>
+  <ul class="check">
+    <li><b>Cost real:</b> agregats de <code>usage_events</code> de producció (1–5 d'octubre de 2026), llegits en mode només lectura i sense dades personals.</li>
+    <li><b>Preus de models:</b> <code>lib/usage-cost.ts</code> (Opus 5.5 4/20 $, Sonnet 5.5 2/10 $, Haiku 4.5 1/5 $ per milió de tokens; lectura de memòria cau ×0,1, escriptura ×1,25).</li>
+    <li><b>Altres supòsits:</b> 1 $ = 0,92 €; IVA del 21 %; 60 % de plans anuals; factor d'optimització ×0,45, pendent de validar.</li>
+  </ul>
+  <ol class="sources">
+    <li><a href="https://www.revenuecat.com/state-of-subscription-apps">RevenueCat — State of Subscription Apps 2026</a></li>
+    <li><a href="https://saastr.com/the-top-10-learnings-from-revenuecats-state-of-subscription-apps-how-115000-mobile-apps-deliver-16b-in-revenue-whats-working-whats-quietly-killing-growth">SaaStr — Top 10 learnings from SOSA 2026</a></li>
+    <li><a href="https://unstar.app/blog/app-retention-benchmarks-2026">unstar.app — App Retention Benchmarks 2026</a></li>
+    <li><a href="https://www.sensai.fit/blog/fitbod-review-2026">sensai.fit — Fitbod review 2026</a> · <a href="https://www.sensai.fit/blog/future-app-review-2026">Future review 2026</a> · <a href="https://www.sensai.fit/pt/blog/hevy-review-2026">Hevy review 2026</a></li>
+    <li><a href="https://help.macrofactorapp.com/en/articles/393-how-macrofactor-subscriptions-and-bundles-work">MacroFactor — subscriptions and bundles</a></li>
+    <li><a href="https://subger.com/en/service/freeletics">subger — Freeletics</a> · <a href="https://subger.com/en/gb/service/myfitnesspal">MyFitnessPal</a></li>
+    <li><a href="https://nutrola.app/en/blog/is-yazio-premium-worth-it-2026">nutrola — Yazio 2026</a> · <a href="https://nutrola.app/en/blog/why-is-lifesum-so-expensive-now">Lifesum</a> · <a href="https://nutrola.app/en/blog/how-much-does-noom-cost-now-2026">Noom</a></li>
+    <li><a href="https://apppricinglab.com/iap/apple/1502936453">apppricinglab — Ladder</a></li>
+    <li><a href="https://www.runnerspicks.com/blog/whoop-pricing-2026-membership-explained/">runnerspicks — WHOOP pricing 2026</a></li>
+    <li><a href="https://www.monetizemore.com/blog/how-much-ad-revenue-can-apps-generate/">MonetizeMore — app ad revenue 2026</a></li>
+    <li><a href="https://erpresearch.com/erp-add-ons/billing-subscriptions/stripe-billing/pricing">Stripe Billing (0,7 %)</a> · <a href="https://erpresearch.com/erp-add-ons/tax-compliance/stripe-tax/pricing">Stripe Tax (0,5 %)</a> · <a href="https://ecomcalctools.com/blog/fees-stripe/stripe-europe-fees/">Stripe Europe fees</a></li>
+    <li><a href="https://gautamkhorana.com/blog/netlify-pricing-explained-2026/">Netlify pricing 2026</a> · <a href="https://toolradar.com/blog/supabase-pricing-2026">Supabase pricing 2026</a></li>
+    <li><a href="https://osborneclarke.com/insights/withdrawal-right">Osborne Clarke — withdrawal right, digital content</a> · <a href="https://flexyconsent.com/blog/google-certified-cmp-list-requirements/">Google-certified CMP 2026</a></li>
+  </ol>
+  <p class="meta">Consultat el 5 d'octubre de 2026. Les xifres de mercat són de fonts secundàries; confirma els preus finals a les botigues abans de publicar.</p>
+</section>
+</main>
+</div>
+
+</div>
+<!-- ───────────────────────── DOCUMENTS ───────────────────────── -->
+<style>
+.docs-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px }
+@media (min-width: 1000px) { .docs-layout { grid-template-columns: 240px minmax(0, 1fr) } }
+.docs-nav { display: flex; flex-direction: column; gap: 16px }
+@media (min-width: 1000px) { .docs-nav { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 80px); align-self: start } }
+.docs-nav h3 { margin: 0 0 6px; font: 600 12px/1 var(--text); letter-spacing: .06em; text-transform: uppercase; color: var(--muted) }
+.docs-nav button { display: block; width: 100%; text-align: left; font: 500 14px/1.35 var(--text); color: var(--body); background: none; border: 0; border-left: 2px solid var(--line); padding: 7px 0 7px 12px; cursor: pointer }
+.docs-nav button[aria-current="true"] { color: var(--ink); font-weight: 600; border-left-color: var(--accent) }
+.docs-nav button:hover { color: var(--ink) }
+.doc-src { font-size: 13px; color: var(--muted); margin: 0 0 16px }
+.md { min-width: 0; max-width: 820px }
+.md h1 { font: 800 clamp(1.7rem, 4vw, 2.4rem)/1.1 var(--display); margin: 0 0 16px }
+.md h2 { margin: 36px 0 8px }
+.md h3 { margin: 24px 0 8px }
+.md h4 { margin: 18px 0 6px; color: var(--ink) }
+.md p, .md li { max-width: 75ch }
+.md ul, .md ol { padding-left: 22px; margin: 0 0 12px }
+.md li { margin: 3px 0 }
+.md pre { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; font: 13px/1.5 var(--mono) }
+.md pre code { background: none; padding: 0 }
+.md hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0 }
+.md blockquote { position: relative; margin: 10px 0 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px 44px; color: var(--ink) }
+.md blockquote p { margin: 0 0 8px }
+.md blockquote .btn { position: absolute; right: 8px; bottom: 8px }
+.md table { min-width: 0 }
+.md .tbl table { min-width: 520px }
+.md input[type=checkbox] { margin-right: 6px }
+</style>
+<div class="page" id="page-documents" hidden>
+<div class="page-simple">
+  <header class="hero">
+    <span class="eyebrow">Documents del projecte · copiats del repositori</span>
+    <h1>Documents</h1>
+    <p class="lede">Els documents de treball de mAI Fitness: el llançament amb els textos preparats, la beta, el roadmap amb els TODOs i les millores futures, i la documentació tècnica. Els textos citats tenen un botó per copiar-los.</p>
+    <p class="meta" id="docsMeta"></p>
+  </header>
+  <div class="docs-layout">
+    <nav class="docs-nav" id="docsNav" aria-label="Documents"></nav>
+    <article class="md" id="docBody" aria-live="polite"><p class="meta">Carregant…</p></article>
+  </div>
+</div>
+</div>
+<script>
+// Documents: docs/index.json + one HTML file per document (npm run docs).
+(() => {
+  const $ = id => document.getElementById(id)
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+  let docs = [], current = null
+  const remembered = () => { try { return localStorage.getItem('hub.doc') } catch { return null } }
+  const remember = slug => { try { localStorage.setItem('hub.doc', slug) } catch {} }
+
+  function nav() {
+    const groups = [...new Set(docs.map(d => d.group))]
+    $('docsNav').innerHTML = groups.map(g => `<div><h3>${esc(g)}</h3>${docs.filter(d => d.group === g).map(d =>
+      `<button type="button" data-slug="${esc(d.slug)}" aria-current="${d.slug === current}">${esc(d.title)}</button>`).join('')}</div>`).join('')
+  }
+
+  async function open(slug) {
+    const d = docs.find(x => x.slug === slug) || docs[0]
+    if (!d) return
+    current = d.slug; remember(d.slug); nav()
+    $('docBody').innerHTML = '<p class="meta">Carregant…</p>'
+    try {
+      const r = await fetch('docs/' + d.slug + '.html', { cache: 'no-cache' })
+      if (!r.ok) throw new Error()
+      $('docBody').innerHTML = `<p class="doc-src">${esc(d.source)}${d.updated ? ' · actualitzat el ' + esc(d.updated) : ''}</p>` + await r.text()
+    } catch { $('docBody').innerHTML = '<p class="meta">No s\'ha pogut carregar aquest document.</p>'; return }
+    for (const t of $('docBody').querySelectorAll('table')) { const w = document.createElement('div'); w.className = 'tbl'; t.before(w); w.append(t) }
+    for (const q of $('docBody').querySelectorAll('blockquote')) {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'btn sm'; b.textContent = 'Copiar'
+      b.addEventListener('click', async () => {
+        const text = [...q.querySelectorAll('p')].map(p => p.innerText).join('\n\n')
+        try { await navigator.clipboard.writeText(text); b.textContent = 'Copiat' } catch { b.textContent = 'No s\'ha pogut copiar' }
+        setTimeout(() => { b.textContent = 'Copiar' }, 1600)
+      })
+      q.append(b)
+    }
+  }
+
+  $('docsNav').addEventListener('click', e => {
+    const b = e.target.closest('button[data-slug]'); if (!b) return
+    open(b.dataset.slug); $('docBody').scrollIntoView({ block: 'start' })
+  })
+
+  fetch('docs/index.json', { cache: 'no-cache' }).then(r => r.json()).then(list => {
+    docs = list
+    const dates = list.map(d => d.updated).filter(Boolean).sort()
+    $('docsMeta').textContent = `${list.length} documents${dates.length ? ' · l\'últim canvi és del ' + dates.at(-1) : ''}.`
+    open(remembered() || list[0]?.slug)
+  }).catch(() => { $('docBody').innerHTML = '<p class="meta">Encara no hi ha documents: executa <code>npm run docs</code>.</p>' })
+})()
+</script>
+
+<script>
+(() => {
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim()
+  const NS = 'http://www.w3.org/2000/svg'
+  const el = (tag, attrs, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e }
+  const fmt = v => v.toLocaleString('ca-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+
+  // Horizontal bars; rows = [{label, values:[{v, color, name}]}]
+  function hbars(host, rows, max, opts = {}) {
+    const W = 720, rowH = opts.rowH || 34, barH = opts.barH || 12, labelW = opts.labelW || 170, padR = 70
+    const H = rows.length * rowH + 28
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'presentation' })
+    const x = v => labelW + (v / max) * (W - labelW - padR)
+    const grid = css('--line'), muted = css('--muted'), ink = css('--ink')
+    const ticks = opts.ticks || [0, max / 2, max]
+    ticks.forEach(t => {
+      svg.append(el('line', { x1: x(t), x2: x(t), y1: 4, y2: H - 22, stroke: grid, 'stroke-width': 1 }))
+      svg.append(el('text', { x: x(t), y: H - 6, 'text-anchor': 'middle', 'font-size': 11, fill: muted, 'font-family': 'JetBrains Mono, monospace' }, t.toLocaleString('ca-ES') + ' €'))
+    })
+    rows.forEach((r, i) => {
+      const y0 = i * rowH + 8
+      svg.append(el('text', { x: labelW - 10, y: y0 + rowH / 2 - 2, 'text-anchor': 'end', 'font-size': 13, fill: r.strong ? ink : css('--body'), 'font-weight': r.strong ? 700 : 400, 'font-family': 'Instrument Sans, system-ui' }, r.label))
+      const n = r.values.length
+      r.values.forEach((s, j) => {
+        const y = y0 + (rowH - n * barH - (n - 1) * 2) / 2 + j * (barH + 2) - 3
+        const w = Math.max(2, x(s.v) - labelW)
+        const rect = el('rect', { x: labelW, y, width: w, height: barH, rx: 3, fill: s.color })
+        rect.append(el('title', {}, `${r.label}${s.name ? ' · ' + s.name : ''}: ${fmt(s.v)}`))
+        svg.append(rect)
+        if (opts.labelAll || j === n - 1) svg.append(el('text', { x: labelW + w + 6, y: y + barH - 2, 'font-size': 11, fill: muted, 'font-family': 'JetBrains Mono, monospace' }, fmt(s.v)))
+      })
+    })
+    host.replaceChildren(svg)
+  }
+
+  function draw() {
+    const now = css('--bar-muted'), opt = css('--bar'), us = css('--bar')
+    hbars(document.getElementById('chart-cost'), [
+      { label: 'Només entreno', values: [{ v: 1.47, color: now, name: 'avui' }, { v: 0.66, color: opt, name: 'optimitzat' }] },
+      { label: 'Equilibrat', values: [{ v: 3.97, color: now, name: 'avui' }, { v: 1.79, color: opt, name: 'optimitzat' }] },
+      { label: 'Exigent', values: [{ v: 9.88, color: now, name: 'avui' }, { v: 4.45, color: opt, name: 'optimitzat' }] },
+    ], 10, { rowH: 46, labelAll: true, ticks: [0, 5, 10] })
+
+    const comp = [
+      ['Hevy Pro', 1.84], ['mAI · Entrena', 3.33, 1], ['Yazio PRO', 3.75], ['MacroFactor', 5.52], ['MyFitnessPal', 6.13], ['Strava', 6.13],
+      ['Freeletics Coach', 6.67], ['mAI · Coach', 6.67, 1], ['Fitbod', 7.36], ['mAI · Coach+', 12.5, 1], ['Ladder', 13.8], ['WHOOP One', 15], ['Noom', 16.03],
+    ]
+    hbars(document.getElementById('chart-market'), comp.map(([label, v, mine]) => ({ label, strong: !!mine, values: [{ v, color: mine ? us : now }] })), 18, { rowH: 28, barH: 14, ticks: [0, 6, 12, 18] })
+
+    hbars(document.getElementById('chart-margin'), [
+      { label: 'Entrena · mensual', values: [{ v: 2.27, color: now, name: 'avui' }, { v: 3.08, color: opt, name: 'optimitzat' }] },
+      { label: 'Entrena · anual', values: [{ v: 1.17, color: now, name: 'avui' }, { v: 1.98, color: opt, name: 'optimitzat' }] },
+      { label: 'Coach · mensual', values: [{ v: 3.77, color: now, name: 'avui' }, { v: 5.95, color: opt, name: 'optimitzat' }] },
+      { label: 'Coach · anual', values: [{ v: 1.34, color: now, name: 'avui' }, { v: 3.52, color: opt, name: 'optimitzat' }] },
+      { label: 'Coach+ · mensual', values: [{ v: 3.45, color: now, name: 'avui' }, { v: 8.88, color: opt, name: 'optimitzat' }] },
+      { label: 'Coach+ · anual', values: [{ v: 0.09, color: now, name: 'avui' }, { v: 5.52, color: opt, name: 'optimitzat' }] },
+    ], 10, { rowH: 40, labelAll: true, ticks: [0, 5, 10] })
+  }
+  draw()
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', draw)
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+})()
+</script>
+<script>
+// Pages: #pla, #docs, #tasques, #estudi. Any other hash that names an element
+// (the study's own index) opens the page that contains it.
+(() => {
+  const PAGES = ['pla', 'publicar', 'docs', 'tasques', 'guies', 'estudi', 'documents']
+  function route() {
+    const h = decodeURIComponent(location.hash.slice(1))
+    let page = PAGES.includes(h) ? h : null
+    let target = null
+    if (!page && h) { target = document.getElementById(h); const p = target?.closest('.page'); page = p ? p.id.replace('page-', '') : null }
+    page = page || 'pla'
+    for (const p of PAGES) document.getElementById('page-' + p).hidden = p !== page
+    document.querySelectorAll('.tabs a').forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + page ? 'page' : 'false'))
+    if (target) target.scrollIntoView({ block: 'start' }); else window.scrollTo(0, 0)
+  }
+  addEventListener('hashchange', route)
+  route()
+})()
+
+// The task board: cards live in the shared store (collection "cards").
+;(() => {
+  const COLS = [['todo', 'Per fer'], ['doing', 'En curs'], ['done', 'Fet']]
+  const PHASE = { 0: 'Fase 0', 1: 'Fase 1', 2: 'Fase 2', 3: 'Fase 3' }
+  const $ = id => document.getElementById(id)
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+  let cards = [], filter = 'all', open = new Set(), db = null, dragId = null
+
+  function stepsHtml(steps) {
+    if (!steps) return ''
+    const list = Array.isArray(steps) ? steps : String(steps).split('\n').filter(Boolean)
+    return '<ol>' + list.map(s => '<li>' + esc(s).replace(/`([^`]+)`/g, '<code>$1</code>') + '</li>').join('') + '</ol>'
+  }
+
+  function render() {
+    const shown = cards.filter(c => filter === 'all' || String(c.phase) === filter)
+    $('board').innerHTML = COLS.map(([col, name]) => {
+      const list = shown.filter(c => (c.col || 'todo') === col).sort((a, b) => (a.phase - b.phase) || ((a.order ?? 0) - (b.order ?? 0)))
+      return `<section class="col" data-col="${col}" aria-labelledby="col-${col}">
+        <div class="col-head"><h3 id="col-${col}">${name}</h3><span>${list.length}</span></div>
+        ${list.length ? list.map(card).join('') : '<p class="empty-col">Cap tasca aquí.</p>'}
+      </section>`
+    }).join('')
+  }
+
+  function card(c) {
+    const isOpen = open.has(c.id)
+    const ci = COLS.findIndex(([k]) => k === (c.col || 'todo'))
+    return `<article class="cardt" draggable="true" data-id="${esc(c.id)}" aria-expanded="${isOpen}">
+      <div class="meta-row"><span class="badge">${PHASE[c.phase] ?? 'Fase ?'}</span>${c.who ? `<span class="badge who">${esc(c.who)}</span>` : ''}${c.urgent ? '<span class="badge urgent">Abans del push</span>' : ''}</div>
+      <button class="t" type="button" data-act="toggle" aria-expanded="${isOpen}">${esc(c.title)}</button>
+      ${isOpen ? `
+        ${c.why ? `<p class="why">${esc(c.why)}</p>` : ''}
+        ${stepsHtml(c.steps)}
+        ${c.link ? `<p class="why"><a href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.linkLabel || c.link)}</a></p>` : ''}
+        <label class="status-line" for="notes-${esc(c.id)}">Notes</label>
+        <textarea id="notes-${esc(c.id)}" rows="2" data-act="notes" placeholder="Apunta-hi el que vulguis…">${esc(c.notes || '')}</textarea>` : ''}
+      <div class="acts">
+        <button type="button" data-act="left" ${ci === 0 ? 'disabled' : ''} aria-label="Moure a ${ci > 0 ? COLS[ci - 1][1] : ''}">←</button>
+        <button type="button" data-act="right" ${ci === COLS.length - 1 ? 'disabled' : ''} aria-label="Moure a ${ci < COLS.length - 1 ? COLS[ci + 1][1] : ''}">→</button>
+        ${isOpen ? '' : '<button type="button" data-act="toggle">Detalls</button>'}
+      </div>
+    </article>`
+  }
+
+  async function save(id, patch) {
+    const c = cards.find(x => x.id === id); if (!c) return
+    Object.assign(c, patch); render()
+    if (!db) return
+    try { await db.doc('cards/' + id).update(patch); $('boardStatus').textContent = 'Desat.' }
+    catch { $('boardStatus').textContent = "No s'ha pogut desar. Torna-ho a provar." }
+  }
+
+  $('board').addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]'); if (!btn || btn.tagName === 'TEXTAREA') return
+    const id = btn.closest('.cardt')?.dataset.id; if (!id) return
+    const c = cards.find(x => x.id === id)
+    const ci = COLS.findIndex(([k]) => k === (c.col || 'todo'))
+    if (btn.dataset.act === 'toggle') { open.has(id) ? open.delete(id) : open.add(id); render() }
+    if (btn.dataset.act === 'left' && ci > 0) save(id, { col: COLS[ci - 1][0] })
+    if (btn.dataset.act === 'right' && ci < COLS.length - 1) save(id, { col: COLS[ci + 1][0] })
+  })
+  const noteTimers = {}
+  $('board').addEventListener('input', e => {
+    if (e.target.dataset.act !== 'notes') return
+    const id = e.target.closest('.cardt').dataset.id
+    const c = cards.find(x => x.id === id); if (c) c.notes = e.target.value
+    clearTimeout(noteTimers[id]); noteTimers[id] = setTimeout(async () => { if (db) { try { await db.doc('cards/' + id).update({ notes: e.target.value }); $('boardStatus').textContent = 'Nota desada.' } catch {} } }, 700)
+  })
+  $('board').addEventListener('dragstart', e => { const el = e.target.closest('.cardt'); if (el) { dragId = el.dataset.id; e.dataTransfer.effectAllowed = 'move' } })
+  $('board').addEventListener('dragover', e => { const col = e.target.closest('.col'); if (col && dragId) { e.preventDefault(); document.querySelectorAll('.col').forEach(c => c.classList.toggle('drop', c === col)) } })
+  $('board').addEventListener('dragleave', e => { if (!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget)) document.querySelectorAll('.col').forEach(c => c.classList.remove('drop')) })
+  $('board').addEventListener('drop', e => { const col = e.target.closest('.col'); document.querySelectorAll('.col').forEach(c => c.classList.remove('drop')); if (col && dragId) { e.preventDefault(); save(dragId, { col: col.dataset.col }); dragId = null } })
+
+  document.querySelector('.board-tools').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b) return
+    filter = b.dataset.phase
+    document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === b)))
+    render()
+  })
+  $('newBtn').addEventListener('click', () => { $('newForm').hidden = false; $('nf-title').focus() })
+  $('nf-cancel').addEventListener('click', () => { $('newForm').hidden = true })
+  $('newForm').addEventListener('submit', async e => {
+    e.preventDefault()
+    const data = { title: $('nf-title').value.trim(), why: $('nf-why').value.trim(), phase: Number($('nf-phase').value), who: $('nf-who').value.trim(), col: 'todo', order: Date.now() }
+    if (!data.title) return
+    if (!db) { $('boardStatus').textContent = 'Aquí no es pot desar.'; return }
+    try { await db.collection('cards').add(data); $('newForm').reset(); $('newForm').hidden = true; $('boardStatus').textContent = 'Tasca afegida.' }
+    catch (err) { $('boardStatus').textContent = err?.code === 'quota_exceeded' ? 'No hi caben més tasques: esborreu-ne alguna.' : "No s'ha pogut afegir." }
+  })
+
+  render()
+  ;(async () => {
+    try { db = await window.claude?.use?.('db') } catch { db = null }
+    if (!db) { $('boardStatus').textContent = 'El tauler només funciona obert a Claude, amb accés a aquesta pàgina.'; return }
+    db.collection('cards').limit(500).onSnapshot(snap => {
+      cards = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      $('boardStatus').textContent = cards.length ? `${cards.filter(c => c.col === 'done').length} de ${cards.length} tasques fetes.` : 'Encara no hi ha tasques.'
+      render()
+    }, () => { $('boardStatus').textContent = "No s'han pogut carregar les tasques." })
+  })()
+})()
+</script>
+
+<script>
+// Publishing calendar. The plan lives here; what was posted lives in the shared
+// store: posts/<id> {done, doneAt, url} and config/links {base, codes}.
+(() => {
+  const $ = id => document.getElementById(id)
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+  const CHANNELS = [['linkedin', 'LinkedIn'], ['x', 'X'], ['instagram', 'Instagram'], ['tiktok', 'TikTok'], ['youtube', 'YouTube'], ['reddit', 'Reddit'], ['indiehackers', 'Indie Hackers'], ['directoris', 'Directoris'], ['premsa', 'Premsa'], ['producthunt', 'Product Hunt'], ['hn', 'Hacker News']]
+  const CH = Object.fromEntries(CHANNELS)
+  const DEFAULT_BASE = 'maifitness.netlify.app'
+  const DAYS = ['diumenge', 'dilluns', 'dimarts', 'dimecres', 'dijous', 'divendres', 'dissabte']
+  const MONTHS = ['de gener', 'de febrer', 'de març', "d'abril", 'de maig', 'de juny', 'de juliol', "d'agost", 'de setembre', "d'octubre", 'de novembre', 'de desembre']
+
+  // ── Texts ────────────────────────────────────────────────────────────────
+  const LI_CA = `Fa uns mesos vaig començar una app per a mi. Volia portar l'entreno i el menjar en un sol pla, i que el pla s'adaptés a la meva setmana real, i no al revés.
+
+Avui la deixo veure: mAI Fitness.
+
+→ Et diu què toca avui i hi apuntes cada sèrie en segons. Si un dia no pots, la sessió es mou: la setmana és una llista de coses per fer, no un calendari que falles.
+→ El menjar ve en grams, calculats per al teu cos, el teu objectiu i el que entrenes aquell dia.
+→ Si menges una altra cosa, ho dius amb paraules o fas una foto al plat, i la resta del dia s'ajusta.
+→ Un coach d'IA proposa canvis al programa, a la setmana i als àpats. Tu decideixes si els acceptes.
+
+Hi ha una decisió de disseny que m'importa molt: els números els calcula l'app amb regles (energia, proteïna, grams per àpat, fins on pot arribar un dèficit). La IA proposa i explica; no s'inventa les calories.
+
+Funciona al navegador del mòbil, s'instal·la com una app i aguanta sense cobertura al gimnàs. En català, castellà i anglès.
+
+Ara la fem servir jo i un grup petit d'amics. El pas següent és posar-la a les mans de gent que en sap: entrenadors, dietistes-nutricionistes i gent que fa anys que entrena de debò. Si ets una d'aquestes persones i tens 20 minuts per dir-me què faries diferent, escriu-me.
+
+L'enllaç, al primer comentari 👇`
+  const LI_ES = `Hace unos meses empecé una app para mí. Quería llevar el entreno y la comida en un solo plan, y que el plan se adaptara a mi semana real, y no al revés.
+
+Hoy la enseño: mAI Fitness.
+
+→ Te dice qué toca hoy y apuntas cada serie en segundos. Si un día no puedes, la sesión se mueve: la semana es una lista de cosas por hacer, no un calendario que fallas.
+→ La comida viene en gramos, calculados para tu cuerpo, tu objetivo y lo que entrenas ese día.
+→ Si comes otra cosa, lo dices con palabras o haces una foto al plato, y el resto del día se ajusta.
+→ Un coach de IA propone cambios en el programa, la semana y las comidas. Tú decides si los aceptas.
+
+Hay una decisión de diseño que me importa mucho: los números los calcula la app con reglas (energía, proteína, gramos por comida, hasta dónde puede llegar un déficit). La IA propone y explica; no se inventa las calorías.
+
+Funciona en el navegador del móvil, se instala como una app y aguanta sin cobertura en el gimnasio. En castellano, catalán e inglés.
+
+Ahora la usamos yo y un grupo pequeño de amigos. El siguiente paso es ponerla en manos de gente que sabe: entrenadores, dietistas-nutricionistas y gente que lleva años entrenando en serio. Si eres una de esas personas y tienes 20 minutos para decirme qué harías distinto, escríbeme.
+
+El enlace, en el primer comentario 👇`
+  const LI_CA_2 = `La setmana passada vaig canviar la sessió de «HIIT o caminar» per una caminada d'una hora. La meva pròpia app em va dir que havia fet 3 de 4 sessions. No era veritat, així que ho he arreglat.
+
+Ara, si fas una altra cosa en lloc d'una sessió, compta sola, com en un rellotge:
+
+→ 30 minuts o més a ritme moderat és una sessió. Un passeig de 15 minuts són minuts d'activitat, no una sessió.
+→ Què compta depèn de l'objectiu. Si vols estar en forma, un partit de bàsquet val per un dia de cardio. Si el que vols és millorar a bàsquet, nedar no substitueix l'entrenament de tècnica.
+→ La regla de cada sessió l'escriu el coach d'IA quan fa el programa. Després l'aplica l'app sola, sense IA i sense preguntar-te res.
+→ El menjar també ho té en compte: les calories de més tornen els dos dies següents si vols guanyar múscul o mantenir-te, la meitat si fas recomposició, i cap si estàs en dèficit.
+
+Són aquests detalls els que fan que una app s'adapti a la teva setmana, en lloc de renyar-te per no seguir-la.
+
+mAI Fitness és gratis durant la beta. L'enllaç, al primer comentari 👇`
+
+  const P = [
+    // ── Preparar
+    { id: 'prep-domini', week: 'prep', date: '2026-10-27', title: 'Decidir el domini', tips: ['Si compres maifitness.app ara, canvia l\'adreça de dalt i la del final dels vídeos (scripts/teaser/README.md). Si no, tot funciona amb maifitness.netlify.app.'] },
+    { id: 'prep-comptes', week: 'prep', date: '2026-10-28', title: "Crear els comptes d'Instagram, TikTok i YouTube", tips: ["Instagram i TikTok com a compte d'empresa o de creador, perquè l'enllaç de la bio es pugui clicar.", 'Mateix nom a tot arreu (per exemple @maifitness), la icona de l\'app com a foto i l\'enllaç a la bio.'] },
+    { id: 'prep-codis', week: 'prep', date: '2026-10-29', title: 'Crear un codi d\'invitació per canal i enganxar-los a dalt', tips: ['Admin → Beta → Invite codes: grup B, el nom del canal a "Note" i prou usos (per exemple 200).', 'LinkedIn, X, Instagram, TikTok, YouTube, Reddit i Indie Hackers. Els de directoris, premsa, Product Hunt i Hacker News es poden fer més endavant.'] },
+    { id: 'prep-captures', week: 'prep', date: '2026-10-30', title: '4–5 captures de pantalla netes', tips: ['Avui, Registre, Menjar, Coach i Progrés, des del mòbil i amb dades que quedin bé.', 'Serveixen per al carrusel d\'Instagram, els directoris i Product Hunt.', 'Fes-ne una també de la setmana amb «Caminar ha comptat com a HIIT o caminar»: és per als posts de la setmana 3.'] },
+
+    // ── Setmana 1
+    { id: 'w1-x-en', week: 'w1', date: '2026-11-03', time: '15:00', ch: 'x', lang: 'EN', video: 'mai-fitness-en-vertical.mp4', title: 'Fil a X en anglès (5 missatges)',
+      tips: ['El vídeo va al primer missatge; l\'enllaç només al cinquè.', 'Fixa el fil al perfil i respon tot el que arribi la primera hora.'],
+      texts: [['1/', `I built mAI Fitness: training and food in one plan that adapts to your real week, not the other way round.
+
+Here's what it does 🧵`], ['2/', `It tells you what's on today and you log each set in seconds. Can't train on Tuesday? Bring the session forward or push it back. The week is a to-do list, not a calendar you fail.`], ['3/', `Food comes in grams, worked out for your body, your goal and that day's training. Ate something else? Say it in words or snap the plate, and the rest of the day adjusts.`], ['4/', `The rule I care about most: the app does the maths (energy, protein, grams, how big a deficit can be). The AI coach proposes changes and explains them, and you accept or reject them. It never makes up the calories.`], ['5/', `It's a web app: open it on your phone, add it to your home screen, and it works with no signal at the gym. In English, Spanish and Catalan.
+
+Free during the beta: {LINK}
+
+Coaches and dietitians: I'd love you to tear it apart. #buildinpublic`]] },
+    { id: 'w1-li-ca', week: 'w1', date: '2026-11-04', time: '9:00', ch: 'linkedin', lang: 'CA', video: 'mai-fitness-ca-vertical.mp4', title: 'Presentació a LinkedIn en català',
+      tips: ['Des del teu perfil personal. Puja el vídeo directament, sense enllaç de YouTube.', 'Publica i, de seguida, escriu el primer comentari amb l\'enllaç.', 'Les dues primeres hores, respon cada comentari amb una frase de veritat. No editis el post durant la primera hora.'],
+      texts: [['Post', LI_CA], ['Primer comentari', 'Es pot provar gratis durant la beta: {LINK}']] },
+    { id: 'w1-x-ca', week: 'w1', date: '2026-11-04', time: '10:30', ch: 'x', lang: 'CA', video: 'mai-fitness-ca-vertical.mp4', title: 'Un sol post a X en català',
+      tips: ['Si algú ha contestat el fil en anglès d\'ahir, respon-li abans de publicar aquest.'],
+      texts: [['Post', `He fet mAI Fitness: l'entreno i el menjar en un sol pla que s'adapta a la teva setmana real.
+
+Sèries apuntades en segons, menjar en grams i, si menges una altra cosa, ho dius o hi fas una foto i el dia s'ajusta. L'app fa els números; la IA proposa.
+
+{LINK}`]] },
+    { id: 'w1-ig-ca', week: 'w1', date: '2026-11-05', time: '19:00', ch: 'instagram', lang: 'CA', video: 'mai-fitness-ca-vertical.mp4', title: 'Reel a Instagram en català, i una història',
+      tips: ['Tria una portada amb el titular del vídeo.', 'Comparteix el Reel a la història amb un adhesiu d\'enllaç cap a la web.', 'Entre 3 i 5 etiquetes, no més.'],
+      texts: [['Text del Reel', `L'entreno i el menjar en un sol pla que s'adapta a la teva setmana real.
+
+Sèries apuntades en segons, menjar en grams i, si menges una altra cosa, el dia s'ajusta sol. L'app fa els números; la IA proposa.
+
+Gratis durant la beta: enllaç a la bio.
+
+#entrenament #gimnàs #nutrició #fitness #fetacatalunya`]] },
+    { id: 'w1-tt-es', week: 'w1', date: '2026-11-08', time: '20:00', ch: 'tiktok', lang: 'ES', video: 'mai-fitness-es-vertical.mp4', title: 'TikTok en castellà',
+      tips: ['Respon els comentaris amb un altre vídeo curt si algú pregunta alguna cosa concreta: a TikTok funciona molt bé.'],
+      texts: [['Text', `Mi app de entreno y comida: la semana es una lista de cosas por hacer, no un calendario que fallas. Comida en gramos y, si comes otra cosa, el día se ajusta solo.
+
+¿Qué le falta para que la uses? 👇
+
+#gym #fitness #nutricion #entrenamiento #rutinagym`]] },
+    { id: 'w1-yt-es', week: 'w1', date: '2026-11-08', time: '20:15', ch: 'youtube', lang: 'ES', video: 'mai-fitness-es-vertical.mp4', title: 'YouTube Shorts en castellà',
+      tips: ['És el mateix vídeo que a TikTok. Costa cinc minuts i a YouTube la gent el troba buscant durant mesos.'],
+      texts: [['Títol', 'App de entreno y comida que se adapta a tu semana #shorts'], ['Descripció', `Entreno y comida en un solo plan: series en segundos, comida en gramos para tu cuerpo y tu objetivo, y un coach de IA que propone cambios. Gratis durante la beta: {LINK}`]] },
+
+    // ── Setmana 2
+    { id: 'w2-reddit', week: 'w2', date: '2026-11-09', time: '14:00', ch: 'reddit', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4', title: 'Demanar opinió a r/SideProject',
+      tips: ['Llegeix les normes del subreddit abans de publicar.', 'Puja el vídeo al post. Respon tots els comentaris, també els durs: allà és on hi ha la informació.'],
+      texts: [['Títol', 'I built a web app that plans training and food together. What would make you drop it in the first five minutes?'], ['Text', `I built mAI Fitness for myself: training and meals in one plan that adapts to the week you actually have. You log sets in seconds, food comes in grams for your body and that day's training, and an AI coach proposes changes you accept or reject.
+
+One rule I care about: the app does the maths (energy, protein, grams, deficit limits). The model only proposes and explains.
+
+It's a PWA, works offline at the gym, in English, Spanish and Catalan. Free during the beta: {LINK}
+
+I'm looking for honest feedback from people who actually train, not signups. What would make you drop it in the first five minutes?`]] },
+    { id: 'w2-x-es', week: 'w2', date: '2026-11-10', time: '10:00', ch: 'x', lang: 'ES', video: 'mai-fitness-es-vertical.mp4', title: 'Un sol post a X en castellà',
+      texts: [['Post', `He hecho mAI Fitness: entreno y comida en un solo plan que se adapta a tu semana real.
+
+Series apuntadas en segundos, comida en gramos y, si comes otra cosa, lo dices o le haces una foto y el día se ajusta. La app hace los números; la IA propone.
+
+{LINK}`]] },
+    { id: 'w2-li-es', week: 'w2', date: '2026-11-11', time: '9:00', ch: 'linkedin', lang: 'ES', video: 'mai-fitness-es-vertical.mp4', title: 'Presentació a LinkedIn en castellà',
+      tips: ['Una setmana després del català, perquè la teva xarxa no vegi el mateix post dos cops seguits.', 'El mateix ritual: enllaç al primer comentari i dues hores responent.'],
+      texts: [['Post', LI_ES], ['Primer comentario', 'Se puede probar gratis durante la beta: {LINK}']] },
+    { id: 'w2-ig-es', week: 'w2', date: '2026-11-12', time: '19:00', ch: 'instagram', lang: 'ES', video: 'Captures (sense vídeo)', title: 'Carrusel a Instagram en castellà amb les captures',
+      tips: ['Cinc imatges: Avui, Registre, Menjar, Coach, Progrés. A la primera, un titular gran: «Entreno y comida en un solo plan».', 'Els carrusels es guarden i es comparteixen més que un segon Reel amb el mateix vídeo.'],
+      texts: [['Text', `Lo que hace mAI Fitness, en cinco pantallas:
+
+1. Hoy: qué toca y la semana como lista de cosas por hacer
+2. Registro: cada serie en segundos
+3. Comida: gramos para tu cuerpo y tu entreno
+4. Coach: propone cambios, tú decides
+5. Progreso: si vas bien hacia tu objetivo
+
+Gratis durante la beta: enlace en la bio.
+
+#gym #fitness #nutricion #entrenamiento #appfitness`]] },
+    { id: 'w2-tt-ca', week: 'w2', date: '2026-11-15', time: '20:00', ch: 'tiktok', lang: 'CA', video: 'mai-fitness-ca-vertical.mp4', title: 'TikTok en català',
+      texts: [['Text', `Una app d'entreno i menjar, en català: la setmana és una llista, no un calendari que falles. Menjar en grams i, si menges una altra cosa, el dia s'ajusta sol.
+
+Què hi trobes a faltar? 👇
+
+#gimnàs #fitness #catalunya #entrenament #nutrició`]] },
+
+    // ── Setmana 3
+    { id: 'w3-x-en', week: 'w3', date: '2026-11-17', time: '15:00', ch: 'x', lang: 'EN', video: 'Captura: la setmana amb «Walk counted as…»', title: 'Construir en públic a X: el que fas pel teu compte també compta',
+      tips: ['Una història petita i real funciona millor que una llista de funcions.'],
+      texts: [['1/', `Last week I swapped my "HIIT or walk" session for a 1 h walk. My own app said 3 of 4 sessions. It was wrong, so I fixed it. 🧵`], ['2/', `Now something done instead of a session counts by itself, like a watch: 30+ min at moderate intensity. A 15-min stroll is activity minutes, not a session.`], ['3/', `What counts depends on the goal. Generic goal: any cardio covers a cardio day. Training for basketball: only basketball covers the skills session.
+
+The AI coach writes that rule when it builds the program. The app applies it, no AI per workout.
+
+{LINK} #buildinpublic`]] },
+    { id: 'w3-li-ca', week: 'w3', date: '2026-11-18', time: '9:00', ch: 'linkedin', lang: 'CA', video: 'Captura: la setmana amb «Caminar ha comptat com a…»', title: 'LinkedIn en català: una història de producte',
+      texts: [['Post', LI_CA_2], ['Primer comentari', '{LINK}']] },
+    { id: 'w3-ih', week: 'w3', date: '2026-11-19', time: '15:00', ch: 'indiehackers', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4', title: 'Indie Hackers: com va, amb números',
+      tips: ['Omple els números des d\'Admin → Beta abans de publicar. La gent d\'Indie Hackers vol xifres reals, encara que siguin petites.'],
+      texts: [['Títol', 'Three weeks into a training + food app: what the first users taught me'], ['Text', `I'm building mAI Fitness, a web app that plans training and meals together and adapts to the week you actually have. The app does the maths; an AI coach only proposes changes.
+
+Numbers after three weeks in public:
+- [N] sign-ups, [N] activated (logged a first session)
+- D7 retention: [N] %
+- AI cost per active user: about [N] € a month
+- What people asked for most: [...]
+
+What surprised me: [...]
+
+What I'm doing next: [...]
+
+Try it: {LINK}. Feedback welcome, especially the harsh kind.`]] },
+    { id: 'w3-review', week: 'w3', date: '2026-11-22', title: 'Mirar quin canal porta gent que es queda',
+      tips: ['Admin → Beta: la columna "Used" de cada codi i l\'activació de cada grup.', 'Repeteix els dos canals que porten gent activa; deixa el que porti registres que no s\'activen.'] },
+
+    // ── Directoris i premsa
+    { id: 'd1', week: 'w4', date: '2026-11-24', time: '10:00', ch: 'directoris', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4 + captures', title: 'Directoris (1): BetaList, AlternativeTo i SaaSHub',
+      tips: ['A AlternativeTo, dona-la d\'alta com a alternativa a Fitbod, MyFitnessPal i Hevy.', 'No cal pagar per sortir abans.'],
+      texts: [['Descripció curta', 'Training and food in one plan that adapts to you'], ['Descripció', `mAI Fitness plans your training and your meals together. Log each set in seconds, get meals in grams for your body and your training, and talk to a coach that adjusts the plan when life gets in the way. The app does the maths; the coach only proposes changes you accept. Works offline at the gym. {LINK}`]] },
+    { id: 'd2', week: 'w4', date: '2026-12-01', time: '10:00', ch: 'directoris', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4 + captures', title: "Directoris (2): There's An AI For That, Futurepedia, Uneed i Microlaunch",
+      tips: ['Uneed i Microlaunch donen un dia de llançament: tria un dimarts o un dimecres.'], texts: [['Descripció', 'La mateixa del dia 24.']] },
+    { id: 'press-ca', week: 'w4', date: '2026-12-03', time: '10:00', ch: 'premsa', lang: 'CA', video: 'mai-fitness-ca-horitzontal.mp4', title: 'Correu als mitjans catalans',
+      tips: ['VIA Empresa, les seccions de tecnologia dels diaris i la ràdio local. Un correu per persona, amb el seu nom.', 'Adjunta el vídeo o un enllaç per descarregar-lo.'],
+      texts: [['Assumpte', 'Una app feta aquí que fa d\'entrenador i de dietista, en català'], ['Correu', `Hola, [nom]:
+
+Soc Jose, de [ciutat]. He fet mAI Fitness, una app que porta l'entrenament i el menjar en un sol pla i que s'adapta a la setmana real de cadascú. És una de les poques apps de fitness amb IA que funciona en català.
+
+El que la fa diferent: els números (calories, proteïna, grams) els calcula l'app amb regles; la IA proposa i explica, però no s'inventa xifres. Ara la fan servir [N] persones en beta.
+
+T'adjunto un vídeo de 40 segons. Si et pot interessar, t'ho explico en 15 minuts quan et vagi bé.
+
+{LINK}
+
+Gràcies,
+Jose`]] },
+
+    // ── Gener
+    { id: 'j-ph', week: 'jan', date: '2027-01-12', time: '9:01', ch: 'producthunt', lang: 'EN', video: 'mai-fitness-en-horitzontal.mp4 + 4–5 captures', title: 'Product Hunt',
+      tips: ['Només si es compleixen les condicions: D30 ≥ 15 %, NPS ≥ 30 i pagaments en marxa.', 'Avisa 30–50 persones uns dies abans perquè hi entrin al matí. No demanis vots: demana que la provin i comentin.', 'Publica el primer comentari al moment i passa el dia responent.'],
+      texts: [['Lema', 'Training and food in one plan that adapts to you'], ['Descripció', 'mAI Fitness plans your training and your meals together. Log each set in seconds, get meals in grams for your body and your training, and talk to a coach that adjusts the plan when life gets in the way. The app does the maths; the coach only proposes changes you accept.'], ['Primer comentari', `Hi Product Hunt! I'm Jose. I built mAI Fitness because I was juggling a gym logbook, a calorie counter and a notes app, and none of them knew about the others.
+
+What's different: the numbers (energy, protein, grams per meal, how big a deficit can be) are computed by the app with rules. The AI coach picks from real recipes and proposes changes; it never makes up the calories.
+
+What still needs work: [...]
+
+One question for you: [...]`]] },
+    { id: 'j-press-es', week: 'jan', date: '2027-01-13', time: '10:00', ch: 'premsa', lang: 'ES', video: 'mai-fitness-es-horitzontal.mp4', title: 'Correu a Genbeta i Xataka',
+      texts: [['Asunto', 'Una app de entreno y comida donde la IA propone pero no inventa las calorías'], ['Correo', `Hola, [nombre]:
+
+Soy Jose. He hecho mAI Fitness, una app que lleva el entreno y la comida en un solo plan y se adapta a la semana real de cada uno. Ayer salió en Product Hunt.
+
+Lo que la hace distinta: los números los calcula la app con reglas; el coach de IA solo propone cambios que tú aceptas. Hoy la usan [N] personas.
+
+Te adjunto un vídeo de 40 segundos. Si te interesa, te lo cuento en 15 minutos.
+
+{LINK}
+
+Gracias,
+Jose`]] },
+    { id: 'j-hn', week: 'jan', date: '2027-01-14', time: '20:00', ch: 'hn', lang: 'EN', video: 'Sense vídeo: només l\'enllaç', title: 'Show HN',
+      tips: ['Títol sobri, sense adjectius. El comentari, tècnic i honest.', "Reserva't 3–4 hores per respondre. Si arriba molta gent, el cost d'IA puja: mira Admin → Analytics aquell dia."],
+      texts: [['Títol', 'Show HN: mAI Fitness – training and meal plans where the app does the maths, not the LLM'], ['Comentari', `I built this for myself. Targets and grams are computed in code (Mifflin-St Jeor, deficit limits, recipe scaling to weighable amounts); the model only picks recipes from a closed book and proposes changes the user accepts or rejects. Something you do instead of a session counts by rule, not by asking the model. It's a PWA with an offline outbox for gyms with no signal.
+
+What it doesn't do: [...]
+
+Happy to answer anything about the architecture or the costs. {LINK}`]] },
+  ]
+  const WEEKS = [
+    ['prep', 'Preparar', '26 d\'octubre – 1 de novembre'],
+    ['w1', 'Setmana 1 · la presentació', '2–8 de novembre'],
+    ['w2', 'Setmana 2 · castellà i comunitats', '9–15 de novembre'],
+    ['w3', 'Setmana 3 · construir en públic', '16–22 de novembre'],
+    ['w4', 'Directoris i premsa catalana', '23 de novembre – 6 de desembre'],
+    ['jan', 'Gener · el dia gran (si es compleixen les condicions)', '12–14 de gener'],
+  ]
+
+  // ── State ────────────────────────────────────────────────────────────────
+  let db = null, state = {}, links = { base: DEFAULT_BASE, codes: {} }, linksVersionTimer = null
+  const today = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` })()
+
+  function linkFor(ch) {
+    const base = (links.base || DEFAULT_BASE).trim().replace(/^https?:\/\//, '').replace(/\/+$/, '')
+    const code = ch && links.codes?.[ch]?.trim()
+    return code ? `${base}/register?invite=${encodeURIComponent(code.toUpperCase())}` : base
+  }
+  function whenLabel(p) {
+    const [y, m, d] = p.date.split('-').map(Number)
+    const dt = new Date(y, m - 1, d)
+    return `${DAYS[dt.getDay()]} ${d} ${MONTHS[m - 1]}${y !== 2026 ? ' ' + y : ''}${p.time ? ' · ' + p.time : ''}`
+  }
+
+  function render() {
+    const done = P.filter(p => state[p.id]?.done).length
+    $('pubBar').style.width = `${Math.round(done / P.length * 100)}%`
+    $('pubStatus').textContent = db ? `${done} de ${P.length} fets` : `${done} de ${P.length} fets · aquí no es pot desar`
+    const next = P.find(p => !state[p.id]?.done)
+    const openDetails = new Set([...document.querySelectorAll('#pubWeeks details[open]')].map(d => d.dataset.key))
+    $('pubWeeks').innerHTML = WEEKS.map(([wk, name, range]) => {
+      const items = P.filter(p => p.week === wk)
+      const n = items.filter(p => state[p.id]?.done).length
+      return `<section class="pub-week" aria-labelledby="wk-${wk}">
+        <div class="pub-week-head"><h2 id="wk-${wk}">${esc(name)}</h2><span>${esc(range)} · ${n}/${items.length}</span></div>
+        ${items.map(p => post(p, p === next, openDetails)).join('')}
+      </section>`
+    }).join('')
+  }
+
+  function post(p, isNext, openDetails) {
+    const st = state[p.id] || {}
+    const late = !st.done && p.date < today
+    const texts = (p.texts || []).map(([label, t], i) => `
+      <div class="copybox"><div class="lbl">${esc(label)}</div><div class="txt" id="t-${p.id}-${i}">${esc(t.replaceAll('{LINK}', linkFor(p.ch)))}</div>
+      <button class="btn sm" type="button" data-copy="t-${p.id}-${i}">Copiar</button></div>`).join('')
+    const key = 'd-' + p.id
+    return `<article class="post${st.done ? ' done' : ''}${isNext ? ' next' : ''}" data-id="${p.id}">
+      <input type="checkbox" id="c-${p.id}" ${st.done ? 'checked' : ''} ${db ? '' : 'disabled'} aria-describedby="w-${p.id}">
+      <div class="post-body">
+        <div class="post-when" id="w-${p.id}">${esc(whenLabel(p))}</div>
+        <label class="post-title" for="c-${p.id}">${esc(p.title)}</label>
+        <div class="meta-row">
+          ${p.ch ? `<span class="badge ch">${esc(CH[p.ch])}</span>` : ''}${p.lang ? `<span class="badge">${p.lang}</span>` : ''}
+          ${p.video ? `<span class="badge vid">${esc(p.video)}</span>` : ''}
+          ${isNext && !st.done ? '<span class="badge">La següent</span>' : ''}${late ? '<span class="badge late">Pendent</span>' : ''}
+        </div>
+        ${p.tips ? `<ul class="tips">${p.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+        ${texts ? `<details data-key="${key}" ${openDetails.has(key) || (isNext && !st.done) ? 'open' : ''}><summary>Text per copiar</summary>${texts}</details>` : ''}
+        ${st.done && p.ch ? `<div class="url-row"><label class="status-line" for="u-${p.id}">Enllaç de la publicació</label><input id="u-${p.id}" data-url="${p.id}" inputmode="url" placeholder="Enganxa-hi l'enllaç per trobar-la després" value="${esc(st.url || '')}">${st.url ? `<a href="${esc(/^https?:\/\//.test(st.url) ? st.url : 'https://' + st.url)}" target="_blank" rel="noopener">Obrir</a>` : ''}</div>` : ''}
+      </div>
+    </article>`
+  }
+
+  function renderCodes() {
+    const host = $('codes')
+    host.querySelectorAll('label[data-ch]').forEach(l => l.remove())
+    host.insertAdjacentHTML('beforeend', CHANNELS.map(([k, name]) =>
+      `<label data-ch="${k}"><span>${esc(name)}</span><input data-code="${k}" placeholder="MAI-B-…" autocomplete="off" spellcheck="false" value="${esc(links.codes?.[k] || '')}" ${db ? '' : 'disabled'}></label>`).join(''))
+    $('lk-base').value = links.base || DEFAULT_BASE
+    $('lk-base').disabled = !db
+  }
+
+  // ── Events ───────────────────────────────────────────────────────────────
+  $('pubWeeks').addEventListener('change', async e => {
+    if (e.target.type !== 'checkbox') return
+    const id = e.target.closest('.post').dataset.id
+    const patch = e.target.checked ? { done: true, doneAt: new Date().toISOString() } : { done: false }
+    state[id] = { ...(state[id] || {}), ...patch }
+    render()
+    document.getElementById('c-' + id)?.focus()
+    if (!db) return
+    try { await db.doc('posts/' + id).set(state[id]); $('pubStatus').textContent += ' · desat' }
+    catch { $('pubStatus').textContent = "No s'ha pogut desar. Torna-ho a provar." }
+  })
+  const urlTimers = {}
+  $('pubWeeks').addEventListener('input', e => {
+    const id = e.target.dataset.url; if (!id) return
+    state[id] = { ...(state[id] || {}), url: e.target.value.trim() }
+    clearTimeout(urlTimers[id])
+    urlTimers[id] = setTimeout(async () => { if (db) { try { await db.doc('posts/' + id).set(state[id]) } catch {} } }, 700)
+  })
+  $('pubWeeks').addEventListener('click', async e => {
+    const b = e.target.closest('[data-copy]'); if (!b) return
+    const el = document.getElementById(b.dataset.copy)
+    let ok = false
+    try { await navigator.clipboard.writeText(el.textContent); ok = true } catch {
+      const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r)
+      try { ok = document.execCommand('copy') } catch {}
+    }
+    b.textContent = ok ? 'Copiat' : 'Seleccionat: copia\'l'
+    setTimeout(() => { b.textContent = 'Copiar' }, 1800)
+  })
+  function saveLinksSoon() {
+    clearTimeout(linksVersionTimer)
+    linksVersionTimer = setTimeout(async () => {
+      if (!db) return
+      try { await db.doc('config/links').set(links); $('codesStatus').textContent = 'Desat. Els textos ja porten aquests enllaços.' }
+      catch { $('codesStatus').textContent = "No s'ha pogut desar." }
+    }, 700)
+  }
+  $('codes').addEventListener('input', e => {
+    if (e.target.id === 'lk-base') links.base = e.target.value.trim() || DEFAULT_BASE
+    else if (e.target.dataset.code) links.codes = { ...links.codes, [e.target.dataset.code]: e.target.value.trim().toUpperCase() }
+    else return
+    render(); saveLinksSoon()
+  })
+
+  renderCodes(); render()
+  ;(async () => {
+    try { db = await window.claude?.use?.('db') } catch { db = null }
+    if (!db) { renderCodes(); render(); return }
+    renderCodes(); render()
+    db.collection('posts').limit(200).onSnapshot(snap => {
+      state = Object.fromEntries(snap.docs.map(d => [d.id, d.data()]))
+      // Keep what is being typed in a link field
+      const active = document.activeElement
+      if (active?.dataset?.url) return
+      render()
+    }, () => { $('pubStatus').textContent = "No s'han pogut carregar les marques." })
+    db.doc('config/links').onSnapshot(snap => {
+      const d = snap.exists ? snap.data() : null
+      if (!d) return
+      const typing = document.activeElement?.closest?.('#codes')
+      links = { base: d.base || DEFAULT_BASE, codes: d.codes || {} }
+      if (!typing) renderCodes()
+      render()
+    }, () => {})
+  })()
+})()
+</script>
+
+</body></html>

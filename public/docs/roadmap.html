@@ -1,0 +1,149 @@
+<h1>Roadmap — mAI Fitness</h1>
+<h2>v2 status (branch <code>v2</code>)</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>What</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>Cleanup of the fashion app, foundations, design system, dark mode</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Data model v2 + migration of production data (0015–0017)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Training engine: ops, schedule, alternatives, progression, metrics, calories, signals</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Today, per-set logging, calendar</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>4</td>
+<td>AI coach (chat, proposals, program generation) + Program screen</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Proactive coach (daily signals → &quot;your coach wants to talk&quot;)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Progress &amp; history</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Landing, legal texts, PWA, docs</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<h2>Release checklist (production)</h2>
+<p>Do these in order. Each production step needs the owner&#39;s go-ahead.</p>
+<ol>
+<li><strong>Dry run against production.</strong> Run <code>DATABASE_URL=&lt;prod&gt; npm run db:dry-run</code> and check the row counts and the list of exercise names that had no catalog match.</li>
+<li><strong>Apply the migrations.</strong> Use the admin banner (<code>/api/admin/run-migrations</code>) or <code>npm run db:apply -- --production</code>. The v2 code reads the new columns and tables, so this must happen <strong>before</strong> deploying.</li>
+<li><strong>Deploy <code>v2</code></strong> (merge into <code>main</code>).</li>
+<li><strong>Cron.</strong> <code>netlify/functions/daily-cron.mts</code> is a Netlify Scheduled Function that calls <code>POST /api/cron/daily</code> every hour (idempotent). It needs <code>CRON_SECRET</code> set in Netlify.</li>
+<li><strong>Coach streaming timeouts.</strong> Coach turns with tools can take 30–120 s. <code>app/api/coach/threads/[id]/messages</code> sets <code>maxDuration = 300</code>, which Vercel honours. Netlify&#39;s function limits may be lower, so check the plan&#39;s limit, or move the coach endpoint to a background/long-running function.</li>
+<li>Smoke test with a real account: build a program with the coach, log a session, swap an exercise, check Progress.</li>
+</ol>
+<h2>Deferred migration — drop v1 tables</h2>
+<p>Only after v2 has run in production for a while and the data has been checked. Add it as <code>0035_drop_legacy</code> (the next free id) in <code>lib/db/migrations.ts</code>, with <code>destructive: true</code> (deploys never apply destructive migrations on their own; the owner applies it by hand). Its check is &quot;table <code>routines</code> does not exist&quot;. Then remove the v1 tables from <code>lib/db/schema.ts</code> and from <code>app/api/admin/db-check/route.ts</code>, and remove migration 0017, which reads them.</p>
+<pre><code class="language-sql">DROP TABLE IF EXISTS images, image_folders, pinterest_boards, pinterest_pins;
+DROP TABLE IF EXISTS routines, routine_sessions, exercises, workout_logs, ai_conversations, training_types;
+</code></pre>
+<h2>Ads (only on the free plan)</h2>
+<p>Ads stay <strong>off in production</strong> (<code>ADS_ENABLED</code> unset). Serving them in the EU needs a Google-certified CMP (IAB TCF 2.2) with Consent Mode v2; the current <code>CookieBanner</code> is not certified. Before turning <code>ADS_ENABLED=true</code>: add a certified CMP, wire Consent Mode v2, and update the cookie policy. Paid plans and the trial never show ads (<code>lib/billing/entitlements.ts</code>).</p>
+<h2>Backlog</h2>
+<ul>
+<li><p><strong>Coach budget per plan</strong>: <code>lib/coach/run.ts</code> should refuse a turn past <code>entitlements.coach.messagesPerMonth</code> (count <code>coach_message</code> events this month, or tokens via the existing monthly check) and the client should open <code>components/billing/LimitSheet.tsx</code>. Clamp usage levels to the plan (<code>clampLevels</code>) when a subscription ends.</p>
+</li>
+<li><p><del><strong>OAuth sign-ups with an invite code</strong></del>: done (2026-10-06). The invite rides in the signed OAuth state (<code>generateOAuthState(provider, invite)</code>); <code>onOAuthSignup</code> redeems it for new accounts.</p>
+</li>
+<li><p><strong>Guided workout mode</strong>: set-by-set, rest timer, works offline and syncs later. The setting already exists in Profile and is shown as &quot;coming soon&quot;.</p>
+</li>
+<li><p><strong>Coach channels</strong>: push notification when the coach opens a request (web-push and cron already exist), plus a monthly email summary (Resend).</p>
+</li>
+<li><p><del><strong>Explicit consent for health data</strong></del>: done (2026-10-06, migration <code>0034_health_consent</code>). Still: have the legal texts reviewed before a public launch.</p>
+</li>
+<li><p><strong>Done sessions on Today</strong>: show what was actually done (sets, PRs) instead of the next target.</p>
+</li>
+<li><p>Progress photos (Supabase storage is already in place).</p>
+</li>
+<li><p>Strava / Apple Health import.</p>
+</li>
+<li><p>Units in lb (<code>users.units</code> exists).</p>
+</li>
+<li><p>Manual program editing UI: the edit operations exist (<code>lib/training/ops.ts › applyOps</code>, used by the coach); the unused <code>PATCH /api/program</code> route was removed on 2026-10-19 and comes back with the UI.</p>
+</li>
+<li><p>Localised About page. Bold brand font inside generated icons (next/og needs the font file).</p>
+</li>
+</ul>
+<h2>Performance: future improvements (study of 2026-10-19)</h2>
+<p>Measured on a phone emulation (4× slower CPU, 150 ms RTT, 1.6 Mbps): the landing shows content at 2.4–2.9 s, register and login at 2.1–2.3 s, with no layout shift. Fonts, GA and zod in the browser were fixed the same day. Each of these needs its own validation before it ships:</p>
+<ul>
+<li><strong>Landing from Netlify&#39;s CDN.</strong> <code>/</code> renders on every visit (~0.5 s before the first byte) because it reads the language cookie, <code>Accept-Language</code> and the session. Move the signed-in redirect to <code>proxy.ts</code>, render one landing per language, and cache it at the edge (<code>CDN-Cache-Control</code> + <code>Netlify-Vary: cookie=lang, header=Accept-Language</code>): ~50 ms instead of ~500 ms. Validate the redirect of signed-in people and the language picked.</li>
+<li><strong>Translations per language.</strong> Login, register and every app screen download the three languages (<code>lib/i18n/translations.ts</code>, ~68 KB gzipped); one would be ~23 KB. It needs one file per language and <code>I18nProvider</code> loading only the person&#39;s (the dictionaries hold functions, so they can&#39;t go through the RSC payload).</li>
+<li><strong>Today&#39;s repeated reads.</strong> Today reads some tables two or three times per load (planned sessions, workouts, check-ins, the meal week) through different services. Fast today (~25 small queries, ~30 ms locally); share the reads when it grows.</li>
+<li><strong>Duplicate prefetches on the landing.</strong> <code>/register</code> and <code>/legal/cookies</code> are prefetched twice each (two router-state hashes).</li>
+<li><strong>Know where visitors come from.</strong> Without Google Analytics there is no landing → sign-up funnel nor traffic source. Options: a real GA4 id in <code>NEXT_PUBLIC_GA_ID</code> (Consent Mode is in place; the example id <code>G-XXXXXXXXXX</code> loads nothing), or a cookieless count of landing visits by <code>utm_source</code> in <code>product_events</code>.</li>
+</ul>
+<h2>Widgets for Today (ideas, not planned yet)</h2>
+<p>Decided 2026-10-06: the week calendar is off Today, and it lives only in <code>/calendar</code>. Today stays focused on what&#39;s due now. When we don&#39;t know how to improve the product next, pick from this list. Validate each with beta data first, e.g. which screens people open and what they ask the coach.</p>
+<p><strong>Calendar, other ways to show it</strong></p>
+<ul>
+<li>A collapsed &quot;this week&quot; row: tap to expand to the week as a to-do list. Hidden by default.</li>
+<li>A streak or consistency heatmap, like GitHub or Strava: a small grid of the last 8–12 weeks.</li>
+<li>Next session countdown (&quot;Lower A, tomorrow&quot;), with a link to Calendar.</li>
+</ul>
+<p><strong>Training</strong></p>
+<ul>
+<li>Readiness or recovery score, like WHOOP: from sleep, RPE and soreness. Needs a wearable or a daily question.</li>
+<li>Phase progress (&quot;week 3 of 8 · recomposition&quot;) as a slim progress bar.</li>
+<li>A PR highlight of the week (&quot;New best: bench 105 kg&quot;).</li>
+<li>Volume per muscle as a body map, like Hevy, with this week vs the average.</li>
+<li>A soreness body map from the daily check-in.</li>
+</ul>
+<p><strong>Food and body</strong></p>
+<ul>
+<li>Macro rings for the day, like MyFitnessPal: Precise level only.</li>
+<li>A weight trend sparkline with the phase band, like MacroFactor.</li>
+<li>Water intake, tapped in glasses.</li>
+<li>A habit checklist: supplements (creatine, vitamin D), steps, sleep hours.</li>
+<li>A shopping and batch-cooking reminder on the chosen day.</li>
+</ul>
+<p><strong>Coach</strong></p>
+<ul>
+<li>A daily insight card: one sentence from the coach, generated once a day by the cheap model, cached.</li>
+<li>A &quot;this week&#39;s plan changed&quot; summary after the adaptive review. This exists as a note; it could become a widget.</li>
+</ul>
+<p><strong>Integrations and platform</strong></p>
+<ul>
+<li>Steps, sleep and heart rate from Apple Health / Google Fit (needs a native wrapper).</li>
+<li>Weather for outdoor runs.</li>
+<li>Home-screen and lock-screen widgets on iOS/Android (native app only).</li>
+</ul>
+<p><strong>Customisation</strong></p>
+<ul>
+<li>Let people choose and reorder Today&#39;s widgets, within the usage profile&#39;s limits, with sensible defaults per profile.</li>
+</ul>
+<h2>Production migrations on deploy — done</h2>
+<p>Built (see <code>ai/AGENTS.md</code> → Migrations):</p>
+<ul>
+<li><strong>Apply on deploy:</strong> ✅ Netlify runs <code>npm test &amp;&amp; npm run migrate:deploy &amp;&amp; npm run build</code>. In the production context only, <code>scripts/migrate-on-deploy.mts</code> dry-runs every pending migration (one transaction, rolled back) and then applies them, only when all are additive. A pending <code>destructive: true</code> migration fails the build until the owner applies it by hand.</li>
+<li><strong>Guard:</strong> ✅ reading <code>users</code> survives a pending migration that adds columns (<code>selectUsers</code> in <code>lib/db/users.ts</code> falls back to the columns that exist), so the app and the admin banner still load.</li>
+<li><strong>CI:</strong> ✅ <code>.github/workflows/ci.yml</code> runs the tests (Netlify-like env, including <code>COACH_MONTHLY_TOKEN_LIMIT=0</code>) and types on every push and PR to <code>main</code>. Lint runs there too but doesn&#39;t block yet: older auth and banner screens still have lint errors to clear.</li>
+<li><strong>Still the rule — expand/contract:</strong> a release only adds (columns, tables, indexes) and its code works with or without them; removals go in a later release, flagged destructive.</li>
+</ul>

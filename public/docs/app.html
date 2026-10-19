@@ -1,0 +1,380 @@
+<p>@ai/DESIGN.md</p>
+<!-- BEGIN:nextjs-agent-rules -->
+<h1>This is NOT the Next.js you know</h1>
+<p>This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in <code>node_modules/next/dist/docs/</code> before writing any code. Heed deprecation notices.</p>
+<!-- END:nextjs-agent-rules -->
+
+<!-- BEGIN:testing-rules -->
+<h1>Interactions must be high end — no exceptions</h1>
+<p>Every screen must behave like a polished native app; nothing may feel WIP. Follow <code>ai/DESIGN.md</code> §5 (chats, sheets, keyboard, motion) and check new UI on a 390×844 viewport with the keyboard open before calling it done.</p>
+<ul>
+<li><strong>Fields never zoom the phone.</strong> iOS zooms into any field under 16px on focus. <code>app/globals.css</code> forces 16px on every input, textarea and select on touch or narrow screens (<code>!important</code> in <code>@layer base</code>, which beats any <code>!text-*</code> utility). Style fields freely on desktop; don&#39;t fight it on phones, and never block zoom in the viewport (<code>maximum-scale</code>). <code>tests/lib/ui/no-zoom-fields.test.ts</code> guards it.</li>
+<li><strong>zod stays on the server.</strong> A client component that imports, even through <code>lib</code>, a module importing zod ships the whole library to the phone (~95 KB gzipped). Constants and pure helpers screens need live in modules without it (<code>lib/nutrition/nutrients.ts</code>, <code>lib/nutrition/extras.ts</code>, <code>lib/training/disciplines.ts</code>, <code>lib/admin/trial-dates.ts</code>); schemas go next to them (<code>extras-schema.ts</code>, <code>recipe.ts</code>, <code>template.ts</code>). <code>tests/lib/ui/no-zod-in-client.test.ts</code> guards it.</li>
+<li><strong>Fonts:</strong> only Bricolage Grotesque (text) and Instrument Serif (the coach&#39;s voice), from <code>app/layout.tsx</code>. Each font is downloaded before text shows; add one only when a screen uses it.</li>
+</ul>
+<h1>Tests are mandatory — no exceptions</h1>
+<p>Every new feature, lib function, API route or bug fix <strong>must</strong> include Vitest tests.
+Tests must pass before any deploy. The Netlify build command is <code>npm test &amp;&amp; npm run migrate:deploy &amp;&amp; npm run build</code>, so a failing test blocks the deploy entirely. GitHub CI runs the same tests on every push.</p>
+<h2>Rules</h2>
+<ul>
+<li>Add tests in <code>tests/lib/&lt;module&gt;.test.ts</code> for every new file in <code>lib/</code></li>
+<li>Add proxy/auth tests in <code>tests/proxy.test.ts</code> for new protected routes</li>
+<li>Run <code>npm test</code> locally before considering any task done</li>
+<li><code>BCRYPT_ROUNDS=1</code> is set automatically in the test env (fast hashing)</li>
+<li>Never mock the file system — the setup patches <code>process.cwd()</code> to a temp dir</li>
+<li>Never call real Anthropic API or real web-push in tests — mock those modules with <code>vi.mock</code></li>
+<li>Test files live in <code>tests/</code> mirroring the <code>lib/</code> structure</li>
+</ul>
+<h2>Database tests (PGlite)</h2>
+<ul>
+<li>DB-layer and migration tests run against real Postgres in memory via <code>tests/helpers/db.ts</code> (<code>createTestDb()</code> applies the drizzle baseline).</li>
+<li>Prefer this over mocking Drizzle query chains.</li>
+</ul>
+<h2>Migrations</h2>
+<ul>
+<li>Incremental migrations live in <code>lib/db/migrations.ts</code> (<code>MIGRATIONS</code>). Each one has a <code>check</code> SQL expression and <code>sql</code> statements and/or a <code>run(tx)</code> function for data migrations.</li>
+<li>Only pending migrations run, each inside a transaction. Write them idempotently anyway.</li>
+<li><strong>Expand/contract:</strong> a migration only adds (columns, tables, indexes, backfills) and the code that ships with it must also work before it runs. Anything that removes or renames what running code uses gets <code>destructive: true</code> and ships in a later release.</li>
+<li><strong>Applied on deploy:</strong> the Netlify build is <code>npm test &amp;&amp; npm run migrate:deploy &amp;&amp; npm run build</code>. <code>scripts/migrate-on-deploy.mts</code> (logic in <code>lib/db/migrate-deploy.ts</code>) runs only when <code>CONTEXT=production</code>: it dry-runs every pending migration in one rolled-back transaction, then applies them, if none is destructive. A pending destructive migration, a dry-run failure or a missing <code>DATABASE_URL</code> fails the build. It refuses a local <code>DATABASE_URL</code> (<code>MIGRATE_DEPLOY_ALLOW_LOCAL=1</code> only for local simulations). With nothing pending it does nothing.</li>
+<li><strong>By hand</strong> (destructive migrations, or to check first): <code>DATABASE_URL=&lt;prod&gt; npm run db:dry-run</code>, which runs all pending migrations in one transaction, prints row counts and unmatched exercise names, and rolls back; then <code>npm run db:apply -- --production</code> or the admin banner (<code>/api/admin/run-migrations</code>).</li>
+<li><strong>A pending migration must not take the app down:</strong> <code>lib/db/users.ts › selectUsers</code> retries without the <code>users</code> columns the table doesn&#39;t have yet (Postgres 42703), so the layout and the admin banner keep loading. The layout also tolerates a failing plan lookup.</li>
+<li>JSON parameters in raw SQL must be cast <code>$n::text::jsonb</code>. A bare <code>::jsonb</code> makes postgres-js double-encode the value, and PGlite does not catch this.</li>
+<li>Every new migration needs a test in <code>tests/lib/db/migrations.test.ts</code> (or its own file). <code>tests/lib/db/migrate-deploy.test.ts</code> checks that any migration with DROP TABLE / DROP COLUMN / TRUNCATE is flagged destructive.</li>
+</ul>
+<h2>CI and deploys</h2>
+<ul>
+<li><code>.github/workflows/ci.yml</code> runs on every push and PR to <code>main</code>: <code>npm ci</code>, the tests with a Netlify-like env (<code>NETLIFY=true</code>, <code>COACH_MONTHLY_TOKEN_LIMIT=0</code>, empty optional vars), and <code>tsc</code>. Lint runs there too but doesn&#39;t block yet: older auth and banner screens still have errors to clear.</li>
+<li><strong>When &quot;a change doesn&#39;t show&quot;:</strong> check <code>https://maifitness.netlify.app/api/version</code> (the deployed commit) and Netlify → Deploys. A failing test or migration blocks the deploy, and production keeps the previous build.</li>
+<li>Parse env vars defensively. An empty or <code>0</code> value must fall back to the default: an empty <code>COACH_MONTHLY_TOKEN_LIMIT</code> once failed tests only on Netlify and blocked every deploy for days.</li>
+<li>Don&#39;t commit or push while agents are working in the checkout: a commit snapshots their unfinished work.</li>
+</ul>
+<h2>Database connection</h2>
+<ul>
+<li>Production goes through Supabase&#39;s transaction pooler (:6543). The postgres client must not use prepared statements there (<code>prepare: false</code>, decided by <code>usesPooler()</code> in <code>lib/db/index.ts</code>). With prepared statements on, queries hang and writes are silently lost; that is how coach replies stopped being saved.</li>
+</ul>
+<h2>Local development database</h2>
+<ul>
+<li><code>npm run db:dev</code> starts PGlite on <code>127.0.0.1:5433</code>, with data in <code>.pglite/</code>, all migrations applied, and a seeded admin <code>dev@local</code> / <code>devdevdev</code>.</li>
+<li>Run the app against it with <code>DATABASE_URL=postgresql://postgres@127.0.0.1:5433/postgres npm run dev</code>.</li>
+<li><code>npm run db:seed</code> adds a legacy-shaped routine (4 sessions), about 6 weeks of workout logs and weight logs for the dev user.</li>
+<li>Scripts in <code>scripts/</code> run with <code>tsx</code>, so the <code>@/</code> path alias works.</li>
+<li>Never point local dev at the production database to try out unreleased migrations.</li>
+</ul>
+<h2>App map (v2)</h2>
+<ul>
+<li><strong>Screens:</strong><ul>
+<li><code>/today</code>: daily check-in, today&#39;s session (alternatives, reordering, sore-area flags) and the week as a to-do list</li>
+<li><code>/log</code>: the session&#39;s page — read it, change it and log it in one place; <code>?planned=</code>, <code>?extra=</code> or <code>?workout=</code></li>
+<li><code>/calendar</code></li>
+<li><code>/program</code></li>
+<li><code>/progress</code></li>
+<li><code>/coach</code>: <code>?new=onboarding</code> starts program design</li>
+<li><code>/food</code>: the meal plan — <code>?tab=week|recipes|shop</code>; <code>/food/recipe/:id?meal=</code> shows a recipe with the user&#39;s grams</li>
+<li><code>/profile</code></li>
+</ul>
+</li>
+<li><strong>Services</strong> (<code>lib/services/*</code>) assemble screen payloads from the DAL and the pure training logic. Route handlers stay thin and use <code>requireUser()</code> and <code>parseBody()</code> from <code>lib/api.ts</code>.</li>
+<li><strong>Coach</strong> (<code>lib/coach/*</code>):<ul>
+<li><code>run.ts</code> is the streaming tool loop.</li>
+<li><code>tools.ts</code> holds the tool schemas and handlers, both generated from zod.</li>
+<li><code>context.ts</code> builds the per-turn snapshot.</li>
+<li><code>proposals.ts</code> applies the user&#39;s decisions.</li>
+<li><code>proactive.ts</code> runs the daily signals.</li>
+<li>Tests never call the real API; they inject a fake client into <code>runCoachTurn</code>.</li>
+<li>Deployed, a turn runs in a Netlify background function (<code>netlify/functions/coach-turn-background.mts</code>, up to 15 min) because requests are cut after 10–26 s. The messages route returns 202, progress goes to <code>coach_threads.live</code> (<code>lib/coach/live.ts</code>) and the client polls <code>/api/coach/threads/:id/live</code> (<code>components/coach/stream.ts</code>). In local dev the route streams SSE directly.</li>
+</ul>
+</li>
+<li><strong>Admin Analytics</strong> (<code>/admin/analytics</code>): AI cost per month for the last 12 months (stacked by feature, forecast for the month in progress) and a per-month detail. Derived from <code>usage_events</code> (aggregated in SQL by <code>getMonthlyCostRowsDb</code>), shaped by the pure <code>lib/analytics/cost-history.ts</code>. Months are Europe/Madrid calendar months. Record every paid AI call with <code>addUsageEventDb</code> and a <code>feature</code> name, or it won&#39;t show up.</li>
+<li><strong>Release steps and backlog:</strong> <code>ai/ROADMAP.md</code>.</li>
+</ul>
+<h2>v2 training model</h2>
+<ul>
+<li>Domain logic is pure and lives in <code>lib/training/</code>: <code>template.ts</code> (zod program template), <code>catalog.ts</code> + <code>catalog-seed.ts</code> (exercise catalog and name matching) and <code>legacy-migrate.ts</code>.</li>
+<li>Data access lives in <code>lib/db/{programs,workouts,exercises,coach,body}.ts</code>.</li>
+<li>Programs are immutable versions: never update <code>program_versions.template</code> in place, call <code>addVersion()</code>.</li>
+</ul>
+<h2>Meal planning (lib/nutrition, lib/coach/nutrition-*)</h2>
+<ul>
+<li>It&#39;s a meal plan, not a food tracker. The deliverable is concrete grams per ingredient for the user&#39;s body, training and goal.</li>
+<li><strong>The plan is never an obligation</strong> (training is the one that gets done): food copy never says missed/failed, uses no red states, the coach nudges and never scolds; swapping a meal is first-class.</li>
+<li><strong>The app does the maths, never the model:</strong><ul>
+<li><code>targets.ts</code> computes resting energy (Mifflin-St Jeor) × lifestyle + the user&#39;s real training energy, then the goal&#39;s deficit or surplus with safety limits (≤1 % of body weight a week, ≤25 % deficit, ≥ resting energy). Protein is set per kg of a BMI-25 reference weight.</li>
+<li><code>recipe.ts › fitRecipe</code> scales a recipe&#39;s protein and carbohydrate groups (then fat) so one serving hits a meal&#39;s kcal and protein, rounded to weighable or countable amounts. Eggs stop at 4 and burgers at 2 per meal (<code>CAP_GRAMS</code>); egg whites or carbohydrate take the rest.</li>
+<li>Recipes are stored as one generic serving with food ids from <code>foods.ts</code> (per 100 g as bought).</li>
+</ul>
+</li>
+<li><strong>Recipes come from people, not the model:</strong><ul>
+<li>The base book (<code>recipe-book.ts</code>, ~85 real home-cooking dishes reviewed by a user, ca/es/en) is stored as shared rows (<code>recipes.user_id</code> NULL, <code>source=&#39;book&#39;</code>, migration <code>0025_recipe_book</code>); name and steps are localised from the module (<code>localizeRecipe</code>). Edit the module and re-run the seed (it upserts).</li>
+<li>Per user: favourites and &quot;don&#39;t suggest it again&quot; for book recipes live in <code>recipe_prefs</code> (their own recipes keep <code>favorite</code> / <code>archived</code> on the row), via <code>setRecipePref</code>; <code>swaps_away</code> counts how often a dish is swapped away.</li>
+<li>The coach plans ONLY with the visible book + the user&#39;s recipes (<code>propose_meal_plan</code> / <code>propose_meal_changes</code> reject unknown, hidden or too-varied plans: ≤4 lunches/dinners, ≤2 breakfasts/snacks — <code>plan-edit.ts › rotationIssues</code>). New dishes only via <code>save_recipe</code> (theirs, or a suggestion they asked for). &quot;My way&quot; = <code>propose_recipe_change</code> (before → after card; accepting saves their version with <code>base_recipe_id</code>, hides the original, replaces it in the plan).</li>
+</ul>
+</li>
+<li><strong>A strong lunch, a light dinner</strong> (<code>plan.ts › DINNER_SHIFT</code>, <code>heavyAtDinner</code>; book reviewed by a user 2026-10-19, migration <code>0040_book_meals</code>): heavy dishes (pasta, rice dishes, legumes, stews; book tag <code>heavy</code>, <code>recipe-book.ts › HEAVY</code>) are lunch only; bowls, potato, bread and grilled meat go to both. <code>mealTargets(day)</code> moves part of the day&#39;s energy from dinner to lunch by <code>day.goal</code> (cut 6 %, maintain/recomp 4 %, gain 0) while protein stays, so the same dish at dinner comes with less potato or bread. Gaining, heavy dishes may go to dinner too (<code>findMealAlternatives(…, { heavyDinner })</code>). The week&#39;s menu replaces a heavy dinner of the base plan first (beyond the quota) and the AI is told; <code>propose_meal_plan</code> / <code>propose_meal_changes</code> refuse a book dish at a meal it isn&#39;t for (<code>checkMeals</code>). Their own recipes go where they say; <code>save_recipe</code> asks for lunch only + <code>heavy</code> on heavy dishes.</li>
+<li><strong>How the user eats (&quot;Com menjo&quot;):</strong> <code>food_memory</code> facts (habit, like, dislike, cooking, note) written by the coach (<code>remember_food_preference</code>) or the user (Food → Receptes card), plus hidden dishes and often-swapped ones (<code>taste.ts</code>). All in the coach snapshot. <code>scripts/import-food-votes.mts</code> imports a book review for a user (personal data: only with their permission).</li>
+<li><strong>Like programs:</strong><ul>
+<li>a versioned base plan (<code>meal_plans</code>, <code>meal_plan_versions</code>; never edit a template, add a version). Food → Pla shows the week grid with grams, the rotation and the versions, and edits by hand (<code>plan-edit.ts › applyPlanEdits</code>, <code>POST /api/meals/plan</code>, each edit = a new <code>manual</code> version with a readable summary);</li>
+<li>each real week is materialised as <code>planned_meals</code> by <code>syncWeekMeals</code>: base plan + that week&#39;s adaptations (<code>meal_weeks</code>), never touching history.</li>
+</ul>
+</li>
+<li><strong>Each week has its own menu, written by AI; the rules are the net</strong> (<code>week-menu.ts</code>, <code>lib/services/week-menu.ts</code>, <code>lib/coach/week-menu.ts</code>, <code>meal_weeks.menu</code>, migration <code>0037_week_menu</code>): the base plan stays as the person left it, but nobody eats the same seven days every week, and the menu must learn from how they eat.<ul>
+<li><strong>Laid out at once by rules</strong> (<code>planWeekMenu</code>, <code>claimWeekMenu</code>) the first time a week is opened or from Monday&#39;s cron: part of the dishes eaten the week before give way to others for the same meal, fitted to the same target, from their recipes and the visible book (up to half of the different lunches and dinners, one breakfast or snack at most, favourites last, never a dish from the last two weeks&#39; menus; same week → same menu).</li>
+<li><strong>Then the AI writes it</strong> (<code>requestWeekMenu</code> → <code>netlify/functions/week-review-background.mts</code> with <code>{ menuWeek }</code>, detached in local dev; <code>runWeekMenuAI</code>): one call per person and week on the small model (<code>WEEK_MENU_MODEL</code>, default the cheap one; recorded as feature <code>week_menu</code>). <code>gatherMenuDossier</code> gives it the goal, the base plan with ids, the last four weeks as they went (what was on the menu, replaced by something else, skipped), what the person said about how they eat (<code>food_memory</code>), favourites and dishes swapped away, the dishes that can come in per meal (already checked to fit), and the rules&#39; menu as a hint. It answers with <code>set_week_menu</code>: a note to the person and the swaps. <code>sanitizeMenu</code> keeps it inside what the app can serve (only the plan&#39;s dishes, only offered ids, no dish twice); the app fits the grams. No key, no budget, no answer: the rules&#39; menu stays (<code>aiFailed</code>), and it is asked once (<code>aiPendingSince</code>).</li>
+<li><strong>Never the same thing twice in a day</strong> (<code>sameDayClashes</code>, <code>withoutClashes</code>): lunch and dinner of a day never end up being the same dish or sharing their main protein because of the menu. The rules skip such replacements and rotate out first the dishes that already clash in the base plan; the AI is told the rule, is shown the plan&#39;s clashes to fix, is only offered dishes that can go in without one, and <code>sanitizeMenu</code> drops what breaks it. Stored menus carry <code>checked</code> (<code>MENU_CHECK</code>): an older one is held to the rule the next time the week opens, and written again by the AI when it broke it.</li>
+<li><code>syncWeekMeals</code> applies the menu under the week&#39;s adaptations (<code>applyMenu</code>), so &quot;back to the plan&quot; on a meal returns to the week&#39;s dish. A first week, or weeks that don&#39;t adapt (<code>adaptFood</code> off), keep the plan (<code>source: &#39;plan&#39;</code>).</li>
+<li><strong>What the person sets stays:</strong> a meal changed &quot;from now on&quot; (<code>swapMeal</code> scope <code>base</code>) is stored with <code>keep: true</code> in the template: neither the rules nor the AI replace that day&#39;s meal, this week or later, even when the dish is the one the plan already had there.</li>
+<li><strong>Getting the week ready</strong> (<code>lib/nutrition/week-ready.ts</code>, <code>getWeekReady</code> / <code>decideWeek</code> / <code>presentWeekAhead</code> in <code>lib/services/week-menu.ts</code>): many people prepare the week on Sunday. On Sunday from 10:00 (local) the hourly cron lays out the coming week&#39;s menu and sends one push (<code>week_ahead</code>, topic food, once per week) to <code>/food/week</code>; Today and Food show <code>WeekReadyCard</code> on Sunday (the coming week) and all Monday (the one starting) until the week is accepted or the card closed (<code>menu.decision</code>, stored in <code>meal_weeks.menu</code>; <code>POST /api/meals/week-menu { monday, decision }</code>). <code>/food/week</code> (<code>WeekPrepClient</code>) shows the week day by day with the AI&#39;s note and the days that train: accept it as it is, change any dish, or — optional, for unusual weeks — &quot;How will your week be?&quot; opens the coach with it (the snapshot&#39;s &quot;Getting the week ready&quot; section; <code>adapt_week</code> may change that week on Sunday). Not accepted, it counts as proposed. Accepted, the AI&#39;s menu never rewrites it, and Shopping shows the whole accepted week (<code>ShoppingView.ahead</code>). A week laid out takes the week before&#39;s &quot;already have it&quot; (<code>claimWeekMenu(…, have)</code>; <code>setHave(…, monday)</code>). Monday&#39;s cron still sends &quot;new week&quot; (<code>week_ready</code>). The app never tracks what is cooked ahead (no tuppers, no batch-cooking tips).</li>
+<li><strong>The same dish on other days</strong> (<code>repeatsOf</code>, <code>MealView.repeats</code>): changing a dish that is planned later that week at the same meal asks &quot;only Monday, or Wednesday too?&quot; (<code>MealSwapSheet</code>); <code>swapMeal(…, { also })</code> changes those meals the same way, this week or from now on (one plan version for all those weekdays). A lunch and a dinner that are the same dish are different meals. Never the same dish twice a day: days that already have the new dish at another meal are not offered (<code>freeRepeats</code>, <code>repeats[].taken</code>) and <code>swapMeal</code> leaves them as they are.</li>
+</ul>
+</li>
+<li><strong>Alternatives</strong> (<code>alternatives.ts</code>, no AI): ranked dishes for a meal by reason (no time, not in the mood, missing something), fitted to that meal&#39;s target. A list to choose from, not ten salmons (<code>varied</code>): at most two with the original&#39;s main protein and two of any other; the dishes the person usually has at that meal (the plan&#39;s and this week&#39;s, <code>usual</code>) rank up. <code>POST /api/meals/:id/swap</code>: only this time (a week adaptation) or from now on (a new base version); &quot;back to the plan&quot; resets it.</li>
+<li><strong>Meal photos</strong> (<code>lib/coach/food-photo.ts</code>, <code>lib/services/food-photo.ts</code>, <code>POST</code>/<code>GET /api/food-extras/photo</code>, <code>components/food/PhotoReader.tsx</code>): &quot;Take a photo&quot; in &quot;Add food&quot; and in a meal&#39;s &quot;I ate something else&quot;. <strong>Phones and tablets only</strong> (<code>lib/device/mobile.ts</code>): the browser asks the device (user agent, <code>userAgentData.mobile</code>, an iPad calling itself a Mac told apart by touch), never the width; on a computer the option isn&#39;t shown at all, and the route answers 403 <code>mobile_only</code> to what is surely a computer. The phone shrinks it to 1280 px JPEG (<code>lib/photo/shrink.ts</code>, metadata dropped), an optional note goes with it (&quot;I ate half&quot;), and one call to <code>FOOD_PHOTO_MODEL</code> (default the goals model, Sonnet; it doesn&#39;t take a forced tool, so the answer is read leniently) names foods from the table with grams as bought, or estimates. The result is the same reviewed list as words; nothing is saved until the person confirms. <strong>The photo is never stored.</strong> Each read is a <code>food_photo</code> usage event (≈1 cent; Admin → Analytics &quot;Meal photos&quot;) and the month&#39;s count is the allowance (Madrid months; a photo with no food still counts, a refusal before the call doesn&#39;t). Used up: 429 <code>photo_limit</code>, the UI says words still work and offers &quot;More photos&quot; (<code>foodPhotos</code> lock). Gate: food on (<code>foodGate &#39;food&#39;</code>) and health consent.</li>
+<li><strong>Today answers, Food plans:</strong> Today&#39;s meal rows are a one-tap eaten toggle (tap again = planned; <code>sendOrQueue</code>, idempotent) plus &quot;Change&quot;; Food and the recipe page never mark meals. Logging stays optional: an unmarked meal counts as eaten as planned. &#39;Something else&#39; is estimated. <strong>Eaten with changes</strong> (<code>components/food/MealEditSheet.tsx</code>, the pencil on an eaten meal or &quot;I had it with changes&quot; in the swap sheet): the same dish as it really was that day — amounts changed, items out, anything added from the food table or said in words (<code>/api/food-extras/parse</code>). <code>POST /api/meals/:id { status: &#39;eaten&#39;, edited }</code> stores the resolved items in <code>planned_meals.other.edited</code> (status stays <code>eaten</code>, gate <code>check</code>, not Precise); <code>day.ts</code> counts them plus the meal&#39;s supplements instead of the fitted recipe, the row says &quot;with changes&quot;, &quot;As planned&quot; or tapping the circle forgets them. <code>day.ts</code> rebalances the rest of the day and carries what can&#39;t fit to the rest of the week (±10 % a day, protein never cut).</li>
+<li><strong>Coach:</strong><ul>
+<li>Facts are saved at once: <code>update_nutrition_profile</code>, <code>save_recipe</code>, <code>adapt_week</code>, <code>log_meal</code>, <code>remember_food_preference</code>, <code>hide_recipe</code>.</li>
+<li>Targets, plan changes and recipe versions are proposals the user accepts or rejects: <code>propose_nutrition_targets</code>, <code>propose_meal_plan</code>, <code>propose_meal_changes</code>, <code>propose_recipe_change</code>.</li>
+<li>Before the first plan it asks what they ate this week and what they cook often.</li>
+<li>A new proposal only supersedes pending ones of the same family.</li>
+</ul>
+</li>
+<li><strong>A productive chat</strong> (<code>lib/coach/prompt.ts</code> › &quot;Be quick&quot;): the snapshot opens with &quot;Today at a glance&quot; (<code>context.ts › formatGlance</code>: days since the last workout, the week, what today holds, one-off sessions already planned) so the coach never asks for it; it sizes the request (one day vs. the program), asks at most once and acts in the same turn. <code>offer_replies</code> shows tappable answers under a question (<code>ChatItem</code> kind <code>replies</code>, <code>components/chat/QuickReplies.tsx</code>, shown only while they are the last thing said); a turn that only offers replies ends without another model round (<code>run.ts</code>).</li>
+<li><strong>Local data:</strong> <code>npm run db:seed:food</code> seeds a plan from the book for <code>dev@local</code>.</li>
+</ul>
+<h2>One goal for training and food</h2>
+<ul>
+<li><code>users.goal_focus</code> (<code>lib/training/goal.ts</code>: fat_loss | muscle | recomp | performance | maintain), set in Profile or by the coach (<code>update_training_profile.goalFocus</code>). Changing it re-points the diet direction (<code>alignDietWithFocus</code>, <code>lib/services/goal.ts</code>); accepted targets are never changed silently.</li>
+<li><code>coherence()</code> lists where program, block and targets pull apart (e.g. a ≥15 % deficit in a strength block); the coach snapshot shows it under &quot;Goal&quot;.</li>
+<li><strong>Calories follow training</strong> (<code>lib/nutrition/cycling.ts</code>): each day of the week gets more or less energy by its exercise kcal (the program&#39;s sessions on their current date, done or still to do; a workout that stood in for a session is the program&#39;s), max ±15 %, same weekly total, protein fixed.</li>
+<li><strong>Training outside the program feeds the next days, by the goal</strong> (<code>splitWorkouts</code>, <code>extraEnergyBack</code>): the day itself stays as planned; its kcal come back on the next two days, half each, by the diet goal (<code>EXTRA_BACK</code>: gain and maintain all, recomp half, cut none), unless the week&#39;s deficit goes past 25 % of maintenance, then what goes past comes back; at most 15 % of a day&#39;s target. Saturday&#39;s and Sunday&#39;s feed Monday and Tuesday. <code>DayView.extraBack</code>, said under the day (<code>DayKind</code>). A day checked in as rest or &quot;something else&quot; is a rest day for food at once: its session moves to a free day, and when there is none left (Sunday) the open session counts nothing (<code>trainingByDate</code> › <code>off</code>). <code>DayView.trainingKcal</code> / <code>shift</code>.</li>
+<li>Accepted targets store <code>basis</code> (training kcal/day, program, block). <code>lib/nutrition/signals.ts</code> raises <code>targets_stale</code> (new program, new block, ≥15 % and ≥75 kcal drift), <code>deficit_strength</code>, <code>weight_flat</code>, <code>low_protein</code>, <code>rpe_deficit</code>; they join the training signals in <code>gatherCoachData</code> and the daily proactive pick.</li>
+<li>Progress → Goal (<code>/api/metrics/goal</code>, <code>getGoalProgress</code>): 8 weeks of weight, key-lift e1RM, days close to the meal plan (informational, neutral) and sessions done, plus <code>goalVerdict()</code>. Past meal weeks are read as stored, never materialised from today&#39;s plan.</li>
+</ul>
+<h2>Usage profiles (lib/profile/usage.ts)</h2>
+<ul>
+<li>Not roles: four areas with a level each — training (simple / normal / detailed), food (off / guide / plan / precise), body (off / light / full), coach (quiet / normal / close) — and presets: training_only, balanced, demanding. Stored in <code>users.usage</code> (null until chosen: Today asks once; Profile edits it).</li>
+<li>Ask <code>capabilities(usage)</code> instead of checking levels in screens: it gates the Food tab (<code>hiddenHrefs</code>), Today&#39;s meals and weigh-in card (<code>weighInDue</code>), Progress tabs (<code>progressTabs</code>), numbers vs household portions (<code>amountStyleFor</code> → <code>lib/nutrition/household.ts</code>), exact grams (<code>fitRecipe(..., { exact })</code>), the simple log, the rest timer, coach food tools (refused when food is off), signals (<code>areaAllows</code>) and proactive threads (<code>allowsSignal</code>). Client components read it with <code>useUsage()</code>.</li>
+<li>Hiding a part never deletes its data.</li>
+</ul>
+<h2>Goal phases (lib/training/phases.ts, lib/db/phases.ts)</h2>
+<ul>
+<li>The goal is a series of phases (focus, dates, weight mode target / band / none, band as % of body weight a week). They never overlap: <code>createPhase</code> trims the current one and replaces later ones. <code>programs.goal_phase_id</code> links a program to its phase. <code>users.goal_focus</code> is only a mirror of today&#39;s phase (<code>syncFocusMirror</code>).</li>
+<li>The coach proposes phases with <code>propose_goal_phase</code> (now or scheduled); a <code>phase_start</code> thread opens a few days before one starts.</li>
+</ul>
+<h2>Adaptive food (lib/nutrition/adaptive.ts, lib/services/adaptive.ts)</h2>
+<ul>
+<li>Weekly, from the daily cron: weight trend (≥3 weigh-ins in 10 days), learned maintenance, the phase&#39;s band, strength first when weight is not the goal. Moderate changes apply alone (≤150 kcal/day per week, from tomorrow, <code>energy_adjustments</code>, undo); bigger ones open a <code>food_adjust</code> thread and the coach proposes <code>propose_nutrition_targets</code> with <code>adjustKcal</code>. Protein never changes. Day targets add <code>adjustmentFor(...)</code>; accepted targets don&#39;t include it.</li>
+<li>Targets store the weight they assumed (<code>basis.weightKg</code>); a 3 % drift raises <code>targets_stale</code>.</li>
+</ul>
+<h2>Billing and the beta (lib/billing, lib/analytics, ai/BETA.md)</h2>
+<ul>
+<li><strong>Plans</strong> (<code>lib/billing/plans.ts</code>): free, Entrena 4,99/39,99 €, Coach 9,99/79,99 €, Coach+ 16,99/149,99 € (VAT included). Each matches a usage preset and caps usage levels: Precise food and the &quot;close&quot; coach are Coach+ only; Entrena and free have food off. Meal photos a month (<code>foodPhotosPerMonth</code>): free and Entrena 0, Coach 10, Coach+ 80 (trial and full access: Coach+&#39;s; admins and own keys: no cap; payments off: <code>FOOD_PHOTO_BETA_LIMIT</code>, Coach+&#39;s 80).</li>
+<li><strong>Entitlements</strong> (<code>lib/billing/entitlements.ts › entitlementsFor(user, subscription, now)</code>): the 14-day trial (<code>users.trial_ends_at</code>, everything open, no card), the paid plan (Stripe status active / trialing / past_due, or cancelled until its period ends), free, or admin. Gives the monthly coach budget (messages and tokens; admins and BYOK have none) and <code>ads</code> (free only, <code>ADS_ENABLED</code>). Screens use <code>getEntitlements</code> / <code>getBillingView</code> (<code>lib/services/billing.ts</code>).</li>
+<li><strong>Full access</strong> (<code>users.comp_access</code>, migration <code>0032_comp_access</code>): an admin grants it from Admin → Users for friends and collaborators. It beats the trial, free and paid plans: Coach+ levels, no ads, no message cap, only a monthly token guard (<code>COMP_MONTHLY_TOKEN_LIMIT</code>, 20M by default), with or without Stripe. The coach honours it in <code>monthlyTokenLimit</code> too.</li>
+<li><strong>Last sign-in</strong> (<code>users.last_sign_in_at</code>, migration <code>0038_last_sign_in</code>, shown in Admin → Users): stamped by <code>recordSignInDb</code> in the routes where the person signs in themself (password, Google, Apple, the email-verification link). <code>/api/admin/impersonate</code> never calls it, and silent session renewals don&#39;t either; &quot;Last active&quot; (product events) is the other one. A new sign-in route must call it.</li>
+<li><strong>Admin → Users edit</strong> (<code>components/admin/UserEditSheet.tsx</code>, <code>PATCH /api/admin/users/:id { edit }</code>): validated by <code>lib/admin/user-edit.ts</code>; uniqueness and &quot;no demoting yourself&quot; in <code>lib/services/admin-users.ts</code>. Each edit is logged as an <code>admin_user_edit</code> event on the admin with the changed field names, never their values.</li>
+<li><strong>Stripe</strong> is the source of truth. <code>POST /api/billing/checkout</code> (Checkout, Stripe Tax, founder coupon or promo codes, keeps the remaining trial), <code>/api/billing/portal</code>, and <code>POST /api/billing/webhook</code>, which is public, signature-verified and handles each event once via <code>stripe_events</code>. Without <code>STRIPE_SECRET_KEY</code> the UI says &quot;coming soon&quot;. Products and prices: <code>npm run stripe:setup</code> (test key). Tests mock Stripe, never call it.</li>
+<li><strong>Product events</strong> (<code>product_events</code>, <code>lib/db/beta.ts › track()</code>): signup, trial, app open, activated, session logged, coach message, meal checked or swapped, recipe changed, phase set, paywall, limit, checkout, subscription. They never store what people wrote and never fail a request. The browser may only send the few in <code>CLIENT_EVENTS</code> (<code>POST /api/events</code>).</li>
+<li><strong>Beta:</strong> invite codes per cohort (<code>/register?invite=CODE</code> sets the cohort, the founder price and a usage preset), Profile → feedback (text + NPS), a Tally survey card on Today in weeks 2/4/6 (<code>BETA_SURVEY_URL</code>), and Admin → Beta with activation, D1/D7/D30, coach use, AI cost and NPS per cohort.</li>
+<li><strong>Feedback from outside the app:</strong> Admin → Beta → &quot;Add feedback&quot; (<code>components/admin/ManualFeedbackSheet.tsx</code>, <code>POST</code>/<code>DELETE /api/admin/beta/feedback</code>) writes down what someone said elsewhere (WhatsApp, in person). An account email attributes it to that person (their cohort and NPS); any other name is stored under the admin with <code>context.linked = false</code> and stays out of the NPS. Hand-written rows carry <code>context.manual</code> (<code>lib/analytics/feedback.ts</code>) and are the only ones that can be removed.</li>
+</ul>
+<h2>Payment guarantee (lib/billing/entitlements.ts, lib/services/billing.ts)</h2>
+<ul>
+<li><strong>Layer 1:</strong> Stripe webhooks update <code>subscriptions</code> (each event once).</li>
+<li><strong>Layer 2:</strong> <code>subscriptionActive()</code> trusts the stored <code>current_period_end</code>, not the status alone: active/trialing until the end plus 1 day (webhook latency), past_due a 7-day grace from the end (<code>graceEndsAt</code>), cancelled until the end, anything else none. A lost webhook can&#39;t keep a plan alive.</li>
+<li><strong>Layer 3:</strong> the daily cron&#39;s <code>reconcileSubscriptions()</code> asks Stripe only about subscriptions ending within 2 days or already past, plus past_due (<code>subscriptionsToReconcile</code>, indexed on <code>current_period_end</code>). Skipped without <code>STRIPE_SECRET_KEY</code>.</li>
+<li><strong>Server enforcement:</strong> every usage-gated check goes through <code>getEffectiveUsage(user)</code>: the chosen levels clamped to the plan while payments are live (<code>effectiveLevels</code>). <code>users.usage</code> keeps the choice, so paying again restores it. Food mutations check <code>foodGate()</code> (<code>lib/services/food-access.ts</code>): 403 when the plan doesn&#39;t include food / checking meals / precise logging. The coach context, tools, proactive signals, weekly review and screens all read the effective usage.</li>
+</ul>
+<h2>Communications (lib/notify, lib/services/comms.ts, lib/services/notices.ts)</h2>
+<ul>
+<li><strong>Channels:</strong> email (Resend, <code>lib/email.ts</code> <code>sendEmail</code>), push (<code>lib/push.ts</code>) and in-app notices. Senders: <code>notifyEmail</code> / <code>notifyPush</code> / <code>notifyInApp</code> / <code>notifyRenderedEmail</code> in <code>lib/notify/send.ts</code>.</li>
+<li><strong>Once only:</strong> every message claims a <code>notifications_log</code> row first (unique user × event × key × channel). Retries, cron re-runs and Stripe redeliveries never send twice. Failures are logged on the row, never thrown.</li>
+<li><strong>Preferences</strong> (<code>lib/notify/prefs.ts</code>, <code>users.notification_prefs</code>): topics coach, training, food, progress, account, news, beta, admin × channels email, push. Ask <code>canNotify(user, topic, channel)</code> before sending.<ul>
+<li>Account email is always on (locked).</li>
+<li>News email needs consent (<code>newsConsentAt</code>).</li>
+<li>Training × push is the daily reminder, kept in sync with <code>notifications_enabled</code>.</li>
+<li>Admin only for admins.</li>
+<li>Profile → Notifications is the grid (<code>components/notify/NotificationPrefs.tsx</code>, <code>/api/user/notifications</code>).</li>
+</ul>
+</li>
+<li><strong>Lifecycle</strong> (<code>lib/billing/lifecycle.ts</code> decides, <code>lib/services/comms.ts</code> sends; copy in <code>lib/notify/emails.ts</code>, ca/es/en):<ul>
+<li>welcome (email verified, or OAuth sign-up);</li>
+<li>trial ending in 3 days and trial ended (daily cron, payments live only);</li>
+<li>full access granted or removed (removing it starts a fresh 14-day trial);</li>
+<li>subscribed, plan changed, cancelled, plan ended (webhook and reconciliation);</li>
+<li>new terms (daily cron, one email per <code>LEGAL_VERSION</code>).</li>
+</ul>
+</li>
+<li><strong>Monthly summary</strong> (<code>lib/services/monthly.ts</code>, copy in <code>lib/notify/monthly.ts</code>): opt-in (Progress × email). On the 1st–3rd of each month (local time) the daily cron emails last month: program sessions done vs planned and minutes, new records and the key lift&#39;s estimated 1RM, weight vs the phase band (body tracked), days &quot;a prop del pla&quot; (food with numbers), coach messages, and a closing line written by the app (no model call). Once per person and month (log key <code>YYYY-MM</code>).</li>
+<li><strong>In-app</strong> (<code>components/notify/NoticesHost.tsx</code>, <code>/api/notices</code>):<ul>
+<li>one-time cards (trial ending shows on Today only);</li>
+<li>the past-due &quot;update your card&quot; banner;</li>
+<li>an 80 % coach-messages heads-up, once a month;</li>
+<li>&quot;What&#39;s new&quot; once per <code>lib/changelog.ts</code> version;</li>
+<li>the terms-acceptance sheet whenever <code>users.terms_accepted_version !== LEGAL_VERSION</code>. Bump <code>LEGAL_VERSION</code> in <code>lib/legal/version.ts</code> when the terms change.</li>
+</ul>
+</li>
+<li><strong>Stripe&#39;s own emails</strong> (enable them in the Stripe dashboard → Settings → Customer emails): receipts, failed payments, and the upcoming-renewal reminder for yearly plans (7 days before). We don&#39;t duplicate those.</li>
+<li><strong>Coach:</strong> proactive requests also send a push (topic coach).</li>
+</ul>
+<h2>App health for admins (lib/admin/health.ts, lib/services/admin-health.ts)</h2>
+<ul>
+<li><strong>What it covers:</strong> <code>collectHealth()</code> gathers<ul>
+<li>AI cost (last week, month to date, forecast);</li>
+<li>people (total, new, active, activated);</li>
+<li>coach turns and errors;</li>
+<li>database size (<code>pg_database_size</code>) and storage (<code>storage.objects</code>);</li>
+<li>the deployed version;</li>
+<li>new subscriptions and failed payments;</li>
+<li>optionally Anthropic org spend (<code>ANTHROPIC_ADMIN_KEY</code>, Usage &amp; Cost Admin API, amounts in cents) and the latest Netlify deploy (<code>NETLIFY_API_TOKEN</code> + <code>NETLIFY_SITE_ID</code>). Without keys the digest says &quot;check manually&quot;.</li>
+</ul>
+</li>
+<li><strong>Daily cron (<code>runAdminDuties</code>):</strong><ul>
+<li>threshold alerts, by email and push to admins, at most once per kind per day: AI forecast over <code>ADMIN_AI_BUDGET_EUR</code> or month-to-date over 80 % of it, database over 80 % of <code>ADMIN_DB_LIMIT_GB</code> (8), a coach error spike, a failed deploy;</li>
+<li>payment failures alert from the webhook, and cron job failures from the <code>job()</code> wrapper;</li>
+<li>the weekly digest on Mondays (Madrid), once per ISO week.</li>
+</ul>
+</li>
+<li><strong>Admin → App health</strong> (<code>/admin/health</code>) shows the same numbers live and the last digests and alerts.</li>
+</ul>
+<h2>Privacy: health consent, export and deletion (lib/privacy, lib/services/account.ts)</h2>
+<ul>
+<li><strong>Health data needs explicit consent (GDPR art. 9).</strong> <code>users.health_consent_at</code> / <code>health_consent_version</code> (migration <code>0034_health_consent</code>, <code>HEALTH_CONSENT_VERSION</code> in <code>lib/privacy/consent.ts</code>). Routes that store health data call <code>healthConsentGate(ctx.user)</code> and answer <strong>412 <code>consent_required</code></strong> without it: weights, body check-in and measurements, meal marking, food extras (parse and save), soreness or a note in the check-in, coach messages, and profile patches with weight, height or injuries (<code>patchTouchesHealth</code>). Add the gate to any new route that stores health data.</li>
+<li><strong>Client:</strong> <code>components/privacy/HealthConsentHost.tsx</code> (in the dashboard layout) asks once on the next visit (dismissible) and wraps <code>window.fetch</code>: a 412 <code>consent_required</code> opens the consent sheet and, on &quot;I agree&quot;, saves it (<code>POST /api/user/health-consent</code>) and replays the same request, so nothing is lost. The offline outbox goes through the same fetch.</li>
+<li><strong>Profile → Privacy</strong> (<code>components/privacy/PrivacySection.tsx</code>): consent date and withdraw/give (<code>DELETE</code>/<code>POST /api/user/health-consent</code>), download everything (<code>GET /api/user/export</code>, JSON) and delete the account (<code>POST /api/user/delete { confirm }</code>, typed word ESBORRAR / BORRAR / DELETE).</li>
+<li><strong>Export and delete find tables from the schema:</strong> every table with a <code>user_id</code> column, plus the child tables listed in <code>childTables()</code> (workout entries and sets, coach messages and proposals, program versions and blocks, meal plan versions, legacy routine children, Pinterest pins). <strong>A new child table without <code>user_id</code> must be added there</strong>, or it is neither exported nor deleted. Credentials and push keys are never exported. Deleting cancels live Stripe subscriptions at once, emails <code>account_deleted</code>, removes the avatar and the waitlist entry, and refuses the last admin.</li>
+</ul>
+<h2>The week is a to-do list</h2>
+<ul>
+<li>Planned sessions have a <em>suggested</em> day. In the current week the user can do them in any order on any day: <code>lib/training/week.ts</code> (<code>weekBoard</code>, <code>moveToToday</code>, <code>postponeToday</code>). Open sessions are not &quot;missed&quot; until the week is over (<code>adherence</code>, inactivity signal).</li>
+<li><code>reconcilePlanned</code> matches current-week sessions by week + session (so moved ones stay put) and later weeks by exact date (so template day changes apply).</li>
+<li>Daily check-in (<code>daily_checkins</code>, <code>lib/training/checkin.ts</code>): <code>as_planned</code> | <code>sore</code> (+ body areas) | <code>other</code> | <code>rest</code>. Quick answers are resolved without AI; free text and week reorganisation go to the coach (<code>propose_schedule</code>, proposal kind <code>schedule</code>).</li>
+<li><strong>One page per session</strong> (<code>components/log/LogForm.tsx</code>): Today&#39;s card has one action, &quot;Open the session&quot;, and that page is where the session is read (target, last time, the program&#39;s note per exercise, the week&#39;s note), changed and logged. Order and &quot;not today&quot; are one tap on each exercise (↑ ↓ ✕; the moved card glows, keeps focus on its arrow and is announced; ✕ shows an undo bar for 6 s that brings back what was typed). &quot;Change&quot; opens <code>ExerciseOptions</code>: alternatives with what to aim for (<code>GET /api/exercises/:id/alternatives?planned=&amp;item=</code>, <code>alternativeTargets</code>), any other exercise, back to the programmed one.</li>
+<li><strong>A replacement is always for the same muscle group</strong> (<code>lib/training/muscle-groups.ts</code>: lats/traps → back, glutes + hamstrings → posterior…). <code>findAlternatives</code> keeps a candidate only when its main muscle is in the original&#39;s group, or for the very same movement pattern when it also works that group (bench → close-grip bench, deadlift → RDL), ranked after the same group; conditioning, jumps, Olympic lifts, cardio and mobility keep their kind. &quot;Search another&quot; opens the picker on that group (<code>GET /api/exercises?like=&lt;id&gt;</code> → <code>group</code>) with &quot;All&quot; to widen it. A test checks every catalog exercise. Changes live in the form, never in the program. Whatever was touched is kept on the phone until the workout is saved (<code>lib/log/draft-store.ts</code>, one draft per session in localStorage, two weeks): closing the page loses nothing, the page says &quot;picking up where you left off&quot; with &quot;Start over&quot;, and Today&#39;s button reads &quot;Continue the session&quot;.</li>
+<li>Activities outside the program (walk, boxing…) are logged with <code>POST /api/workouts/quick</code> (<code>lib/training/activities.ts</code> MET per activity) and count as extras.</li>
+<li><strong>Something else instead of a session counts by itself</strong> (<code>lib/training/coverage.ts</code>, no AI): the person only trains; the app decides. Each template session may carry <code>standIn</code> (<code>any | any_cardio | same_discipline | activities | strength | mind_body | none</code>, optional <code>minMins</code>), written by the coach from the goal (<code>propose_program</code>, <code>add_session</code> / <code>update_session</code>; prompt › &quot;Sessions done some other way&quot;). Without one, <code>ruleFor</code> derives it from today&#39;s phase: strength → strength on half its muscles; yoga/mobility → mind_body; run/swim/cycling → any_cardio, same_discipline with a performance focus or that sport; &quot;something active&quot; (hiit/other) → any, any_cardio with performance or a sport. The phase&#39;s <code>sport</code> (<code>goal_phases.sport</code>, migration <code>0039_phase_sport</code>, <code>propose_goal_phase.sport</code>) is the specific aim (&quot;get better at basketball&quot;). <strong>Dose, like a watch:</strong> a workout is a session at ≥ 30 min (or 60 % of the session, or <code>minMins</code>) and moderate intensity (activity MET ≥ 3, ×0.85 when logged easy); weights logged by exercise always are; yoga/mobility only need their length. Shorter or gentler activity is minutes and energy. <strong>One to one</strong> (<code>assignCoverage</code>, strictest rule first): <code>loadWeek</code> links this week&#39;s own workouts to the open sessions they cover (<code>planned.status=&#39;done&#39;</code>, <code>workoutId</code>; the workout&#39;s <code>plannedSessionId</code> stays null, so the board says &quot;«Walk» counted as HIIT or walk&quot; — <code>DoneItem.standsFor</code>); a second cardio is an extra. Workouts of a one-off session that replaced a program session are left out. Deleting a workout opens its session again (<code>deleteWorkout</code>). Monday&#39;s <code>reviewWeek</code> uses the same rule for last week. Program → each session says what counts (<code>counts</code>), and the coach sees it per session.</li>
+<li><strong>Each week is an instance of the program</strong> (<code>lib/training/week-review.ts</code>, <code>week_plans</code>, migration <code>0036_week_plans</code>): the program is fixed, but on the first visit of a new week <code>loadWeek</code> reviews the last one (<code>reviewWeek</code>) and lays this one out, once (<code>claimWeekReview</code>). A session left undone is not owed when a workout outside the program did its job (<code>covered</code>: any workout for hiit / other / yoga / mobility sessions, the same discipline and half the muscles for strength); otherwise it goes first among this week&#39;s sessions of the same discipline (<code>first</code>), or just comes back on its day (<code>kept</code>). Only suggested days move, never the template. Today shows what changed under the week ring (<code>WeekProgress</code>), and the coach reads it in the glance.</li>
+<li><strong>Monday&#39;s review</strong> (<code>lib/training/week-adapt.ts › adaptWeek</code>, gathered by <code>lib/services/week-plan.ts</code>, stored as <code>week_plans.review.plan</code>): what a trainer does on Monday, with rules and limits, no AI. It reads last week as trained (program, own workouts, races, effort), gives it a read (<code>solid | mixed | short | heavy | easy | off</code>), sets <strong>this week&#39;s goal</strong> (sessions, cardio minutes, a muscle to watch) and proposes changes to this week only:<ul>
+<li><code>rest</code> — days off after a big effort (10 km or a hard hour: two days; a half marathon: three), sessions on those days move later;</li>
+<li><code>trim</code> — one set fewer on a muscle worked a lot outside the program from Friday on, in the first session that trains it again, plus 15 min of cardio;</li>
+<li><code>cardio</code> — up to two 25-min walks on free days when last week had under 30 min of cardio and the program asks for under 60;</li>
+<li><code>focus</code> — one more set on a lift with no progress in three sessions (<code>isStalled</code>);</li>
+<li><code>ease</code> — one set fewer on the last two exercises of every strength session after a week averaging effort ≥ 8.5.
+Today shows the note first (<code>components/today/WeekNote.tsx</code>): always an explanation, and when there are changes &quot;Apply&quot; / &quot;Leave the program as it is&quot; (<code>POST /api/week-plan</code>, <code>decideWeekPlan</code>). Accepting writes set counts on this week&#39;s sessions (<code>planned_sessions.overrides.sets</code>, applied by <code>applyOverrides</code>) and moves sessions off rest days; until then nothing changes. Afterwards the goal sits under the week ring, free days suggest the walk until the cardio goal is met, and rest days say so. The coach reads the read, the goal and the state of the proposals in the glance.</li>
+</ul>
+</li>
+<li><strong>The review is written by AI; the rules are the net</strong> (<code>lib/coach/week-review.ts</code>, <code>lib/services/week-ai.ts</code>): one call per person and week on the more capable model (<code>WEEK_REVIEW_MODEL</code>, default the goals model; recorded as feature <code>week_review</code>). <code>gatherDossier</code> gives it the phase goal and where the person is in it, this week&#39;s open sessions with their ids, the last four weeks as really trained (own workouts, races, effort, notes), check-ins, weight, lifts that are not moving, food when it adapts, and the rules&#39; plan as a hint. It answers with <code>set_week_plan</code>: the note, this week&#39;s goal in one line, and changes from a closed vocabulary (<code>rest</code>, <code>move</code>, <code>skip</code>, <code>light</code>, <code>sets</code>, <code>cardio</code>, each with its reason in the person&#39;s language) plus an optional energy change for food. <code>sanitizePlan</code> keeps it inside limits (unknown ids dropped, days within the week, sets within two of the program&#39;s, at most two sessions out, three cardio sessions, rest until Thursday, food ±150 kcal) — the model judges, the app applies. The newest models reject a forced <code>tool_choice</code>: the prompt asks for the tool and the answer is read leniently.<ul>
+<li><strong>When:</strong> Today asks for it the first time the week&#39;s plan is still the rules&#39; (<code>requestWeekReview</code> → <code>netlify/functions/week-review-background.mts</code>; detached in local dev) and the note says &quot;looking at your week&quot; while it lands (<code>aiPendingSince</code>, at most 90 s); the Monday cron asks ahead. A failure marks <code>aiFailed</code> and the rules&#39; plan stands for the week. No key, no budget or weeks that don&#39;t adapt: rules only.</li>
+<li><strong>Mid-week:</strong> the coach&#39;s <code>revise_week</code> tool re-plans the rest of the week with the same vocabulary and limits (&quot;I&#39;ve caught the flu&quot;): a new note on Today to accept or decline (<code>reviseWeekFromCoach</code>, prompt › &quot;When the week changes&quot;).</li>
+<li><strong>Food:</strong> an accepted energy change is an <code>energy_adjustments</code> row with reason <code>week_review</code>. The rules&#39; weekly food review (<code>runWeeklyReview</code>) steps aside when the week&#39;s plan was written by AI or the coach, and on Mondays while the review is due.</li>
+</ul>
+</li>
+<li><strong>Who gets it:</strong> two switches in Profile → &quot;Weeks that adapt&quot; (<code>users.usage.adaptTraining</code> / <code>adaptFood</code>, on by default, independent of the preset; <code>capabilities().adaptiveTraining</code> / <code>adaptiveFood</code>). Plans decide (<code>PLANS[..].adapt</code>, <code>effectiveAdapt</code>): free none, Entrena training, Coach and Coach+ both; the trial and full access have both. <code>getTodayView(..., { adapt })</code> hides the note and its suggestions when it is off.</li>
+<li><strong>Yesterday counts</strong> (<code>loadedMuscles</code>, <code>recoveryAdvice</code>, in <code>getTodayView</code>): after a workout done outside the program yesterday, a session that repeats half or more of the muscles worked hard gives way to the pending one that repeats the least (<code>reason: &#39;recovery&#39;</code>), or to a sport when they all repeat. Easy sessions (effort ≤ 5) ask nothing; the program&#39;s own consecutive days and a session the user chose are left alone.</li>
+<li><strong>One-off sessions</strong> (<code>extra_sessions</code>, <code>lib/db/extra-sessions.ts</code>, migration <code>0035_extra_sessions</code>): a session for one day outside the program (&quot;no HIIT class today, give me a full body&quot;). The coach plans it at once with <code>plan_extra_session</code> (one open per day; planning again replaces it; <code>replacesPlannedId</code> takes a pending program session out of the week). Today shows it first (<code>suggestion.kind === &#39;extra&#39;</code>, <code>view.extra</code>), <code>/log?extra=&lt;id&gt;</code> opens pre-filled and saving closes it as a workout outside the program. &quot;Remove&quot; on the card (<code>DELETE /api/extra-sessions/:id</code>) brings back the session it replaced. The program and its versions are never touched.</li>
+</ul>
+<h2>Offline (gyms have poor coverage)</h2>
+<ul>
+<li><code>public/sw.js</code>: static assets cache-first; app pages network-first with a 3.5 s timeout, falling back to the last good copy. Today asks the SW to warm the gym pages (<code>/log?planned=…</code>, <code>/log?activity=pick</code>, <code>/log?free=1</code>, <code>/program</code>) once a day; logout clears them.</li>
+<li>Writes that must not be lost go through <code>sendOrQueue()</code> (<code>lib/offline/client.ts</code>, IndexedDB outbox; core in <code>lib/offline/outbox.ts</code>). Each carries an <code>Idempotency-Key</code>; routes that accept them wrap the work in <code>idempotent()</code> (<code>lib/idempotency.ts</code>, table <code>idempotency_keys</code>), so a retry never duplicates a workout or check-in.</li>
+<li>Updates: every build has an id (<code>next.config.ts</code> → <code>NEXT_PUBLIC_BUILD_ID</code>, Netlify&#39;s DEPLOY_ID). <code>/api/version</code> returns the deployed one and <code>components/pwa/appUpdate.ts</code> compares them (8 s after load, on focus, back online, every 5 min). When they differ, a top pill offers &quot;Update&quot;; Profile → App shows the version and always offers a reload. Applying clears the <code>pages-*</code> caches and reloads. The SW is registered as <code>/sw.js?v=&lt;build id&gt;</code>, so each deploy installs the new worker. A missing code chunk (ChunkLoadError after a deploy) reloads automatically.</li>
+<li><code>components/OfflineSync.tsx</code> registers the SW, flushes the outbox (online, focus, every 30 s) and shows a quiet status pill.</li>
+<li><strong>&quot;No connection&quot; must be true.</strong> The SW serves the saved copy whenever a page takes over 3.5 s, which also happens with coverage (a heavy page on a cold server). So a saved copy is only a suspicion: the pill asks the server (<code>lib/offline/reachable.ts › serverReachable</code>, <code>/api/version</code>, 4 s) and says &quot;no connection&quot; only when that fails (asking again every 5 s); when it answers, the page reloads its data with no pill. A network answer clears the SW&#39;s &quot;served from cache&quot; mark (<code>sw-lib.js › cachedMarks</code>), and a slow client-side navigation waits longer when the server answers (<code>rscWithTimeout</code>) instead of reloading into the saved copy in a loop. <code>scripts/e2e/offline.mjs</code> scenario 6 covers it.</li>
+</ul>
+<h2>End-to-end checks</h2>
+<ul>
+<li><code>scripts/e2e/journeys.mjs</code> clicks through the Today journeys (done it → log; activity pick → log form with optional calories; rest day; bring forward / rest + &quot;Change&quot; undo; meals: one-tap eaten toggle, swap and back to the plan, nothing marks meals in Food). <code>scripts/e2e/offline.mjs</code> simulates the gym without coverage. <code>scripts/e2e/qa.mjs</code> (with <code>qa-seed.mts</code>) is the full walkthrough of usage profiles, phases, food, the weekly review, precise logging, the coach (<code>--ai</code>, real API, about 6 turns) and the desktop layout at 390/1440/1024; see its header. <code>scripts/e2e/coach.mjs</code> checks the coach chat on a phone (panel, scroll, composer, and optionally a real turn that must persist). Both run against a local production build; see the headers. Run them after changing Today, the log forms or the service worker.</li>
+</ul>
+<h2>Languages (ca / es / en)</h2>
+<ul>
+<li>Every UI string lives in <code>lib/i18n/translations.ts</code>, in all three languages. Never hardcode visible text or aria labels.</li>
+<li><code>users.language</code> holds the preference (<code>lib/i18n/preference.ts</code>):<ul>
+<li>null or <code>auto:xx</code>: follow the system language. <code>xx</code> is the last one seen, used for push, email and the proactive coach.</li>
+<li><code>ca</code> / <code>es</code> / <code>en</code>: chosen in Profile.</li>
+</ul>
+</li>
+<li>Signed in, the language is the Profile choice, otherwise the request&#39;s Accept-Language (<code>resolveUserLang</code>, used by the dashboard layout and <code>requireUser()</code> → <code>ctx.lang</code>). The <code>lang</code> cookie only matters before signing in. Server-side jobs use <code>storedLang()</code>.</li>
+<li>Changing it in Profile saves at once and refreshes the page, so screens and the coach switch immediately.</li>
+</ul>
+<h2>Dates</h2>
+<ul>
+<li>Calendar dates are <code>&#39;YYYY-MM-DD&#39;</code> strings in the user&#39;s local day.</li>
+<li>Never build them with <code>toISOString()</code>, which is UTC and shifts the day in Spain. On the client use <code>localDateStr()</code> / <code>monthDates()</code> from <code>lib/dates.ts</code>; on the server use <code>todayInTimezone(user.timezone)</code> from <code>lib/cron-helpers.ts</code>.</li>
+</ul>
+<h2>Test framework</h2>
+<ul>
+<li><strong>Vitest</strong> (<code>npm test</code> = <code>vitest run</code>)</li>
+<li>Config: <code>vitest.config.ts</code></li>
+<li>Setup: <code>tests/setup.ts</code> (patches cwd, wipes data dir between tests)</li>
+</ul>
+<!-- END:testing-rules -->
+
+<!-- BEGIN:a11y-rules -->
+<h1>Accessibility (a11y) — mandatory patterns</h1>
+<h2>Escape key on every modal</h2>
+<p>Every modal or overlay <strong>must</strong> close on <code>Escape</code>. Use this exact pattern:</p>
+<pre><code class="language-typescript">useEffect(() =&gt; {
+  if (!open) return                         // only attach when modal is visible
+  const onKey = (e: KeyboardEvent) =&gt; { if (e.key === &#39;Escape&#39;) onClose() }
+  document.addEventListener(&#39;keydown&#39;, onKey)
+  return () =&gt; document.removeEventListener(&#39;keydown&#39;, onKey)
+}, [open, onClose])
+</code></pre>
+<ul>
+<li>For always-mounted modals (no <code>open</code> toggle), omit the guard: attach on mount, clean up on unmount.</li>
+<li><code>onClose</code> must be stable (passed as prop or wrapped in <code>useCallback</code>) to avoid stale closures.</li>
+</ul>
+<h2>Images</h2>
+<p>All <code>&lt;img&gt;</code> elements must have <code>user-select: none</code> — enforced globally via <code>app/globals.css</code>.<br>Never add <code>draggable={true}</code> to images.</p>
+<h2>Focus rings</h2>
+<p>All interactive elements (buttons, links, inputs, selects) must have a visible focus ring. Use:</p>
+<ul>
+<li><code>focus:outline-none focus:ring-2 focus:ring-black/30</code> on light backgrounds</li>
+<li><code>focus:outline-none focus:ring-2 focus:ring-white/40</code> on dark backgrounds (e.g. sidebar)</li>
+</ul>
+<p>Never use bare <code>focus:outline-none</code> without a replacement ring.</p>
+<h2>Dropdown / popover pattern</h2>
+<p>Every dropdown must close on <strong>both</strong> outside click AND <code>Escape</code>. Use two <code>useEffect</code> calls:</p>
+<pre><code class="language-typescript">// Outside click
+useEffect(() =&gt; {
+  function handleClick(e: MouseEvent) {
+    if (ref.current &amp;&amp; !ref.current.contains(e.target as Node)) setOpen(false)
+  }
+  document.addEventListener(&#39;mousedown&#39;, handleClick)
+  return () =&gt; document.removeEventListener(&#39;mousedown&#39;, handleClick)
+}, [])
+
+// Escape key (only attach when open)
+useEffect(() =&gt; {
+  if (!open) return
+  const onKey = (e: KeyboardEvent) =&gt; { if (e.key === &#39;Escape&#39;) setOpen(false) }
+  document.addEventListener(&#39;keydown&#39;, onKey)
+  return () =&gt; document.removeEventListener(&#39;keydown&#39;, onKey)
+}, [open])
+</code></pre>
+<p>The trigger button must have <code>aria-expanded={open}</code> and <code>aria-haspopup=&quot;true&quot;</code>.</p>
+<h2>Dialogs / modals</h2>
+<p>Every modal overlay must have <code>role=&quot;dialog&quot;</code> and <code>aria-modal=&quot;true&quot;</code> on the outermost div, plus an <code>aria-label</code> describing its purpose:</p>
+<pre><code class="language-tsx">&lt;div role=&quot;dialog&quot; aria-modal=&quot;true&quot; aria-label=&quot;Modal title&quot; className=&quot;fixed inset-0 …&quot;&gt;
+</code></pre>
+<p>Non-blocking banners (e.g. cookie consent) use <code>aria-modal=&quot;false&quot;</code>.</p>
+<h2>Toolbars</h2>
+<p>Groups of action buttons that operate on a selection (e.g. bulk action bars) must have <code>role=&quot;toolbar&quot;</code> and <code>aria-label</code>:</p>
+<pre><code class="language-tsx">&lt;div role=&quot;toolbar&quot; aria-label=&quot;Bulk actions&quot; …&gt;
+</code></pre>
+<!-- END:a11y-rules -->
+
+<!-- BEGIN:css-gotchas -->
+<h1>CSS gotchas</h1>
+<h2>Images in cropping/canvas contexts</h2>
+<p>Tailwind&#39;s preflight and browser CSS reset apply <code>max-width: 100%</code> to all <code>&lt;img&gt;</code> elements.<br>When positioning images absolutely with an explicit pixel <code>width</code>, always add <code>maxWidth: &#39;none&#39;</code> and <code>maxHeight: &#39;none&#39;</code> to the inline style, or the image will be clamped to the container width and lose its aspect ratio.</p>
+<pre><code class="language-tsx">&lt;img style={{ width: dispW, height: dispH, maxWidth: &#39;none&#39;, maxHeight: &#39;none&#39; }} /&gt;
+</code></pre>
+<!-- END:css-gotchas -->
+
+<h2>Locked, never hidden (lib/billing/locks.ts, components/billing/{Locked,UpgradeHost,upgrade}.tsx)</h2>
+<ul>
+<li>Anything another plan includes and the person&#39;s plan doesn&#39;t stays visible and locked: same place and label, fainter, a small lock, <code>aria-disabled=&quot;true&quot;</code> (never the <code>disabled</code> attribute), and a tap or Enter opens the one upgrade sheet (&quot;Upgrade your plan to unlock …&quot;, the cheapest plan that has it, a button to <code>/plans</code>). Only what the person turned off themself is hidden.</li>
+<li><code>computeLocks(ent, billingEnabled(), chosenUsage)</code> is pure and derives everything from <code>PLANS</code>: locked levels per area, locked presets, the two adapt switches, the Food tab, and <code>features</code> (feature → cheapest paid plan). Nothing is locked while payments are off, nor for admins, full access or the trial. It uses the same plan levels the server clamps with, so a lock and a 403 always agree; server gates stay where they are.</li>
+<li>The dashboard layout computes it once and passes it to <code>UsageProvider</code>; client components read <code>useUsage().locks</code>. To lock a control: <code>&lt;button onClick={…} {...lockProps(lock?.feature)}&gt;Label{lock &amp;&amp; &lt;LockMark /&gt;}&lt;/button&gt;</code> (spread after the control&#39;s own onClick); elsewhere call <code>askUpgrade(feature)</code>. <code>PageTabs</code> takes <code>locked</code> tabs and <code>onLocked</code>; <code>Sidebar</code> / <code>MobileNav</code> take <code>locked</code> (href → feature, from <code>lockedHrefs</code>).</li>
+<li>Today on a plan without food keeps the meals&#39; place as a placeholder (<code>components/today/FoodLockedPanel.tsx</code>: the shape of the day&#39;s meals, faint, with the upgrade message and a button that opens the sheet).</li>
+<li>A new gated feature needs a key in <code>UPGRADE_FEATURES</code> and its name in <code>translations › upgrade.features</code> (ca/es/en, written to follow &quot;…to unlock&quot;); a test checks the two lists match. Opening the sheet tracks <code>paywall_viewed</code> with <code>{ feature, source: &#39;lock&#39; }</code>.</li>
+</ul>

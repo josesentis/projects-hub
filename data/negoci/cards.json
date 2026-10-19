@@ -1,0 +1,367 @@
+{
+ "launch-x-linkedin": {
+  "col": "todo",
+  "order": 1792140000000,
+  "phase": 1,
+  "steps": [
+   "Triar el vídeo: vertical en català o castellà per a LinkedIn, anglès per a X (carpeta `mai-fitness-videos-2026-10-16` de l'escriptori)",
+   "Opcional: crear un codi a Admin → Beta (p. ex. `linkedin`) per saber quanta gent arriba de cada lloc",
+   "Publicar a LinkedIn des del perfil personal",
+   "Publicar el fil a X amb el vídeo al primer missatge",
+   "Apuntar el que diguin a Admin → Beta → Add feedback"
+  ],
+  "title": "Presentar l'app a X i LinkedIn",
+  "who": "Jose",
+  "why": "Abans de buscar els testers professionals (entrenadors, dietistes-nutricionistes). Els textos i els vídeos són a Guies → 8 · Xarxes."
+ },
+ "p0-anuncis": {
+  "col": "todo",
+  "order": 10,
+  "phase": 0,
+  "steps": [
+   "Decidir si val la pena ara o més endavant",
+   "Si sí: contractar un CMP certificat (TCF 2.2) amb Consent Mode v2",
+   "Aprovació d'AdSense",
+   "Posar ADS_ENABLED=true a Netlify"
+  ],
+  "title": "Decidir si activem anuncis al pla gratuït",
+  "who": "Jose",
+  "why": "Només surten al pla gratuït i estan apagats. Per activar-los a la UE cal un gestor de consentiment certificat per Google (el banner actual no ho és). Aporten cèntims per usuari: no és prioritari."
+ },
+ "p0-github-actions": {
+  "col": "todo",
+  "order": 13,
+  "phase": 0,
+  "steps": [
+   "GitHub → el repositori → Settings → Actions → permetre Actions",
+   "Netlify → Environment variables → DATABASE_URL: l'abast (scope) ha d'incloure \"Builds\" i el valor ha de ser el de producció",
+   "Després del pròxim push: a GitHub ha de sortir una marca verda, i el log de Netlify ha de dir \"No pending migrations\""
+  ],
+  "title": "Activar GitHub Actions i revisar DATABASE_URL a Netlify",
+  "who": "Jose",
+  "why": "Els tests es passaran a GitHub a cada push, i les migracions s'aplicaran soles en publicar. Perquè funcioni cal que GitHub Actions estigui activat i que Netlify tingui la base de dades disponible durant el build."
+ },
+ "p0-landing": {
+  "col": "todo",
+  "order": 11,
+  "phase": 0,
+  "steps": [
+   "Obrir la landing en català, castellà i anglès",
+   "Apuntar aquí els canvis que vulguis i passar-me'ls"
+  ],
+  "title": "Revisar la landing i la pàgina 'Qui som'",
+  "who": "Jose",
+  "why": "Les he actualitzat amb totes les funcions noves. Cal que diguin exactament el que vols."
+ },
+ "p0-legal": {
+  "col": "todo",
+  "order": 2,
+  "phase": 0,
+  "steps": [
+   "Buscar un advocat de protecció de dades / dret digital",
+   "Enviar-li les pàgines /legal/privacy, /legal/terms i /legal/cookies",
+   "Demanar que confirmi: responsable i ubicació de dades (UE), terminis d'esborrat (1 mes / 30 dies), que Anthropic no entrena amb les dades, que els ajustos automàtics del menjar no són 'decisions automatitzades' (art. 22), edat mínima 16 anys",
+   "Demanar-li també el text de renovació, cancel·lació i desistiment per als pagaments",
+   "Passar-me les correccions i les aplico"
+  ],
+  "title": "Revisió legal dels textos",
+  "who": "Jose",
+  "why": "Els textos de privacitat, termes i galetes estan actualitzats però són un esborrany. Tractem dades de salut (art. 9 RGPD) i cobrarem subscripcions (dret de desistiment)."
+ },
+ "p0-migracio": {
+  "col": "todo",
+  "order": 1,
+  "phase": 0,
+  "steps": [
+   "Al terminal del projecte, prova en sec (no canvia res): `! DATABASE_URL=\"$(node -e \"…\")\" npm run db:dry-run` (la mateixa ordre que vas fer servir l'altra vegada)",
+   "Si surt bé, aplica-la: la mateixa ordre amb `npm run db:apply -- --production`",
+   "Avisa'm i jo publico el codi (push) i comprovo el desplegament"
+  ],
+  "title": "Aplicar la migració 0029 a producció",
+  "urgent": true,
+  "who": "Jose",
+  "why": "El codi nou (pagaments, beta) necessita taules noves. Si es puja el codi sense aplicar-la, l'app falla."
+ },
+ "p0-netlify-env": {
+  "col": "todo",
+  "order": 6,
+  "phase": 0,
+  "steps": [
+   "Netlify → el lloc → Site configuration → Environment variables",
+   "Afegir STRIPE_SECRET_KEY, els sis STRIPE_PRICE_… i STRIPE_COUPON_FOUNDER (les línies que ha imprès l'script)",
+   "Més endavant: STRIPE_WEBHOOK_SECRET (targeta següent) i BETA_SURVEY_URL (beta)",
+   "Tornar a desplegar perquè s'apliquin"
+  ],
+  "title": "Posar les claus a Netlify",
+  "who": "Jose",
+  "why": "L'app llegeix les claus de Stripe de les variables d'entorn de Netlify. Sense elles, els plans surten com a 'properament'."
+ },
+ "p0-oss": {
+  "col": "todo",
+  "order": 4,
+  "phase": 0,
+  "steps": [
+   "Parlar-ho amb el gestor o assessor fiscal",
+   "Presentar el model 035 a l'Agència Tributària (règim de la Unió)",
+   "Un cop fet, Stripe Tax ja aplica l'IVA correcte a cada país"
+  ],
+  "title": "Alta a l'OSS de l'IVA (model 035)",
+  "who": "Jose / gestor",
+  "why": "Per vendre a particulars d'altres països de la UE cal cobrar l'IVA del seu país. L'OSS permet declarar-ho tot a Espanya en una sola declaració."
+ },
+ "p0-outfit": {
+  "col": "todo",
+  "order": 12,
+  "phase": 0,
+  "steps": [
+   "Llegir la secció §12",
+   "Fer-ne commit al repositori d'Outfit"
+  ],
+  "title": "Revisar el traspàs per a Outfit of the Day",
+  "who": "Jose",
+  "why": "El document ai/TRASPAS-model-conversacional.md d'Outfit té tot el que hem après (UX, negoci, models). No hi he fet commit perquè el revisis."
+ },
+ "p0-portal": {
+  "col": "todo",
+  "order": 8,
+  "phase": 0,
+  "steps": [
+   "Stripe → Settings → Billing → Customer portal",
+   "Permetre cancel·lar (al final del període), canviar entre els 3 plans i entre mensual/anual, i actualitzar la targeta",
+   "Desar"
+  ],
+  "title": "Configurar el portal de client de Stripe",
+  "who": "Jose",
+  "why": "És la pàgina on cada usuari cancel·la, canvia de pla o actualitza la targeta, sense que hagis de fer res."
+ },
+ "p0-prova-pagament": {
+  "col": "todo",
+  "order": 9,
+  "phase": 0,
+  "steps": [
+   "A l'app: Perfil → Pla → triar un pla",
+   "Pagar amb la targeta de proves 4242 4242 4242 4242 (qualsevol data futura i CVC)",
+   "Comprovar que el pla canvia a Perfil i que surt al portal",
+   "Cancel·lar des del portal i comprovar que es manté fins a final de període"
+  ],
+  "title": "Fer un pagament de prova",
+  "who": "Jose",
+  "why": "Comprovar que tot el circuit funciona abans de la beta."
+ },
+ "p0-stripe-compte": {
+  "col": "todo",
+  "link": "https://dashboard.stripe.com/register",
+  "linkLabel": "Crear compte de Stripe",
+  "order": 3,
+  "phase": 0,
+  "steps": [
+   "Registrar-se a stripe.com amb les dades de l'empresa o autònom i el compte bancari",
+   "Activar Stripe Tax (Configuració → Impostos) amb el registre d'IVA espanyol",
+   "Deixar-lo en mode de proves (test) per ara"
+  ],
+  "title": "Crear el compte de Stripe",
+  "who": "Jose",
+  "why": "Stripe és qui cobra les subscripcions, fa les factures i calcula l'IVA de cada país."
+ },
+ "p0-stripe-setup": {
+  "col": "todo",
+  "order": 5,
+  "phase": 0,
+  "steps": [
+   "Copiar la clau secreta de proves de Stripe (comença per sk_test_)",
+   "Al terminal: `STRIPE_SECRET_KEY=sk_test_… npm run stripe:setup`",
+   "L'script imprimeix unes línies de variables: guardar-les per al pas següent"
+  ],
+  "title": "Crear els plans a Stripe amb l'script",
+  "who": "Jose (amb mi)",
+  "why": "Un script crea automàticament els 3 productes, els 6 preus (mensual i anual) i el cupó fundador del 30 %."
+ },
+ "p0-webhook": {
+  "col": "todo",
+  "order": 7,
+  "phase": 0,
+  "steps": [
+   "Stripe → Developers → Webhooks → Add endpoint",
+   "URL: https://<el teu domini>/api/billing/webhook",
+   "Esdeveniments: checkout.session.completed, customer.subscription.created, customer.subscription.updated, customer.subscription.deleted, invoice.payment_failed",
+   "Copiar el 'Signing secret' a Netlify com a STRIPE_WEBHOOK_SECRET"
+  ],
+  "title": "Crear el webhook de Stripe",
+  "who": "Jose",
+  "why": "Així Stripe avisa l'app quan algú paga, renova, cancel·la o falla un pagament."
+ },
+ "p1-codis": {
+  "col": "todo",
+  "order": 3,
+  "phase": 1,
+  "steps": [
+   "Admin → Beta → crear un codi per grup (A: 12 usos, B: 18, C: 10) amb 'preu fundador' activat",
+   "L'enllaç és https://<domini>/register?invite=CODI",
+   "Els testers s'han de registrar amb correu (Google/Apple encara no llegeixen el codi)"
+  ],
+  "title": "Crear els codis d'invitació",
+  "who": "Jose",
+  "why": "Cada codi posa el tester al seu grup, li dona el preu fundador i li proposa el perfil d'ús."
+ },
+ "p1-entrevistes": {
+  "col": "todo",
+  "order": 6,
+  "phase": 1,
+  "steps": [
+   "Triar 6–8 testers de grups diferents",
+   "Preguntar: per què l'obren, què els falta, què pagarien i per què",
+   "Apuntar-ne les respostes aquí"
+  ],
+  "title": "Entrevistes de 15 minuts (setmana 6)",
+  "who": "Jose",
+  "why": "Les xifres diuen què passa; les entrevistes diuen per què."
+ },
+ "p1-informe": {
+  "col": "todo",
+  "order": 7,
+  "phase": 1,
+  "steps": [
+   "Demanar-me l'informe: el faig amb Admin → Beta, Analytics i les enquestes, amb la plantilla de ai/BETA.md"
+  ],
+  "title": "Informe final de la beta",
+  "who": "Claude",
+  "why": "Decidir preus i límits finals amb dades reals."
+ },
+ "p1-invitacions": {
+  "col": "todo",
+  "order": 4,
+  "phase": 1,
+  "steps": [
+   "Missatge curt: què és l'app, que és una beta, que el feedback es fa des de Perfil",
+   "Afegir l'enllaç amb el codi del seu grup",
+   "Al cap de 3 dies, missatge personal als que no han començat"
+  ],
+  "title": "Enviar les invitacions",
+  "who": "Jose",
+  "why": "Arrencar la beta."
+ },
+ "p1-seguiment": {
+  "col": "todo",
+  "order": 5,
+  "phase": 1,
+  "steps": [
+   "Cada setmana mirar Admin → Beta: activació (≥60 %), D7 (≥25 %), cost per usuari, NPS",
+   "Respondre el feedback en menys de 48 h",
+   "Passar-me els problemes que bloquegin la gent"
+  ],
+  "title": "Seguiment setmanal (6 setmanes)",
+  "who": "Jose",
+  "why": "Detectar a temps què no funciona."
+ },
+ "p1-tally": {
+  "col": "todo",
+  "link": "https://tally.so",
+  "linkLabel": "Tally",
+  "order": 1,
+  "phase": 1,
+  "steps": [
+   "Crear un formulari a tally.so amb camps ocults 'week' i 'cohort'",
+   "Preguntes: NPS (0–10), què funciona, què falta; la setmana 4, les preguntes de preu (estan a ai/BETA.md)",
+   "Posar l'enllaç a Netlify com a BETA_SURVEY_URL"
+  ],
+  "title": "Crear l'enquesta de la beta a Tally",
+  "who": "Jose",
+  "why": "L'app mostra l'enquesta als testers les setmanes 2, 4 i 6."
+ },
+ "p1-testers": {
+  "col": "todo",
+  "order": 2,
+  "phase": 1,
+  "steps": [
+   "Grup A (12): gent de gimnàs que només vol una rutina",
+   "Grup B (18): volen perdre greix o recompondre sense obsessionar-se",
+   "Grup C (10): ja compten macros (fan servir MyFitnessPal o MacroFactor)",
+   "Apuntar-los en una llista amb el grup"
+  ],
+  "title": "Buscar 40 testers en 3 grups",
+  "who": "Jose + amic",
+  "why": "Cada grup prova un perfil d'ús diferent i així sabem quant costa i quant pagaria cadascú."
+ },
+ "p2-live": {
+  "col": "todo",
+  "order": 2,
+  "phase": 2,
+  "steps": [
+   "Activar el compte de Stripe en mode real",
+   "`npm run stripe:setup -- --live` amb la clau real (sk_live_)",
+   "Canviar les claus i preus a Netlify per les reals",
+   "Crear el webhook en mode real i actualitzar STRIPE_WEBHOOK_SECRET",
+   "Fer una compra real petita i retornar-la"
+  ],
+  "title": "Passar Stripe a mode real",
+  "who": "Jose",
+  "why": "Fins ara tot era de proves; ara es cobra de veritat."
+ },
+ "p2-llancament": {
+  "col": "todo",
+  "order": 3,
+  "phase": 2,
+  "steps": [
+   "Avisar els testers amb el preu fundador",
+   "Xarxes, gimnasos, boca-orella",
+   "Objectiu: més de ~15 subscriptors (cobreixen els costos fixos)"
+  ],
+  "title": "Anunciar el llançament",
+  "who": "Jose + amic",
+  "why": "Primers subscriptors de pagament."
+ },
+ "p2-preus": {
+  "col": "todo",
+  "order": 1,
+  "phase": 2,
+  "steps": [
+   "Llegir l'informe de la beta",
+   "Decidir si es mantenen 4,99 / 9,99 / 16,99 € o s'ajusten",
+   "Si canvien: es canvien a Stripe, no cal tocar l'app"
+  ],
+  "title": "Fixar els preus finals",
+  "who": "Jose",
+  "why": "Amb les respostes de preu de la beta (Van Westendorp)."
+ },
+ "p3-botigues": {
+  "col": "todo",
+  "order": 2,
+  "phase": 3,
+  "steps": [
+   "Decidir-ho amb dades de creixement",
+   "Si sí, ho preparem junts"
+  ],
+  "title": "Valorar publicar a App Store i Google Play",
+  "who": "Jose",
+  "why": "Més visibilitat, però les botigues cobren un 15–30 % i caldria pagament integrat (RevenueCat)."
+ },
+ "p3-cost": {
+  "col": "todo",
+  "order": 1,
+  "phase": 3,
+  "steps": [
+   "Admin → Analytics: cost d'IA del mes i previsió",
+   "Si un pla surt car, demanar-me ajustar límits o models"
+  ],
+  "title": "Revisió mensual de costos",
+  "who": "Jose",
+  "why": "Que cap pla perdi diners."
+ },
+ "p3-revisio-serveis": {
+  "col": "todo",
+  "order": 0,
+  "phase": 3,
+  "steps": [
+   "Admin → Analytics: cost d'IA del mes, previsió i comparació amb el mes anterior",
+   "Netlify → Team → Usage: minuts de build i invocacions de funcions vs el límit del pla",
+   "Supabase → Project → Usage: mida de la base de dades (límit 8 GB al Pro) i emmagatzematge de fotos",
+   "Anthropic Console → Usage / Billing: despesa del mes i límit de despesa del compte",
+   "Resend: correus enviats vs 3.000/mes del pla gratuït",
+   "Stripe (quan estigui actiu): pagaments fallats i baixes del mes",
+   "Si alguna cosa passa del 80 %, avisa'm"
+  ],
+  "title": "Revisió mensual dels serveis (cada mes, el dia 1)",
+  "who": "Jose",
+  "why": "Vigilar que cap servei s'acosti al límit del pla ni es dispari el cost. Ho pots tornar a moure a \"Per fer\" cada mes."
+ }
+}

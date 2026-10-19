@@ -1,0 +1,205 @@
+<h1>Beta — how to run it, and the report template</h1>
+<p>Decided on 2026-10-05, after the monetization study (<a href="https://claude.ai/artifact/VKFJxVm1PzAY5cc8EHULD1">https://claude.ai/artifact/VKFJxVm1PzAY5cc8EHULD1</a>):</p>
+<ul>
+<li>40 testers in 3 cohorts, over 6 weeks;</li>
+<li>a founder price of 30 % off for life for testers;</li>
+<li>everything is prepared, but the beta is <strong>not launched yet</strong>.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Cohort</th>
+<th>Testers</th>
+<th>Usage profile (invite preset)</th>
+<th>Who</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td>12</td>
+<td>Just training (<code>training_only</code>)</td>
+<td>Gym people who want a routine and nothing else</td>
+</tr>
+<tr>
+<td>B</td>
+<td>18</td>
+<td>Balanced (<code>balanced</code>)</td>
+<td>Losing fat or recomposing, without obsessing</td>
+</tr>
+<tr>
+<td>C</td>
+<td>10</td>
+<td>Demanding (<code>demanding</code>)</td>
+<td>Already count macros (MyFitnessPal / MacroFactor users)</td>
+</tr>
+</tbody></table>
+<h2>Before week 0 (one time)</h2>
+<ol>
+<li><p><strong>Production migrations:</strong> apply <code>0029_billing</code> with <code>npm run db:dry-run</code>, then <code>db:apply -- --production</code> (or the admin banner).</p>
+</li>
+<li><p><strong>Survey:</strong> create one Tally form with hidden fields <code>week</code> and <code>cohort</code>, and set <code>BETA_SURVEY_URL</code> on Netlify. The card on Today adds <code>?week=N&amp;cohort=X</code> in weeks 2, 4 and 6.</p>
+</li>
+<li><p><strong>Optional:</strong> set up Stripe in test mode (below) if testers should see real plans at the end. Without keys, plans say &quot;coming soon&quot; and nobody is charged.</p>
+</li>
+<li><p><strong>Invite codes:</strong> create them in <strong>Admin → Beta</strong>, one per cohort, with uses = the cohort size and &quot;Founder price&quot; on, for example:</p>
+<ul>
+<li>A: 12 uses;</li>
+<li>B: 18 uses;</li>
+<li>C: 10 uses.</li>
+</ul>
+<p>The link is <code>https://&lt;domain&gt;/register?invite=MAI-B-XXXX</code>. The code sets the cohort, the founder price and the starting usage profile (testers can change it in Profile).</p>
+<p>Signing up with Google or Apple keeps the code too: it travels through the sign-in in the signed OAuth state and is redeemed when the account is created.</p>
+</li>
+</ol>
+<h2>Weeks 1–6</h2>
+<table>
+<thead>
+<tr>
+<th>Week</th>
+<th>Do</th>
+<th>Watch in Admin → Beta</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>Send the invites, with a short welcome message: what the app is, that it&#39;s a beta, and that feedback is in Profile</td>
+<td>Codes used, signups per cohort</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Answer feedback within 48 h. Day 3: a short personal message to anyone not activated</td>
+<td>Activation (target ≥ 60 %), D1 (≥ 40 %)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Survey 1 shows on Today (NPS, what works, what&#39;s missing)</td>
+<td>D7 (≥ 25 %), coach messages per active person</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Fix what blocks people (top feedback)</td>
+<td>AI cost per person by cohort (A ≤ 1 €, B ≤ 2 €, C ≤ 5 € a month)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Survey 2: price questions (Van Westendorp + plan choice, below)</td>
+<td>Paywall views, trial → plan intent</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Survey 3 (NPS again), 15-minute interviews with 6–8 testers, then the report</td>
+<td>D30 (≥ 15 %), NPS (≥ 30)</td>
+</tr>
+</tbody></table>
+<p><strong>Admin → Beta definitions:</strong></p>
+<ul>
+<li><strong>Activated:</strong> a program and a logged session within 72 h of signing up.</li>
+<li><strong>DN retention:</strong> of people who joined at least N days ago, the share active N or more days after joining. &quot;Active&quot; means any app event or logged session.</li>
+<li><strong>AI cost:</strong> from <code>usage_events</code>, over the last 30 days.</li>
+<li><strong>NPS:</strong> each person&#39;s latest answer. NPS = % of 9–10 answers minus % of 0–6 answers.</li>
+</ul>
+<h2>Meal photos (added 2026-10-15)</h2>
+<p>Asked for in beta feedback: a photo of the plate → foods, amounts and calories, checked before saving.</p>
+<ul>
+<li><strong>Cost:</strong> one call with a 1280 px photo (≈1,600 image tokens) plus the food list (≈5k tokens, cached) and ≈300 tokens out. On Sonnet 5.5 ≈ 0,8–1,2 cents a photo (≈2 cents on a cache miss); on Haiku ≈ 0,5 cents (<code>FOOD_PHOTO_MODEL</code>). Check Admin → Analytics → &quot;Meal photos&quot;.</li>
+<li><strong>Plans:</strong> not on free or Entrena (no food). Coach 10 a month (≈0,10 € worst case on 9,99 €), Coach+ 80 (≈0,80 € on 16,99 €). With ~60 main meals a month, 10 covers the off-plan ones for most people and is meant to leave some wanting more: the reason to move to Coach+. Prices unchanged. The trial gets Coach+&#39;s 80, and so does everyone during the beta (payments off; <code>FOOD_PHOTO_BETA_LIMIT</code>). Phones and tablets only.</li>
+<li><strong>Watch in the beta:</strong> photos per active person a week, the share of reads with <code>confidence: low</code> and of items changed in the review (accuracy), and photos vs words (product event <code>food_photo</code>). If most Coach-level testers need more than 10, decide before payments open whether that is the upsell working or a plan that feels stingy.</li>
+<li><strong>Privacy:</strong> the photo goes to Anthropic like the coach&#39;s messages and is not stored. The privacy policy (section 2, 4, 5) and the terms (section 2, 3) say so since <code>LEGAL_VERSION</code> 2026-10-15.</li>
+</ul>
+<h2>Price questions (survey 2)</h2>
+<ol>
+<li>At what monthly price would mAI Fitness seem so cheap you&#39;d doubt its quality?</li>
+<li>At what price would it feel like a bargain?</li>
+<li>At what price would it start to feel expensive, but you&#39;d still pay?</li>
+<li>At what price would it be too expensive to pay?</li>
+<li>If you had to choose today: free, Entrena (4,99 €), Coach (9,99 €) or Coach+ (16,99 €)? And yearly?</li>
+<li>What would make you pay for a whole year in advance?</li>
+</ol>
+<h2>Final report template</h2>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. Summary</td>
+<td>3 key numbers, the price decision, what we change</td>
+</tr>
+<tr>
+<td>2. Funnel</td>
+<td>Signups → activated → D7 → D30, per cohort</td>
+</tr>
+<tr>
+<td>3. Real cost</td>
+<td>€ per person per month, per cohort and per feature, compared with the study</td>
+</tr>
+<tr>
+<td>4. Use</td>
+<td>Most and least used features; journeys that break</td>
+</tr>
+<tr>
+<td>5. Price</td>
+<td>Van Westendorp curves, acceptable range, plan chosen per cohort</td>
+</tr>
+<tr>
+<td>6. Testers&#39; voice</td>
+<td>NPS, 5 quotes, the 5 most repeated complaints</td>
+</tr>
+<tr>
+<td>7. Decisions</td>
+<td>Final prices, limits, what to build before launch</td>
+</tr>
+</tbody></table>
+<p><strong>Data sources:</strong></p>
+<ul>
+<li>Admin → Beta (cohorts, feedback);</li>
+<li>Admin → Analytics (cost per feature and month);</li>
+<li><code>product_events</code>, for anything finer, e.g. <code>SELECT name, count(*) FROM product_events GROUP BY 1</code>;</li>
+<li>Tally exports.</li>
+</ul>
+<h2>Payments setup (owner&#39;s steps)</h2>
+<ol>
+<li><p>Create the Stripe account (business details, bank account), and turn on <strong>Stripe Tax</strong> with the Spanish VAT registration.</p>
+</li>
+<li><p>Register for the <strong>VAT One-Stop Shop (OSS)</strong> with the Agencia Tributaria (modelo 035) to sell to consumers in other EU countries. Stripe Tax then charges each country&#39;s VAT.</p>
+</li>
+<li><p><strong>Products and prices:</strong> in test mode, run <code>STRIPE_SECRET_KEY=sk_test_… npm run stripe:setup</code>. It creates the 3 products, the 6 tax-inclusive prices and the <code>FOUNDER30</code> coupon, and prints the env lines.</p>
+</li>
+<li><p><strong>Netlify env:</strong> <code>STRIPE_SECRET_KEY</code>, the six <code>STRIPE_PRICE_*</code> values and <code>STRIPE_COUPON_FOUNDER</code>.</p>
+</li>
+<li><p><strong>Webhook:</strong> in Stripe → Developers → Webhooks, add the endpoint <code>https://&lt;domain&gt;/api/billing/webhook</code> with these events:</p>
+<ul>
+<li><code>checkout.session.completed</code></li>
+<li><code>customer.subscription.created</code>, <code>customer.subscription.updated</code>, <code>customer.subscription.deleted</code></li>
+<li><code>invoice.payment_failed</code></li>
+</ul>
+<p>Then copy the signing secret into <code>STRIPE_WEBHOOK_SECRET</code>.</p>
+</li>
+<li><p><strong>Customer Portal:</strong> in Stripe → Settings → Billing → Customer portal, allow cancelling (at the end of the period), switching between the 3 plans and both intervals, and updating the card.</p>
+</li>
+<li><p><strong>Test it end to end</strong> with the card 4242 4242 4242 4242. When it works, repeat steps 3–6 in live mode (<code>npm run stripe:setup -- --live</code> with the live key).</p>
+</li>
+<li><p><strong>Legal:</strong> have a lawyer review the terms (renewal, cancellation, the 14-day withdrawal right) before charging real money.</p>
+</li>
+<li><p><strong>Stripe customer emails:</strong> in Stripe → Settings → Customer emails, turn on successful payment receipts, failed payment emails and the upcoming renewal reminder (yearly plans). The app sends its own messages for the trial, plan changes, cancellation and the end of a plan (lib/notify), and shows a banner to update the card while a payment is past due.</p>
+</li>
+</ol>
+<h2>Admin digest and alerts (optional keys)</h2>
+<p>Every Monday each admin gets a digest by email (AI cost, people, coach errors, database size, version, payments). Alerts arrive at once, by email and push, at most once per kind per day. Optional Netlify env vars:</p>
+<ul>
+<li><code>ADMIN_AI_BUDGET_EUR</code>: monthly AI budget for the cost alerts.</li>
+<li><code>ADMIN_DB_LIMIT_GB</code> (default 8): the database limit for the 80 % alert.</li>
+<li><code>ANTHROPIC_ADMIN_KEY</code>: org-wide Anthropic spend in the digest.</li>
+<li><code>NETLIFY_API_TOKEN</code> + <code>NETLIFY_SITE_ID</code>: the latest deploy, and an alert when it failed.</li>
+</ul>
+<h2>Ads (owner&#39;s steps, only if wanted)</h2>
+<p>Ads only ever show on the free plan, and stay off until all of these are done:</p>
+<ul>
+<li>a Google-certified CMP (IAB TCF 2.2);</li>
+<li>Consent Mode v2;</li>
+<li>AdSense approval;</li>
+<li><code>ADS_ENABLED=true</code>.</li>
+</ul>
+<p>The current cookie banner is not a certified CMP. See <code>ai/ROADMAP.md</code>.</p>

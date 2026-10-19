@@ -1,0 +1,22 @@
+# Password for the whole hub. AuthUserFile needs the absolute path of the
+# .htpasswd on the server (outside the public folder); create it with
+# `npm run password` or `htpasswd -c .htpasswd <user>`.
+AuthType Basic
+AuthName "mAI Hub"
+AuthUserFile /ABSOLUTE/PATH/TO/mAI_hub/.htpasswd
+Require valid-user
+
+DirectoryIndex index.html
+Options -Indexes
+
+# Never serve dotfiles (.htpasswd, .git…)
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+  <FilesMatch "\.(html|json)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

@@ -1,0 +1,402 @@
+<h1>Llançament: on enviar mAI Fitness i quan</h1>
+<p>Document de treball per donar a conèixer l&#39;app. Escrit el 10/10/2026. Les normes de cada comunitat canvien: <strong>llegeix-les abans de publicar</strong>, sobretot a Reddit; aquí no s&#39;han verificat una per una.</p>
+<h2>La idea en quatre línies</h2>
+<ol>
+<li>Hi ha canals que es poden fer servir cada setmana (xarxes, comunitats, amics) i canals d&#39;<strong>un sol tret</strong> (Product Hunt, Hacker News, premsa). Els d&#39;un sol tret no es gasten fins que l&#39;app retingui la gent.</li>
+<li>Ara l&#39;objectiu no és &quot;fer-se viral&quot;: és aconseguir 40 testers bons (pla de <code>ai/BETA.md</code>) i saber per què es queden o marxen.</li>
+<li>L&#39;entrada és <strong>lliure</strong>. Quan l&#39;enllaç surt en un blog, un mitjà o una comunitat, hi va un <strong>codi d&#39;invitació</strong> propi (Admin → Beta, amb el nom del lloc a &quot;Note&quot;): la columna &quot;Used&quot; diu quanta gent ha portat cada lloc.</li>
+<li>Tot el feedback que arribi per fora (WhatsApp, comentaris, DMs) s&#39;entra a Admin → Beta → &quot;Add feedback&quot;.</li>
+</ol>
+<h2>Condicions per passar de fase</h2>
+<p>Són els objectius de la beta (<code>ai/BETA.md</code>), mirats a Admin → Beta:</p>
+<table>
+<thead>
+<tr>
+<th>Per obrir…</th>
+<th>Cal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Fase 2 (comunitats)</td>
+<td>Entrar la rutina i la dieta no fa fora la gent: activació ≥ 60 % entre els primers testers</td>
+</tr>
+<tr>
+<td>Fase 3 (directoris)</td>
+<td>D7 ≥ 25 %</td>
+</tr>
+<tr>
+<td>Fase 4 (Product Hunt, Hacker News, premsa)</td>
+<td>D30 ≥ 15 %, NPS ≥ 30 i pagaments en marxa</td>
+</tr>
+</tbody></table>
+<p>El primer feedback escrit (Sergio, 10/10) diu que entrar la rutina a mà és pesat i que voldria pujar arxius i veure com es fan els exercicis. Si es repeteix, això va abans que qualsevol llançament gran.</p>
+<h2>Idiomes i mercats</h2>
+<p>L&#39;app està en català, castellà i anglès, així que no hi ha cap límit tècnic d&#39;idioma. L&#39;ordre proposat és per on és més fàcil guanyar, no per on hi ha més gent:</p>
+<table>
+<thead>
+<tr>
+<th>Mercat</th>
+<th>A favor</th>
+<th>En contra</th>
+<th>Quan</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Català</strong></td>
+<td>Gairebé cap competidor en català; la premsa i les xarxes catalanes agraeixen un producte fet aquí; la teva xarxa</td>
+<td>Mercat petit</td>
+<td>Fase 1</td>
+</tr>
+<tr>
+<td><strong>Castellà</strong></td>
+<td>La teva xarxa (els amics ja el fan servir en castellà); el receptari és cuina de casa d&#39;aquí; preus en euros</td>
+<td>Competència mitjana</td>
+<td>Fases 1–2</td>
+</tr>
+<tr>
+<td><strong>Anglès (Europa)</strong></td>
+<td>Mercat enorme; on són Product Hunt, Hacker News, Reddit i X</td>
+<td>Molta competència; el receptari és cuina catalana/espanyola</td>
+<td>Fases 2–4</td>
+</tr>
+<tr>
+<td><strong>Anglès (EUA)</strong></td>
+<td>El mercat més gran</td>
+<td>L&#39;app només treballa en kg i grams (no hi ha lliures ni unces) i cobra en euros</td>
+<td>No fins que hi hagi unitats imperials</td>
+</tr>
+</tbody></table>
+<h2>Decisions preses (10/10/2026)</h2>
+<ul>
+<li><strong>Primer, dues setmanes de proves</strong> amb amics i tu mateix. Res públic fins llavors.</li>
+<li><strong>Entrada lliure</strong>; codi només per als enllaços de blogs, mitjans i comunitats.</li>
+<li><strong>Stripe encara no està configurat</strong>: els textos diuen &quot;gratis durant la beta&quot;, mai &quot;14 dies gratis&quot; ni preus.</li>
+<li><strong>No surts a càmera</strong>: els vídeos són gravacions de pantalla amb titulars, com el teaser.</li>
+<li><strong>3–4 hores a la setmana.</strong> El calendari està fet amb aquest pressupost.</li>
+</ul>
+<h2>Domini</h2>
+<p>Encara no n&#39;hi ha. Consultat el 10/10/2026 als registres (no a Namecheap, que ha bloquejat la consulta de preus):</p>
+<table>
+<thead>
+<tr>
+<th>Domini</th>
+<th>Estat</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>maifitness.app</code></strong></td>
+<td><strong>Lliure</strong> (registre oficial de <code>.app</code>). La recomanació: mateix nom, curt, i <code>.app</code> diu què és</td>
+</tr>
+<tr>
+<td><code>maifit.app</code>, <code>trainmai.app</code></td>
+<td>Lliures</td>
+</tr>
+<tr>
+<td><code>getmaifitness.com</code>, <code>trainwithmai.com</code>, <code>maifitnessapp.com</code></td>
+<td>Lliures</td>
+</tr>
+<tr>
+<td><code>maifitness.com</code></td>
+<td>Agafat des del 2013 i en venda per un revenedor (Afternic): car</td>
+</tr>
+<tr>
+<td><code>maifit.com</code>, <code>mai-fitness.com</code>, <code>getmai.app</code>, <code>usemai.app</code>, <code>maicoach.app</code></td>
+<td>Agafats</td>
+</tr>
+<tr>
+<td><code>maifitness.cat</code>, <code>.es</code>, <code>.eu</code>, <code>.io</code>, <code>.fit</code>, <code>.coach</code>, <code>.ai</code>, <code>mai.fitness</code></td>
+<td>Sense DNS: probablement lliures, <strong>sense confirmar</strong></td>
+</tr>
+</tbody></table>
+<p>Un <code>.app</code> sol costar entre 12 i 20 € l&#39;any; mira el preu real i el de renovació a Namecheap abans de pagar. Esperar a comprar-lo té un risc petit però real: algú altre el pot registrar, i és la peça més barata de tot el llançament.</p>
+<p>Quan es compri: apuntar-lo a Netlify, canviar la URL del final dels teasers (<code>scripts/teaser/compose.html</code>) i els enllaços d&#39;aquest document.</p>
+<h2>Abans de publicar res</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Dues setmanes de proves amb amics (fase 1) i els errors greus arreglats.</li>
+<li><input disabled="" type="checkbox"> Domini propi comprat i funcionant.</li>
+<li><input checked="" disabled="" type="checkbox"> Teasers a l&#39;escriptori (refets el 16 d&#39;octubre amb la sessió nova, canviar exercici i plat amb canvis; carpeta <code>mai-fitness-videos-2026-10-16</code>): català, castellà i anglès, vertical (1080×1920) i horitzontal (1920×1080). Com refer-los: <code>scripts/teaser/README.md</code>.</li>
+<li><input disabled="" type="checkbox"> 4–5 captures de pantalla netes (Avui, Registre, Coach, Menjar, Progrés).</li>
+<li><input disabled="" type="checkbox"> Comptes amb el nom de l&#39;app a X, Instagram, TikTok i LinkedIn (pàgina), encara que no es facin servir tots.</li>
+<li><input disabled="" type="checkbox"> Un correu de contacte que no sigui el personal.</li>
+</ul>
+<h2>Calendari (3–4 h per setmana)</h2>
+<table>
+<thead>
+<tr>
+<th>Setmanes</th>
+<th>Fase</th>
+<th>Què es fa</th>
+<th>Hores</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>12–25 oct</td>
+<td>1 · Proves amb amics</td>
+<td>Fer-la servir tu cada dia; 5–10 amics, un a un (missatge de sota); entrar tot el que diguin a Admin → Beta → &quot;Add feedback&quot;</td>
+<td>1 h demanar i recollir, la resta arreglar</td>
+</tr>
+<tr>
+<td>26 oct – 1 nov</td>
+<td>Preparar</td>
+<td>Comprar el domini; la llista d&#39;&quot;Abans de publicar res&quot;; crear els comptes</td>
+<td>3 h</td>
+</tr>
+<tr>
+<td>2–22 nov</td>
+<td>2 · Construir en públic</td>
+<td>Cada setmana: 1 publicació a X (anglès), 1 a LinkedIn (català o castellà), 1 vídeo curt de pantalla a Instagram i TikTok, i demanar opinió en 1 comunitat</td>
+<td>3–4 h</td>
+</tr>
+<tr>
+<td>23 nov – 6 des</td>
+<td>3 · Directoris</td>
+<td>3–4 altes per setmana als directoris de la taula; primer correu a mitjans catalans</td>
+<td>3 h</td>
+</tr>
+<tr>
+<td>12–18 gen</td>
+<td>4 · El dia gran</td>
+<td>Product Hunt un dimarts, dimecres o dijous; Show HN un altre dia; correu als mitjans de tecnologia</td>
+<td>4 h aquella setmana, més respondre el dia mateix</td>
+</tr>
+</tbody></table>
+<p><strong>El dia a dia</strong> (16/10/2026) és a la pestanya &quot;Publicar&quot; del document de negoci (<a href="https://claude.ai/artifact/VKFJxVm1PzAY5cc8EHULD1">https://claude.ai/artifact/VKFJxVm1PzAY5cc8EHULD1</a>). Hi ha cada publicació amb el dia i l&#39;hora de més interacció, el vídeo i el text amb l&#39;enllaç i el codi del canal, i una casella per marcar-la. En resum, a l&#39;hora de Madrid:</p>
+<ul>
+<li><strong>Setmana 1:</strong><ul>
+<li>dt 3/11 a les 15:00: fil d&#39;X en anglès;</li>
+<li>dc 4/11 a les 9:00: LinkedIn en català (l&#39;enllaç va al primer comentari);</li>
+<li>dc 4/11 a les 10:30: X en català;</li>
+<li>dj 5/11 a les 19:00: Reel d&#39;Instagram en català;</li>
+<li>dg 8/11 a les 20:00: TikTok i YouTube Shorts en castellà.</li>
+</ul>
+</li>
+<li><strong>Setmana 2:</strong><ul>
+<li>dl 9/11 a les 14:00: r/SideProject;</li>
+<li>dt 10/11: X en castellà;</li>
+<li>dc 11/11 a les 9:00: LinkedIn en castellà;</li>
+<li>dj 12/11: carrusel d&#39;Instagram amb captures;</li>
+<li>dg 15/11: TikTok en català.</li>
+</ul>
+</li>
+<li><strong>Setmana 3</strong> (construir en públic, amb la història de «el que fas pel teu compte també compta»):<ul>
+<li>dt 17/11: X;</li>
+<li>dc 18/11: LinkedIn;</li>
+<li>dj 19/11: Indie Hackers;</li>
+<li>dg 22/11: mirar quin canal porta gent activa.</li>
+</ul>
+</li>
+<li><strong>Directoris:</strong> 24/11 i 1/12. <strong>Premsa catalana:</strong> 3/12.</li>
+<li><strong>Gener</strong> (només si es compleixen les condicions):<ul>
+<li>dt 12/1 a les 9:01: Product Hunt;</li>
+<li>dc 13/1: correu a Genbeta i Xataka;</li>
+<li>dj 14/1 a les 20:00: Show HN.</li>
+</ul>
+</li>
+</ul>
+<p>La fase 4 va al gener expressament: és el millor mes de l&#39;any per a una app de fitness (propòsits d&#39;any nou) i dona temps a complir les condicions i a tenir Stripe en marxa. Les dates es mouen si les condicions de cada fase no es compleixen.</p>
+<h2>Canals</h2>
+<h3>Es poden repetir</h3>
+<table>
+<thead>
+<tr>
+<th>Canal</th>
+<th>Idioma</th>
+<th>Què funciona</th>
+<th>Compte</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Amics, feina, gimnàs (WhatsApp)</td>
+<td>ca / es</td>
+<td>Demanar-ho un a un, amb el codi</td>
+<td>Un missatge a un grup rendeix molt menys</td>
+</tr>
+<tr>
+<td>Entrenadors i gimnasos locals</td>
+<td>ca / es</td>
+<td>Oferir-los accés complet gratis (Admin → Users) a canvi de provar-la amb clients</td>
+<td>Volen veure-la funcionar en persona</td>
+</tr>
+<tr>
+<td>Instagram Reels i TikTok</td>
+<td>ca / es / en</td>
+<td>Gravació de pantalla de 15–30 s amb un titular i un sol missatge per vídeo (&quot;canvia un àpat en dos tocs&quot;), sense sortir a càmera</td>
+<td>Sense cara costa més arribar lluny; el teaser serveix de fixat al perfil</td>
+</tr>
+<tr>
+<td>X (#buildinpublic)</td>
+<td>en</td>
+<td>Explicar xifres i decisions de la beta, amb captura o vídeo</td>
+<td>Porta fundadors, no gent de gimnàs</td>
+</tr>
+<tr>
+<td>LinkedIn (personal)</td>
+<td>ca / es</td>
+<td>La història: per què l&#39;has fet, què has après</td>
+<td>Una per setmana com a màxim</td>
+</tr>
+<tr>
+<td>Indie Hackers</td>
+<td>en</td>
+<td>Fil de &quot;com vaig&quot; amb números</td>
+<td>Públic de producte</td>
+</tr>
+<tr>
+<td>Reddit: r/SideProject, r/webdev, r/SaaS</td>
+<td>en</td>
+<td>&quot;He fet això, què en penseu?&quot; amb el vídeo</td>
+<td>Comprova les normes de cada subreddit</td>
+</tr>
+<tr>
+<td>Reddit: r/fitness_es, r/spain</td>
+<td>es</td>
+<td>Demanar opinió, no anunciar</td>
+<td>Solen esborrar l&#39;autopromoció</td>
+</tr>
+<tr>
+<td>ForoCoches (subforo de fitness), grups de Telegram i Discord de gimnàs</td>
+<td>es</td>
+<td>Participar-hi abans i després ensenyar-la</td>
+<td>Cal compte amb antiguitat</td>
+</tr>
+</tbody></table>
+<h3>Directoris (una alta, trànsit petit però constant)</h3>
+<p>BetaList · There&#39;s An AI For That · Futurepedia · AlternativeTo (com a alternativa a les apps de rutines i de dieta) · SaaSHub · Uneed · Microlaunch. En anglès. Alguns cobren per sortir abans: no cal pagar.</p>
+<h3>Un sol tret</h3>
+<table>
+<thead>
+<tr>
+<th>Canal</th>
+<th>Què cal</th>
+<th>Què dona</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Product Hunt</strong></td>
+<td>Text i vídeo en anglès, 4–5 imatges, un primer comentari teu, i 30–50 persones avisades per al dia</td>
+<td>Visibilitat entre gent de producte, enllaços, alguna menció en butlletins</td>
+</tr>
+<tr>
+<td><strong>Hacker News (Show HN)</strong></td>
+<td>Un títol sobri i un comentari tècnic honest; respondre durant hores</td>
+<td>Trànsit molt alt o res; públic exigent</td>
+</tr>
+<tr>
+<td><strong>Mitjans de tecnologia en castellà</strong> (Genbeta, Xataka)</td>
+<td>Un correu curt amb el vídeo i què la fa diferent</td>
+<td>Molts registres d&#39;un sol cop si surt</td>
+</tr>
+<tr>
+<td><strong>Mitjans catalans</strong> (VIA Empresa, seccions de tecnologia dels diaris, ràdio local)</td>
+<td>L&#39;angle &quot;feta a Catalunya, en català&quot;</td>
+<td>Poc volum, molta credibilitat local</td>
+</tr>
+</tbody></table>
+<h2>Textos preparats</h2>
+<p>Adapta&#39;ls a la teva veu. En blogs, mitjans i comunitats, l&#39;enllaç porta el codi d&#39;aquell lloc: <code>https://&lt;domini&gt;/register?invite=[CODI]</code>.</p>
+<p><strong>WhatsApp a un amic (ca)</strong></p>
+<blockquote>
+<p>Ei! He fet una app per portar l&#39;entreno i el menjar en un sol pla, amb un coach que l&#39;ajusta. Estic buscant gent que la provi unes setmanes i em digui què no li agrada. T&#39;hi apuntes? Entres per aquí: <code>https://&lt;domini&gt;/register</code>. Tot el que em diguis, encara que sigui &quot;això és un pal&quot;, em va bé.</p>
+</blockquote>
+<p><strong>Presentació, LinkedIn (ca; abans de buscar testers professionals)</strong></p>
+<blockquote>
+<p>Fa uns mesos vaig començar una app per a mi. Volia portar l&#39;entreno i el menjar en un sol pla, i que el pla s&#39;adaptés a la meva setmana real, i no al revés.</p>
+<p>Avui la deixo veure: mAI Fitness.</p>
+<p>→ Et diu què toca avui i hi apuntes cada sèrie en segons. Si un dia no pots, la sessió es mou: la setmana és una llista de coses per fer, no un calendari que falles.
+→ El menjar ve en grams, calculats per al teu cos, el teu objectiu i el que entrenes aquell dia.
+→ Si menges una altra cosa, ho dius amb paraules o fas una foto al plat, i la resta del dia s&#39;ajusta.
+→ Un coach d&#39;IA proposa canvis al programa, a la setmana i als àpats. Tu decideixes si els acceptes.</p>
+<p>Hi ha una decisió de disseny que m&#39;importa molt: els números els calcula l&#39;app amb regles (energia, proteïna, grams per àpat, fins on pot arribar un dèficit). La IA proposa i explica; no s&#39;inventa les calories.</p>
+<p>Funciona al navegador del mòbil, s&#39;instal·la com una app i aguanta sense cobertura al gimnàs. En català, castellà i anglès.</p>
+<p>Ara la fem servir jo i un grup petit d&#39;amics. El pas següent és posar-la a les mans de gent que en sap: entrenadors, dietistes-nutricionistes i gent que fa anys que entrena de debò. Si ets una d&#39;aquestes persones i tens 20 minuts per dir-me què faries diferent, escriu-me.</p>
+<p>Es pot provar gratis: maifitness.netlify.app</p>
+</blockquote>
+<p><strong>Presentació, LinkedIn (es)</strong></p>
+<blockquote>
+<p>Hace unos meses empecé una app para mí. Quería llevar el entreno y la comida en un solo plan, y que el plan se adaptara a mi semana real, y no al revés.</p>
+<p>Hoy la enseño: mAI Fitness.</p>
+<p>→ Te dice qué toca hoy y apuntas cada serie en segundos. Si un día no puedes, la sesión se mueve: la semana es una lista de cosas por hacer, no un calendario que fallas.
+→ La comida viene en gramos, calculados para tu cuerpo, tu objetivo y lo que entrenas ese día.
+→ Si comes otra cosa, lo dices con palabras o haces una foto al plato, y el resto del día se ajusta.
+→ Un coach de IA propone cambios en el programa, la semana y las comidas. Tú decides si los aceptas.</p>
+<p>Hay una decisión de diseño que me importa mucho: los números los calcula la app con reglas (energía, proteína, gramos por comida, hasta dónde puede llegar un déficit). La IA propone y explica; no se inventa las calorías.</p>
+<p>Funciona en el navegador del móvil, se instala como una app y aguanta sin cobertura en el gimnasio. En castellano, catalán e inglés.</p>
+<p>Ahora la usamos yo y un grupo pequeño de amigos. El siguiente paso es ponerla en manos de gente que sabe: entrenadores, dietistas-nutricionistas y gente que lleva años entrenando en serio. Si eres una de esas personas y tienes 20 minutos para decirme qué harías distinto, escríbeme.</p>
+<p>Se puede probar gratis: maifitness.netlify.app</p>
+</blockquote>
+<p><strong>Presentació, X (fil en anglès)</strong></p>
+<blockquote>
+<p>1/ I built mAI Fitness: training and food in one plan that adapts to your real week, not the other way round.</p>
+<p>Here&#39;s what it does 🧵 [vídeo]</p>
+</blockquote>
+<blockquote>
+<p>2/ It tells you what&#39;s on today and you log each set in seconds. Can&#39;t train on Tuesday? Bring the session forward or push it back. The week is a to-do list, not a calendar you fail.</p>
+</blockquote>
+<blockquote>
+<p>3/ Food comes in grams, worked out for your body, your goal and that day&#39;s training. Ate something else? Say it in words or snap the plate, and the rest of the day adjusts.</p>
+</blockquote>
+<blockquote>
+<p>4/ The rule I care about most: the app does the maths (energy, protein, grams, how big a deficit can be). The AI coach proposes changes and explains them, and you accept or reject them. It never makes up the calories.</p>
+</blockquote>
+<blockquote>
+<p>5/ It&#39;s a web app: open it on your phone, add it to your home screen, and it works with no signal at the gym. In English, Spanish and Catalan.</p>
+<p>Free to try: maifitness.netlify.app</p>
+<p>Coaches and dietitians: I&#39;d love you to tear it apart.</p>
+</blockquote>
+<p><strong>Presentació, X (un sol post, ca / es)</strong></p>
+<blockquote>
+<p>He fet mAI Fitness: l&#39;entreno i el menjar en un sol pla que s&#39;adapta a la teva setmana real.</p>
+<p>Sèries apuntades en segons, menjar en grams i, si menges una altra cosa, ho dius o hi fas una foto i el dia s&#39;ajusta. L&#39;app fa els números; la IA proposa.</p>
+<p>maifitness.netlify.app</p>
+</blockquote>
+<blockquote>
+<p>He hecho mAI Fitness: entreno y comida en un solo plan que se adapta a tu semana real.</p>
+<p>Series apuntadas en segundos, comida en gramos y, si comes otra cosa, lo dices o le haces una foto y el día se ajusta. La app hace los números; la IA propone.</p>
+<p>maifitness.netlify.app</p>
+</blockquote>
+<p><strong>Product Hunt</strong></p>
+<ul>
+<li>Nom: mAI Fitness</li>
+<li>Lema (màx. 60 caràcters): <code>Training and food in one plan that adapts to you</code></li>
+<li>Descripció: <code>mAI Fitness plans your training and your meals together. Log each set in seconds, get meals in grams for your body and your training, and talk to a coach that adjusts the plan when life gets in the way. The app does the maths; the coach only proposes changes you accept.</code></li>
+<li>Primer comentari: qui ets, per què l&#39;has fet, què és diferent (l&#39;app calcula, el model no), què encara falla, i una pregunta concreta a la comunitat.</li>
+</ul>
+<p><strong>Show HN</strong></p>
+<ul>
+<li>Títol: <code>Show HN: mAI Fitness – training and meal plans where the app does the maths, not the LLM</code></li>
+<li>Comentari: com està fet (els objectius i els grams es calculen amb codi; el model només tria receptes d&#39;un receptari tancat i proposa canvis), què no fa, i que és una PWA que funciona sense cobertura.</li>
+</ul>
+<p><strong>Reddit, demanar opinió (en)</strong></p>
+<blockquote>
+<p>I built a web app that plans training and food together (sets, meals in grams, a coach that adapts the week). I&#39;m looking for honest feedback from people who actually train, not signups. What would make you drop it in the first five minutes? [vídeo]</p>
+</blockquote>
+<h2>Com mesurar</h2>
+<ul>
+<li><strong>Per canal:</strong> Admin → Beta → Invite codes, columna &quot;Used&quot; de cada codi (només els llocs on l&#39;enllaç porta codi).</li>
+<li><strong>Qualitat:</strong> Admin → Beta → Cohorts (activació, D1/D7/D30, NPS).</li>
+<li><strong>Què diuen:</strong> Admin → Beta → Feedback, amb el que arribi per fora entrat a mà.</li>
+<li>Un canal que porta gent que no s&#39;activa no val la pena repetir-lo, per molts registres que doni.</li>
+</ul>
+<h2>Registre</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Canal</th>
+<th>Enllaç</th>
+<th>Codi</th>
+<th>Registres</th>
+<th>Activats</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>

@@ -1,0 +1,288 @@
+<h1>Setup Guide — App Template</h1>
+<p>Complete guide to launch a new app from this template.</p>
+<hr>
+<h2>Prerequisites</h2>
+<ul>
+<li>Node.js 20+ (managed via <code>.nvmrc</code> — run <code>nvm use</code>)</li>
+<li>A <a href="https://supabase.com">Supabase</a> account</li>
+<li>A <a href="https://netlify.com">Netlify</a> account</li>
+<li>A <a href="https://resend.com">Resend</a> account (transactional email)</li>
+<li>An <a href="https://console.anthropic.com">Anthropic</a> account (optional — only needed for AI features)</li>
+</ul>
+<hr>
+<h2>1. Clone the template</h2>
+<pre><code class="language-bash">git clone &lt;template-repo-url&gt; my-app
+cd my-app
+nvm use
+npm install
+</code></pre>
+<p>Replace the app name everywhere before you start:</p>
+<ul>
+<li><code>package.json</code> → <code>&quot;name&quot;</code></li>
+<li><code>components/Sidebar.tsx</code> → logo text (<code>&quot;App Template&quot;</code>)</li>
+<li><code>app/layout.tsx</code> → <code>&lt;title&gt;</code> and metadata</li>
+<li><code>netlify.toml</code> → site name (if specified)</li>
+</ul>
+<hr>
+<h2>2. Supabase — Database + Storage</h2>
+<h3>2.1 Create a project</h3>
+<ol>
+<li>Go to <a href="https://supabase.com">supabase.com</a> → New project</li>
+<li>Note your <strong>Project URL</strong>, <strong>Service Role Key</strong> (Settings → API), and <strong>Database password</strong> (Settings → Database)</li>
+</ol>
+<h3>2.2 Run migrations</h3>
+<p>The app uses SQL migrations managed by Drizzle. Once you have your DB URL:</p>
+<pre><code class="language-bash">DATABASE_URL=&quot;postgresql://postgres.&lt;ref&gt;:&lt;password&gt;@aws-0-&lt;region&gt;.pooler.supabase.com:6543/postgres?sslmode=require&quot; \
+  npx drizzle-kit migrate
+</code></pre>
+<p>Or use the built-in admin endpoint after deploy: <code>POST /api/admin/run-migrations</code> (admin-only).</p>
+<h3>2.3 Create storage bucket</h3>
+<ol>
+<li>In Supabase → Storage → New bucket</li>
+<li>Name: <code>uploads</code></li>
+<li>Make it <strong>public</strong> (so uploaded images are served directly)</li>
+<li>Add a policy: allow authenticated users to insert/select in their own folder:<ul>
+<li>INSERT: <code>bucket_id = &#39;uploads&#39;</code> for authenticated users</li>
+<li>SELECT: <code>bucket_id = &#39;uploads&#39;</code> for public</li>
+</ul>
+</li>
+</ol>
+<h3>2.4 Row Level Security</h3>
+<p>The migrations enable RLS on some tables. No manual policy needed — the app uses a service role key (bypasses RLS) for all server-side DB operations.</p>
+<hr>
+<h2>3. Resend — Transactional email</h2>
+<ol>
+<li>Create an account at <a href="https://resend.com">resend.com</a></li>
+<li>Add and verify your domain</li>
+<li>Create an API key → copy it</li>
+<li>Set <code>RESEND_FROM</code> to your verified sender address (e.g. <code>hello@yourdomain.com</code>)</li>
+</ol>
+<hr>
+<h2>4. Google OAuth (optional)</h2>
+<ol>
+<li>Go to <a href="https://console.cloud.google.com">Google Cloud Console</a> → APIs &amp; Services → Credentials</li>
+<li>Create an <strong>OAuth 2.0 Client ID</strong> (Web application)</li>
+<li>Add authorized redirect URIs:<ul>
+<li><code>https://yourdomain.com/api/auth/callback/google</code> (production)</li>
+<li><code>http://localhost:3000/api/auth/callback/google</code> (local)</li>
+</ul>
+</li>
+<li>Copy the <strong>Client ID</strong> and <strong>Client Secret</strong></li>
+</ol>
+<hr>
+<h2>5. Apple Sign In (optional)</h2>
+<p>Apple Sign In requires an Apple Developer account ($99/year).</p>
+<ol>
+<li>Go to <a href="https://developer.apple.com">developer.apple.com</a> → Certificates, IDs &amp; Profiles</li>
+<li>Create a <strong>Services ID</strong> (e.g. <code>com.yourapp.web</code>) — this is your <code>APPLE_CLIENT_ID</code></li>
+<li>Enable Sign In with Apple, add your domain and redirect URL: <code>https://yourdomain.com/api/auth/callback/apple</code></li>
+<li>Create a <strong>Key</strong> with Sign In with Apple enabled → download the <code>.p8</code> file<ul>
+<li><code>APPLE_KEY_ID</code> = the key&#39;s ID (10-char string)</li>
+<li><code>APPLE_TEAM_ID</code> = your team ID (top-right corner of developer portal)</li>
+<li><code>APPLE_PRIVATE_KEY</code> = the full contents of the <code>.p8</code> file (with newlines as <code>\n</code>)</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>6. Anthropic (optional — for AI analysis)</h2>
+<ol>
+<li>Create an account at <a href="https://console.anthropic.com">console.anthropic.com</a></li>
+<li>Go to API Keys → Create Key</li>
+<li>Copy the key (starts with <code>sk-ant-…</code>)</li>
+</ol>
+<p>Without this key, the &quot;Analyze with AI&quot; button in References will return a 422 error. The rest of the app works fine.</p>
+<hr>
+<h2>7. Configure environment variables</h2>
+<p>Create <code>.env.local</code> in the project root. Copy this and fill in your values:</p>
+<pre><code class="language-bash"># ── App ───────────────────────────────────────────────────────────────────────
+NEXT_PUBLIC_APP_URL=http://localhost:3000      # Your production URL in prod
+APP_SESSION_ID=app_001                         # Change to invalidate all sessions
+JWT_SECRET=change-me-to-a-random-64-char-string
+
+# ── Database (Supabase) ───────────────────────────────────────────────────────
+DATABASE_URL=postgresql://postgres.&lt;ref&gt;:&lt;password&gt;@aws-0-&lt;region&gt;.pooler.supabase.com:6543/postgres?sslmode=require
+
+# ── File storage (Supabase) ───────────────────────────────────────────────────
+SUPABASE_PROJECT_URL=https://&lt;ref&gt;.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=eyJ...              # Settings → API → service_role key
+
+# ── Email (Resend) ────────────────────────────────────────────────────────────
+RESEND_API_KEY=re_...
+RESEND_FROM=hello@yourdomain.com
+
+# ── AI (Anthropic) ───────────────────────────────────────────────────────────
+ANTHROPIC_API_KEY=sk-ant-...                  # Optional
+
+# ── Auth: Google OAuth ────────────────────────────────────────────────────────
+GOOGLE_CLIENT_ID=...apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-...
+
+# ── Auth: Apple Sign In ───────────────────────────────────────────────────────
+APPLE_CLIENT_ID=com.yourapp.web
+APPLE_KEY_ID=XXXXXXXXXX
+APPLE_TEAM_ID=XXXXXXXXXX
+APPLE_PRIVATE_KEY=&quot;-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----&quot;
+
+# ── Cron (optional) ───────────────────────────────────────────────────────────
+CRON_SECRET=change-me                         # Secret for POST /api/cron/daily
+
+# ── Analytics (optional) ─────────────────────────────────────────────────────
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX               # Google Analytics 4 measurement ID
+</code></pre>
+<h3>Minimum viable set (to run locally)</h3>
+<p>You only strictly need these to start:</p>
+<pre><code class="language-bash">DATABASE_URL=...
+SUPABASE_PROJECT_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...
+RESEND_API_KEY=...
+RESEND_FROM=...
+JWT_SECRET=any-random-string
+</code></pre>
+<p>Google OAuth, Apple, and AI are all optional and fail gracefully.</p>
+<hr>
+<h2>8. Run locally</h2>
+<pre><code class="language-bash">nvm use          # Switch to the correct Node version
+npm install
+npm run dev      # http://localhost:3000
+</code></pre>
+<p>Run tests:</p>
+<pre><code class="language-bash">npm test
+</code></pre>
+<p>DB migrations (if schema changed):</p>
+<pre><code class="language-bash">npm run db:generate   # Generate migration SQL from schema
+npm run db:migrate    # Apply to the database
+npm run db:studio     # Visual DB browser at localhost:4983
+</code></pre>
+<hr>
+<h2>9. First admin user</h2>
+<p>After the DB is set up, register via <code>/register</code>. Then promote to admin directly in the DB:</p>
+<pre><code class="language-sql">UPDATE users SET role = &#39;admin&#39; WHERE email = &#39;your@email.com&#39;;
+</code></pre>
+<p>Or use Supabase Table Editor.</p>
+<hr>
+<h2>10. Deploy to Netlify</h2>
+<ol>
+<li>Push your repo to GitHub</li>
+<li>Go to <a href="https://app.netlify.com">app.netlify.com</a> → Add new site → Import from Git</li>
+<li>Build settings are already in <code>netlify.toml</code>:<ul>
+<li>Build command: <code>npm test &amp;&amp; npm run build</code></li>
+<li>Publish directory: <code>.next</code></li>
+<li>Node version: <code>20</code></li>
+</ul>
+</li>
+<li>Go to Site settings → Environment variables → add all your production env vars (same as <code>.env.local</code> but with production values — especially <code>NEXT_PUBLIC_APP_URL</code>, <code>DATABASE_URL</code>, and <code>JWT_SECRET</code>)</li>
+<li>Deploy</li>
+</ol>
+<h3>Netlify-specific notes</h3>
+<ul>
+<li>The <code>@netlify/plugin-nextjs</code> plugin is already configured in <code>netlify.toml</code></li>
+<li><code>BCRYPT_ROUNDS=1</code> is set for the build step only (speeds up test hashing). Do <strong>not</strong> set this in production env vars.</li>
+<li>The cron job (<code>POST /api/cron/daily</code>) needs to be triggered externally. Set up a Netlify scheduled function or a cron service (e.g. <a href="https://cron-job.org">cron-job.org</a>) to call it daily with <code>Authorization: Bearer &lt;CRON_SECRET&gt;</code>.</li>
+</ul>
+<hr>
+<h2>11. Post-deploy checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Register an account and verify email works (Resend)</li>
+<li><input disabled="" type="checkbox"> Promote yourself to admin via DB</li>
+<li><input disabled="" type="checkbox"> Upload a test image to References and verify it appears in Supabase Storage</li>
+<li><input disabled="" type="checkbox"> Import a Pinterest board (needs a public board URL)</li>
+<li><input disabled="" type="checkbox"> Test Google OAuth (if configured)</li>
+<li><input disabled="" type="checkbox"> Run <code>/api/admin/run-migrations</code> from the admin panel to apply any pending DB migrations</li>
+<li><input disabled="" type="checkbox"> Set up the daily cron job</li>
+</ul>
+<hr>
+<h2>Environment variables reference</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DATABASE_URL</code></td>
+<td>✅</td>
+<td>Supabase PostgreSQL connection string (pooler)</td>
+</tr>
+<tr>
+<td><code>SUPABASE_PROJECT_URL</code></td>
+<td>✅</td>
+<td><code>https://&lt;ref&gt;.supabase.co</code></td>
+</tr>
+<tr>
+<td><code>SUPABASE_SERVICE_ROLE_KEY</code></td>
+<td>✅</td>
+<td>Supabase service role key (bypasses RLS)</td>
+</tr>
+<tr>
+<td><code>RESEND_API_KEY</code></td>
+<td>✅</td>
+<td>Resend API key for sending emails</td>
+</tr>
+<tr>
+<td><code>RESEND_FROM</code></td>
+<td>✅</td>
+<td>Sender address (must be verified in Resend)</td>
+</tr>
+<tr>
+<td><code>JWT_SECRET</code></td>
+<td>✅</td>
+<td>Random secret for signing session tokens (min 32 chars)</td>
+</tr>
+<tr>
+<td><code>NEXT_PUBLIC_APP_URL</code></td>
+<td>✅</td>
+<td>Full URL of the app (used in email links)</td>
+</tr>
+<tr>
+<td><code>APP_SESSION_ID</code></td>
+<td>✅</td>
+<td>Change to invalidate all existing sessions (default: <code>app_001</code>)</td>
+</tr>
+<tr>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td>Optional</td>
+<td>Enables AI image analysis</td>
+</tr>
+<tr>
+<td><code>GOOGLE_CLIENT_ID</code></td>
+<td>Optional</td>
+<td>Google OAuth</td>
+</tr>
+<tr>
+<td><code>GOOGLE_CLIENT_SECRET</code></td>
+<td>Optional</td>
+<td>Google OAuth</td>
+</tr>
+<tr>
+<td><code>APPLE_CLIENT_ID</code></td>
+<td>Optional</td>
+<td>Apple Sign In</td>
+</tr>
+<tr>
+<td><code>APPLE_KEY_ID</code></td>
+<td>Optional</td>
+<td>Apple Sign In</td>
+</tr>
+<tr>
+<td><code>APPLE_TEAM_ID</code></td>
+<td>Optional</td>
+<td>Apple Sign In</td>
+</tr>
+<tr>
+<td><code>APPLE_PRIVATE_KEY</code></td>
+<td>Optional</td>
+<td>Apple Sign In (<code>.p8</code> file content)</td>
+</tr>
+<tr>
+<td><code>CRON_SECRET</code></td>
+<td>Optional</td>
+<td>Protects <code>POST /api/cron/daily</code></td>
+</tr>
+<tr>
+<td><code>NEXT_PUBLIC_GA_ID</code></td>
+<td>Optional</td>
+<td>Google Analytics 4 measurement ID</td>
+</tr>
+</tbody></table>

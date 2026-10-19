@@ -1,0 +1,2 @@
+# The store's files are read and written only through api/store.php.
+Require all denied
