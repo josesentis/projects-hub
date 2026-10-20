@@ -1,14 +1,16 @@
 # The pages in public/ are already built (npm run build needs the project repos
 # next to the hub, so it runs locally and the result is committed). Netlify only
-# publishes them and runs the store function. The password is Netlify's site
-# protection.
+# publishes them and runs the functions (store and calendar). The password is
+# netlify/edge-functions/auth.mjs (HUB_PASSWORD), not Netlify's site protection,
+# so the calendar feed can stay outside it.
 [build]
   publish = "public"
 
 [functions]
   directory = "netlify/functions"
-  # What was saved before Netlify: each collection starts from here.
-  included_files = ["data/**"]
+  # What was saved before Netlify (each collection starts from here), and the
+  # page with the publishing plan, for the calendar.
+  included_files = ["data/**", "public/mai/negoci.html"]
 
 [[headers]]
   for = "/*"

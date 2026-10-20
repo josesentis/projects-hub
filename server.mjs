@@ -1,6 +1,6 @@
-// Local server for the hub: the pages in public/ and the store in data/ (same
-// requests and rules as netlify/functions/store.mjs, but on files). No password:
-// it is only for this computer or the same wifi. No dependencies.
+// Local server for the hub: the pages in public/, the store in data/ and the
+// calendar (same requests and rules as netlify/functions/, but on files). No
+// password: it is only for this computer or the same wifi. No dependencies.
 //   npm start                 → http://localhost:4321
 //   PORT=8080 HOST=0.0.0.0 npm start   (to open it from the phone on the same wifi)
 import { createServer } from 'node:http'
@@ -8,12 +8,14 @@ import { readFile, writeFile, mkdir, stat } from 'node:fs/promises'
 import { join, normalize, extname, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkRead, checkWrite, apply, MAX_BODY } from './lib/store.mjs'
+import { handle as calendar } from './lib/calendar.mjs'
 
 const ROOT = dirname(fileURLToPath(import.meta.url))
 const PUBLIC = join(ROOT, 'public')
 const DATA = process.env.HUB_DATA || join(ROOT, 'data')
 const PORT = Number(process.env.PORT) || 4321
 const HOST = process.env.HOST || '127.0.0.1'
+const CAL_TOKEN = process.env.CAL_TOKEN || 'local'
 
 // ── Store ─────────────────────────────────────────────────────────────────
 let queue = Promise.resolve()   // one write at a time
@@ -61,9 +63,11 @@ async function serveFile(res, path) {
 }
 
 createServer(async (req, res) => {
-  const url = new URL(req.url, 'http://local')
+  const url = new URL(req.url, 'http://' + (req.headers.host || 'localhost'))
   try {
     if (url.pathname === '/api/store') return await store(req, res, url)
+    const cal = await calendar(url, { token: CAL_TOKEN, readDocs, readFile: path => readFile(join(ROOT, path), 'utf8') })
+    if (cal) { res.writeHead(cal.status, { 'Content-Type': cal.type, 'Cache-Control': 'no-store' }); return res.end(cal.body) }
     await serveFile(res, decodeURIComponent(url.pathname))
   } catch (e) { console.error(e); res.writeHead(500); res.end('Error') }
 }).listen(PORT, HOST, () => console.log(`Hub → http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`))

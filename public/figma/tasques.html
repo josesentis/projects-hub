@@ -27,6 +27,8 @@ h1 { font: 800 clamp(1.8rem, 6vw, 2.4rem)/1.05 var(--display); color: var(--ink)
 form.add { display: flex; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 6px }
 form.add input { flex: 1; min-width: 0; border: 0; background: transparent; font: 16px var(--text); color: var(--ink); padding: 10px }
 form.add input:focus { outline: none }
+.add input[type=date] { flex: 0 0 auto; font-size: 14px; color: var(--muted) }
+.due { margin-top: 6px; font: 13px var(--text); color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px }
 form.add button { border: 0; background: var(--accent); color: #fff; font: 600 15px var(--text); border-radius: 10px; padding: 0 16px; cursor: pointer }
 .area h2 { font: 700 13px/1 var(--text); text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin: 0 0 8px 4px }
 ul { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden }
@@ -67,6 +69,8 @@ li.just .box { animation: pop .3s ease }
   <form class="add" id="add">
     <label for="newTodo" style="position:absolute;left:-9999px">Nova tasca</label>
     <input id="newTodo" placeholder="Afegir una tasca…" maxlength="200" autocomplete="off">
+    <label for="newDate" style="position:absolute;left:-9999px">Data (opcional: surt al calendari)</label>
+    <input id="newDate" type="date" title="Data (opcional: surt al calendari)">
     <button type="submit">Afegir</button>
   </form>
   <p class="status" id="status" aria-live="polite"></p>
@@ -85,7 +89,7 @@ li.just .box { animation: pop .3s ease }
   function li(it) {
     return `<li class="${it.done ? 'done' : ''} ${just === it.id ? 'just' : ''}" data-id="${esc(it.id)}">
       <button class="box" type="button" data-act="toggle" aria-pressed="${!!it.done}" aria-label="${it.done ? 'Desmarcar' : 'Marcar com a fet'}: ${esc(it.text)}">${tick}</button>
-      <span class="txt"><span class="t">${it.who ? `<span class="who">${esc(it.who)}</span>` : ''}${esc(it.text)}</span>${it.how ? `<span class="h">${esc(it.how)}</span>` : ''}${Array.isArray(it.steps) && it.steps.length && !it.done ? `<ol class="steps">${it.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : ''}</span>
+      <span class="txt"><span class="t">${it.who ? `<span class="who">${esc(it.who)}</span>` : ''}${esc(it.text)}</span>${it.how ? `<span class="h">${esc(it.how)}</span>` : ''}${Array.isArray(it.steps) && it.steps.length && !it.done ? `<ol class="steps">${it.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : ''}${it.done ? '' : `<input class="due" type="date" data-act="date" value="${esc(it.date || '')}" aria-label="Data, surt al calendari: ${esc(it.text)}" title="Data (surt al calendari)">`}</span>
       <button class="del" type="button" data-act="del" aria-label="Esborrar: ${esc(it.text)}">×</button>
     </li>`
   }
@@ -113,7 +117,7 @@ li.just .box { animation: pop .3s ease }
   }
 
   document.body.addEventListener('click', e => {
-    const b = e.target.closest('[data-act]'); if (!b) return
+    const b = e.target.closest('[data-act]'); if (!b || b.dataset.act === 'date') return
     const id = b.closest('li')?.dataset.id; const it = items.find(x => x.id === id); if (!it) return
     if (b.dataset.act === 'toggle') {
       it.done = !it.done; it.doneAt = it.done ? new Date().toISOString() : null; just = id; render()
@@ -125,12 +129,19 @@ li.just .box { animation: pop .3s ease }
     }
   })
 
+  document.body.addEventListener('change', e => {
+    if (e.target.dataset.act !== 'date') return
+    const id = e.target.closest('li')?.dataset.id; const it = items.find(x => x.id === id); if (!it) return
+    it.date = e.target.value; write(id, { date: it.date })
+  })
+
   $('add').addEventListener('submit', async e => {
     e.preventDefault()
     const text = $('newTodo').value.trim(); if (!text) return
     if (!db) { $('status').textContent = 'Aquí no es pot desar.'; return }
-    $('newTodo').value = ''
-    try { await db.collection('todos').add({ text, area: 'Altres', done: false, order: Date.now() }) }
+    const date = $('newDate').value
+    $('newTodo').value = ''; $('newDate').value = ''
+    try { await db.collection('todos').add({ text, area: 'Altres', done: false, order: Date.now(), ...(date ? { date } : {}) }) }
     catch (err) { $('status').textContent = err?.code === 'quota_exceeded' ? 'No hi caben més: esborra les fetes.' : "No s'ha pogut afegir." }
   })
 

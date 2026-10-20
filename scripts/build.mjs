@@ -86,6 +86,7 @@ function frontPage(rows) {
     <span class="eyebrow">${rows.length} projectes</span>
     <h1>${esc(config.title)}</h1>
     <p class="lede">${esc(config.lede)}</p>
+    <p class="meta"><a href="calendari.html">Calendari</a>: el que toca cada dia, per afegir-lo a Google Calendar.</p>
   </header>
   <div class="projects">
 ${rows.map(({ p, docs, last }) => `    <a class="project" href="${esc(p.id)}/index.html" style="--accent:${esc(p.color)}">

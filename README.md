@@ -18,16 +18,17 @@ npm run build         # copia els documents dels repos i fa les pàgines
 npm start             # http://localhost:4321
 ```
 
-- En local no hi ha contrasenya, i el que marques es desa a `data/` (no a Netlify).
+- En local no hi ha contrasenya, i el que marques es desa a `data/` (no a Netlify). El calendari és a `http://localhost:4321/cal/local.ics`.
 - Per obrir-lo des del mòbil a la mateixa wifi: `HOST=0.0.0.0 npm start` i entra a `http://<ip-de-l'ordinador>:4321`.
 - Els repos es busquen al costat del hub (`../mAI_fitness`, `../outfit-of-the-day`, `../ai-slides-to-figma`). Quan canviïs un document en un repo, `npm run build` i fes commit del resultat: Netlify no fa el build, perquè allà no hi ha els repos.
 - Tests: `npm test`.
 
 ## Publicat (Netlify)
 
-La configuració és a `netlify.toml`: publica `public/` tal com és al repo, sense build, i hi afegeix la funció `netlify/functions/store.mjs` a `/api/store`.
+La configuració és a `netlify.toml`: publica `public/` tal com és al repo, sense build, i hi afegeix les funcions `netlify/functions/store.mjs` (`/api/store`) i `netlify/functions/calendar.mjs` (`/api/calendar` i `/cal/…`).
 
-- **Contrasenya:** la de Netlify (Site configuration → Access & security → Visitor access → Password protection).
+- **Contrasenya:** la variable `HUB_PASSWORD` de Netlify (Site configuration → Environment variables). La demana `netlify/edge-functions/auth.mjs` a tot el web (amb qualsevol nom d'usuari) menys al calendari. No es fa servir la protecció amb contrasenya de Netlify, perquè no permet deixar fora cap pàgina.
+- **Calendari:** `calendari.html` mostra les properes dates i l'enllaç per afegir-les a Google Calendar: `/cal/<CAL_TOKEN>.ics`, l'única adreça sense contrasenya. `CAL_TOKEN` és una variable de Netlify amb un valor llarg i aleatori (per exemple, `openssl rand -hex 24`); si la canvies, l'enllaç antic deixa de funcionar. Hi surten els posts de Publicar de mAI que no estan marcats i les tasques amb data que no estan fetes (`lib/calendar.mjs`).
 - **Dades:** es desen a Netlify Blobs (store `hub`, una entrada `<pàgina>/<col·lecció>` per a cada una). Una col·lecció que encara no s'ha tocat a Netlify comença amb el que hi ha a `data/` al repo; a partir del primer canvi, mana el que hi ha a Blobs i `data/` ja no es llegeix.
 
 ## Com està fet

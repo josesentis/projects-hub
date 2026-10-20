@@ -137,10 +137,11 @@ ol.sources { font-size: 13px; color: var(--muted); padding-left: 20px } ol.sourc
 .badge { font: 600 11px/1 var(--text); padding: 4px 7px; border-radius: 6px; background: var(--accent-soft); color: var(--accent) }
 .badge.who { background: var(--accent-2-soft); color: var(--accent-2) }
 .badge.urgent { background: var(--bad-soft); color: var(--bad) }
+.badge.date { background: transparent; border: 1px solid var(--line); color: var(--body) }
 .cardt .why { font-size: 14px; color: var(--body); margin: 0 }
 .cardt ol { margin: 0; padding-left: 20px; font-size: 14px; display: flex; flex-direction: column; gap: 4px }
 .cardt code { overflow-wrap: anywhere }
-.cardt textarea, .newcard textarea, .newcard input, .newcard select { width: 100%; font: 14px/1.4 var(--text); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px }
+.cardt textarea, .cardt input[type=date], .newcard textarea, .newcard input, .newcard select { width: 100%; font: 14px/1.4 var(--text); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px }
 .cardt .acts { display: flex; gap: 6px; flex-wrap: wrap }
 .cardt .acts button { font: 600 12px/1 var(--text); border: 1px solid var(--line); background: transparent; color: var(--body); padding: 7px 9px; border-radius: 8px; cursor: pointer }
 .cardt .acts button:hover { color: var(--ink); border-color: var(--ink) }
@@ -606,6 +607,7 @@ tr.vid-done td { color: var(--muted); text-decoration: line-through }
       <div><label class="status-line" for="nf-phase">Fase</label><select id="nf-phase"><option value="0">0 · Tancar V1</option><option value="1">1 · Beta</option><option value="2">2 · Llançament</option><option value="3">3 · Créixer</option></select></div>
       <div><label class="status-line" for="nf-who">Qui</label><input id="nf-who" placeholder="Jose, amic…" maxlength="40"></div>
     </div>
+    <label class="status-line" for="nf-date">Data (opcional: surt al calendari)</label><input id="nf-date" type="date">
     <div style="display:flex;gap:8px"><button class="btn" type="submit">Afegir</button><button class="btn ghost" type="button" id="nf-cancel">Cancel·lar</button></div>
   </form>
   <p class="status-line" id="boardStatus" aria-live="polite">Carregant les tasques…</p>
@@ -1255,6 +1257,7 @@ tr.vid-done td { color: var(--muted); text-decoration: line-through }
   const PHASE = { 0: 'Fase 0', 1: 'Fase 1', 2: 'Fase 2', 3: 'Fase 3' }
   const $ = id => document.getElementById(id)
   const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+  const shortDate = d => new Date(d + 'T12:00:00').toLocaleDateString('ca-ES', { day: 'numeric', month: 'short' })
   let cards = [], filter = 'all', open = new Set(), db = null, dragId = null, doneOpen = false
 
   function stepsHtml(steps) {
@@ -1278,12 +1281,14 @@ tr.vid-done td { color: var(--muted); text-decoration: line-through }
     const isOpen = open.has(c.id)
     const ci = COLS.findIndex(([k]) => k === (c.col || 'todo'))
     return `<article class="cardt" draggable="true" data-id="${esc(c.id)}" aria-expanded="${isOpen}">
-      <div class="meta-row"><span class="badge">${PHASE[c.phase] ?? 'Fase ?'}</span>${c.who ? `<span class="badge who">${esc(c.who)}</span>` : ''}${c.urgent ? '<span class="badge urgent">Abans del push</span>' : ''}</div>
+      <div class="meta-row"><span class="badge">${PHASE[c.phase] ?? 'Fase ?'}</span>${c.who ? `<span class="badge who">${esc(c.who)}</span>` : ''}${c.urgent ? '<span class="badge urgent">Abans del push</span>' : ''}${c.date ? `<span class="badge date">${esc(shortDate(c.date))}</span>` : ''}</div>
       <button class="t" type="button" data-act="toggle" aria-expanded="${isOpen}">${esc(c.title)}</button>
       ${isOpen ? `
         ${c.why ? `<p class="why">${esc(c.why)}</p>` : ''}
         ${stepsHtml(c.steps)}
         ${c.link ? `<p class="why"><a href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.linkLabel || c.link)}</a></p>` : ''}
+        <label class="status-line" for="date-${esc(c.id)}">Data (surt al calendari)</label>
+        <input type="date" id="date-${esc(c.id)}" data-act="date" value="${esc(c.date || '')}">
         <label class="status-line" for="notes-${esc(c.id)}">Notes</label>
         <textarea id="notes-${esc(c.id)}" rows="2" data-act="notes" placeholder="Apunta-hi el que vulguis…">${esc(c.notes || '')}</textarea>` : ''}
       <div class="acts">
@@ -1308,13 +1313,16 @@ tr.vid-done td { color: var(--muted); text-decoration: line-through }
     e.target.querySelector('summary').textContent = doneOpen ? 'Amagar-les' : 'Veure-les'
   }, true)
   $('board').addEventListener('click', e => {
-    const btn = e.target.closest('[data-act]'); if (!btn || btn.tagName === 'TEXTAREA') return
+    const btn = e.target.closest('[data-act]'); if (!btn || btn.tagName === 'TEXTAREA' || btn.tagName === 'INPUT') return
     const id = btn.closest('.cardt')?.dataset.id; if (!id) return
     const c = cards.find(x => x.id === id)
     const ci = COLS.findIndex(([k]) => k === (c.col || 'todo'))
     if (btn.dataset.act === 'toggle') { open.has(id) ? open.delete(id) : open.add(id); render() }
     if (btn.dataset.act === 'left' && ci > 0) save(id, { col: COLS[ci - 1][0] })
     if (btn.dataset.act === 'right' && ci < COLS.length - 1) save(id, { col: COLS[ci + 1][0] })
+  })
+  $('board').addEventListener('change', e => {
+    if (e.target.dataset.act === 'date') save(e.target.closest('.cardt').dataset.id, { date: e.target.value })
   })
   const noteTimers = {}
   $('board').addEventListener('input', e => {
@@ -1339,6 +1347,7 @@ tr.vid-done td { color: var(--muted); text-decoration: line-through }
   $('newForm').addEventListener('submit', async e => {
     e.preventDefault()
     const data = { title: $('nf-title').value.trim(), why: $('nf-why').value.trim(), phase: Number($('nf-phase').value), who: $('nf-who').value.trim(), col: 'todo', order: Date.now() }
+    if ($('nf-date').value) data.date = $('nf-date').value
     if (!data.title) return
     if (!db) { $('boardStatus').textContent = 'Aquí no es pot desar.'; return }
     try { await db.collection('cards').add(data); $('newForm').reset(); $('newForm').hidden = true; $('boardStatus').textContent = 'Tasca afegida.' }
