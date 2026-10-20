@@ -2,7 +2,7 @@
 
 Tot el que estic llançant, en un sol web amb contrasenya. Cada projecte té la seva pàgina:
 
-- **mAI Fitness** (`public/mai/`): pla de negoci (pla, publicar amb els textos de cada post, com funciona, tasques, guies, estudi i **Documents**), proves pendents, receptari base i prototips.
+- **mAI Fitness** (`public/mai/`): pla de negoci (pla, publicar amb els textos de cada post, com funciona, tasques, guies, estudi i **Documents**), proves pendents i receptari base.
 - **Outfit of the Day** (`public/ootd/`): pla de negoci (pla, com funciona, tasques, estudi i **Documents**) i el prototip de l'estilista.
 - **AI Slides to Figma** (`public/figma/`): les imatges de la Community, la fitxa per publicar i el README.
 
@@ -33,5 +33,4 @@ La configuració és a `netlify.toml`: publica `public/` tal com és al repo, se
 ## Com està fet
 
 - Les pàgines són les dels artifacts, sense canvis de contingut. `assets/store.js` els dona la mateixa API de dades que tenien a Claude (`claude.use('db')`), però sobre `api/store` (la funció de Netlify, o `server.mjs` en local; les regles són a `lib/store.mjs`). Comprova si hi ha canvis cada 5 s.
-- Els prototips (`*.dc.html`) es dibuixen amb `assets/dc-lite.js`, un motor petit per a les plantilles `{{…}}`, `<sc-for>` i `<sc-if>` del canvas de disseny.
 - Les pàgines de projecte i la portada les genera `scripts/build.mjs` a partir de `hub.config.json`; no s'editen a mà.

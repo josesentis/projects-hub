@@ -1,6 +1,6 @@
 {
   "title": "Hub",
-  "lede": "Tot el que estic llançant, en un lloc: el pla de negoci, el calendari i els textos per publicar, les tasques, les proves, els prototips i els documents de cada projecte. El que marques aquí es desa per a tothom qui hi entri amb la contrasenya.",
+  "lede": "Tot el que estic llançant, en un lloc: el pla de negoci, el calendari i els textos per publicar, les tasques, les proves i els documents de cada projecte. El que marques aquí es desa per a tothom qui hi entri amb la contrasenya.",
   "projects": [
     {
       "id": "mai",
@@ -20,8 +20,7 @@
         { "href": "receptari.html", "tag": "Menjar", "title": "Receptari base", "text": "La revisió dels plats del llibre: sí, no o diferent." },
         { "href": "negoci.html#guies", "tag": "Guies", "title": "Com es fa cada cosa", "text": "Publicar versions, variables de Netlify, anuncis, revisions dels serveis i presentar l’app a X i LinkedIn." },
         { "href": "negoci.html#estudi", "tag": "Estudi", "title": "Estudi de mercat i preus", "text": "Com cobrar sense perdre diners amb la IA." },
-        { "href": "negoci.html#docs", "tag": "Producte", "title": "Com funciona l'app", "text": "Les pantalles, els conceptes, els plans i els models d'IA, sense tecnicismes." },
-        { "href": "prototips.html", "tag": "Disseny", "title": "Prototips", "text": "Les pantalles dissenyades de Menjar i del nou disseny." }
+        { "href": "negoci.html#docs", "tag": "Producte", "title": "Com funciona l'app", "text": "Les pantalles, els conceptes, els plans i els models d'IA, sense tecnicismes." }
       ],
       "docs": [
         { "slug": "llancament", "file": "ai/LAUNCH.md", "title": "Llançament: on, quan i amb quins textos", "group": "Negoci" },

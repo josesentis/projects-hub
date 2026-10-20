@@ -1,7 +1,7 @@
 {
   "name": "hub",
   "version": "1.0.0",
-  "description": "Tot el que llanço (mAI Fitness, Outfit of the Day, AI Slides to Figma): negoci, publicació, tasques, proves, prototips i documents, amb contrasenya.",
+  "description": "Tot el que llanço (mAI Fitness, Outfit of the Day, AI Slides to Figma): negoci, publicació, tasques, proves i documents, amb contrasenya.",
   "scripts": {
     "start": "node server.mjs",
     "test": "node --test tests/*.test.mjs",
