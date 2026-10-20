@@ -1,19 +1,4 @@
 {
- "launch-x-linkedin": {
-  "col": "todo",
-  "order": 1792140000000,
-  "phase": 1,
-  "steps": [
-   "Triar el vídeo: vertical en català o castellà per a LinkedIn, anglès per a X (carpeta `mai-fitness-videos-2026-10-16` de l'escriptori)",
-   "Opcional: crear un codi a Admin → Beta (p. ex. `linkedin`) per saber quanta gent arriba de cada lloc",
-   "Publicar a LinkedIn des del perfil personal",
-   "Publicar el fil a X amb el vídeo al primer missatge",
-   "Apuntar el que diguin a Admin → Beta → Add feedback"
-  ],
-  "title": "Presentar l'app a X i LinkedIn",
-  "who": "Jose",
-  "why": "Abans de buscar els testers professionals (entrenadors, dietistes-nutricionistes). Els textos i els vídeos són a Guies → 8 · Xarxes."
- },
  "p0-anuncis": {
   "col": "todo",
   "order": 10,
@@ -196,8 +181,8 @@
   "phase": 1,
   "steps": [
    "Admin → Beta → crear un codi per grup (A: 12 usos, B: 18, C: 10) amb 'preu fundador' activat",
-   "L'enllaç és https://<domini>/register?invite=CODI",
-   "Els testers s'han de registrar amb correu (Google/Apple encara no llegeixen el codi)"
+   "Tocar el codi copia el seu enllaç (maifitness.netlify.app/register?invite=CODI)",
+   "Funciona amb correu, Google i Apple"
   ],
   "title": "Crear els codis d'invitació",
   "who": "Jose",
