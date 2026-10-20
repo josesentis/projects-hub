@@ -397,13 +397,13 @@ tr.vid-done td { color: var(--muted); text-decoration: line-through }
       <div class="doc-card"><h3>BetaList i Menéame</h3><p>BetaList és on la gent busca productes en beta per provar-los; té llista d'espera, per això s'hi envia la setmana de preparar. Menéame és el Hacker News en castellà, i no hi agrada l'autobombo: explica-ho com una cosa teva que comparteixes.</p></div>
       <div class="doc-card"><h3>Product Hunt · gener</h3><p>Comença el dia a les 00:01 de Califòrnia, les 9:01 a Madrid, i el millor és un dimarts. És el més semblant a una campanya, per això va més endavant i només si es compleixen les condicions de la fase.</p></div>
     </div>
-    <p class="src">Fonts: <a href="https://buffer.com/library/best-time-to-post-social-media/">Buffer, 52 milions de publicacions (2026)</a> · <a href="https://www.socialpilot.co/blog/best-times-to-post-on-social-med">SocialPilot (2026)</a> · <a href="https://notifier.so/reddit/subreddit_analysis/SideProject">activitat de r/SideProject (Notifier)</a>. Les dades són de tot el món i no sempre coincideixen: és un punt de partida. Al cap de tres setmanes, el que manen són els teus números: les estadístiques de cada xarxa i la columna "Used" dels codis a Admin → Beta.</p>
+    <p class="src">Fonts: <a href="https://buffer.com/library/best-time-to-post-social-media/">Buffer, 52 milions de publicacions (2026)</a> · <a href="https://www.socialpilot.co/blog/best-times-to-post-on-social-med">SocialPilot (2026)</a> · <a href="https://notifier.so/reddit/subreddit_analysis/SideProject">activitat de r/SideProject (Notifier)</a>. Les dades són de tot el món i no sempre coincideixen: és un punt de partida. Al cap de tres setmanes, el que manen són els teus números: les estadístiques de cada xarxa i «Where people come from» a Admin → Beta.</p>
   </section>
 
   <section>
     <span class="eyebrow">Enllaços</span>
-    <h2>Un codi per canal, per saber d'on ve la gent</h2>
-    <p>Crea un codi a Admin → Beta per a cada canal (grup B, i el nom del canal a "Note") i enganxa'l aquí. Els textos de sota ja porten l'enllaç amb el codi. Sense codi, l'enllaç va a l'app i prou. Si compres el domini, canvia l'adreça i tots els textos s'actualitzen.</p>
+    <h2>Cada canal, el seu enllaç</h2>
+    <p>No cal crear res. Cada text de sota porta el seu enllaç a l'app amb el nom del canal, per exemple <code>maifitness.netlify.app/?ref=linkedin</code>. Qui s'hi registra queda comptat a <b>Admin → Beta → Where people come from</b>, i també quants l'han començat a fer servir de debò. Si compres el domini, canvia l'adreça i tots els textos s'actualitzen.</p>
     <div class="codes" id="codes">
       <label style="grid-column:1/-1"><span>Adreça</span><input id="lk-base" inputmode="url" autocomplete="off" spellcheck="false"></label>
     </div>
@@ -833,7 +833,7 @@ tr.vid-done td { color: var(--muted); text-decoration: line-through }
     <ul class="check">
       <li><b>LinkedIn:</b> en anglès, des del teu perfil personal i amb <code>mai-fitness-en-vertical.mp4</code>.</li>
       <li><b>X:</b> en català, un sol post amb <code>mai-fitness-ca-vertical.mp4</code>.</li>
-      <li><b>Comptar qui arriba:</b> si l'enllaç ha de dir d'on ve la gent, crea un codi a Admin → Beta (per exemple "linkedin") i fes servir <code>maifitness.netlify.app/register?invite=CODI</code>.</li>
+      <li><b>Comptar qui arriba:</b> afegeix <code>?ref=</code> i el nom del canal a l'enllaç, per exemple <code>maifitness.netlify.app/?ref=linkedin</code>. Ho veuràs a Admin → Beta → Where people come from.</li>
       <li><b>Feedback:</b> el que et diguin per comentaris o missatges, apunta-ho a Admin → Beta → "Add feedback".</li>
       <li><b>Domini:</b> si el compres abans de publicar, cal canviar l'adreça dels textos i del final dels vídeos.</li>
     </ul>
@@ -1390,7 +1390,7 @@ Ho he arreglat: ara, si fas una altra cosa en lloc d'una sessió, també compta.
   const P = [
     // ── Preparar
     { id: 'prep-domini', week: 'prep', date: '2026-10-19', title: 'Decidir el domini', tips: ['Si compres maifitness.app ara, canvia l\'adreça de dalt i la del final dels vídeos (scripts/teaser/README.md). Si no, tot funciona amb maifitness.netlify.app.'] },
-    { id: 'prep-codis', week: 'prep', date: '2026-10-19', title: 'Crear un codi d\'invitació per canal i enganxar-los a dalt', tips: ['Admin → Beta → Invite codes: grup B, el nom del canal a "Note" i prou usos (per exemple 200).', 'LinkedIn, X, Hacker News, Reddit, BetaList, Menéame i Indie Hackers. Els de directoris, premsa i Product Hunt es poden fer més endavant.'] },
+    { id: 'prep-codis', week: 'prep', date: '2026-10-19', title: 'Els enllaços per canal ja estan fets', tips: ['No cal crear codis: cada text porta l\'enllaç amb ?ref= i el nom del canal.', 'Mira-ho a Admin → Beta → Where people come from.'] },
     { id: 'prep-betalist', week: 'prep', date: '2026-10-19', ch: 'betalist', lang: 'EN', video: '3–4 captures i el logo', title: 'Enviar l\'app a BetaList',
       tips: ['BetaList és on la gent busca productes nous en beta. L\'alta gratuïta té llista d\'espera i pot trigar setmanes: per això va ara. No cal pagar per sortir abans.', 'Quan surti, marca-la aquí i passa-hi a contestar els comentaris.'],
       texts: [['Nom', 'mAI Fitness'], ['Frase curta', 'Training and meals in one plan that adapts to your week'], ['Descripció', `I built this for myself and it grew into a full app: a training program that adapts to your real week, meals in grams for your body and your training, and an AI coach that proposes changes you accept or reject.
@@ -1547,8 +1547,8 @@ Jose`]] },
 
   function linkFor(ch) {
     const base = (links.base || DEFAULT_BASE).trim().replace(/^https?:\/\//, '').replace(/\/+$/, '')
-    const code = ch && links.codes?.[ch]?.trim()
-    return code ? `${base}/register?invite=${encodeURIComponent(code.toUpperCase())}` : base
+    // ?ref= tells the app where the person came from (Admin → Beta counts it)
+    return ch ? `${base}/?ref=${encodeURIComponent(ch)}` : base
   }
   function whenLabel(p) {
     const [y, m, d] = p.date.split('-').map(Number)
@@ -1599,9 +1599,6 @@ Jose`]] },
 
   function renderCodes() {
     const host = $('codes')
-    host.querySelectorAll('label[data-ch]').forEach(l => l.remove())
-    host.insertAdjacentHTML('beforeend', CHANNELS.map(([k, name]) =>
-      `<label data-ch="${k}"><span>${esc(name)}</span><input data-code="${k}" placeholder="MAI-B-…" autocomplete="off" spellcheck="false" value="${esc(links.codes?.[k] || '')}" ${db ? '' : 'disabled'}></label>`).join(''))
     $('lk-base').value = links.base || DEFAULT_BASE
     $('lk-base').disabled = !db
   }
@@ -1646,7 +1643,6 @@ Jose`]] },
   }
   $('codes').addEventListener('input', e => {
     if (e.target.id === 'lk-base') links.base = e.target.value.trim() || DEFAULT_BASE
-    else if (e.target.dataset.code) links.codes = { ...links.codes, [e.target.dataset.code]: e.target.value.trim().toUpperCase() }
     else return
     render(); saveLinksSoon()
   })

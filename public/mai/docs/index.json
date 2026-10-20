@@ -4,7 +4,7 @@
   "title": "Llançament: on, quan i amb quins textos",
   "group": "Negoci",
   "source": "ai/LAUNCH.md",
-  "updated": "2026-10-19"
+  "updated": "2026-10-20"
  },
  {
   "slug": "beta",
@@ -25,7 +25,7 @@
   "title": "Com funciona l’app (tècnic)",
   "group": "Tècnic",
   "source": "ai/AGENTS.md",
-  "updated": "2026-10-19"
+  "updated": "2026-10-20"
  },
  {
   "slug": "disseny",

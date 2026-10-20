@@ -4,7 +4,7 @@
 <ol>
 <li>Hi ha canals que es poden fer servir cada setmana (xarxes, comunitats, amics) i canals d&#39;<strong>un sol tret</strong> (Product Hunt, Hacker News, premsa). Els d&#39;un sol tret no es gasten fins que l&#39;app retingui la gent.</li>
 <li>Ara l&#39;objectiu no és &quot;fer-se viral&quot;: és aconseguir 40 testers bons (pla de <code>ai/BETA.md</code>) i saber per què es queden o marxen.</li>
-<li>L&#39;entrada és <strong>lliure</strong>. Quan l&#39;enllaç surt en un blog, un mitjà o una comunitat, hi va un <strong>codi d&#39;invitació</strong> propi (Admin → Beta, amb el nom del lloc a &quot;Note&quot;): la columna &quot;Used&quot; diu quanta gent ha portat cada lloc.</li>
+<li>L&#39;entrada és <strong>lliure</strong>. Cada enllaç porta <code>?ref=</code> i el nom del lloc (<code>maifitness.netlify.app/?ref=linkedin</code>): Admin → Beta → &quot;Where people come from&quot; diu quanta gent s&#39;ha registrat i activat des de cada lloc. Els codis d&#39;invitació queden per als amics i testers (grup i preu fundador).</li>
 <li>Tot el feedback que arribi per fora (WhatsApp, comentaris, DMs) s&#39;entra a Admin → Beta → &quot;Add feedback&quot;.</li>
 </ol>
 <h2>Condicions per passar de fase</h2>
@@ -69,7 +69,7 @@
 <h2>Decisions preses (10/10/2026)</h2>
 <ul>
 <li><strong>Primer, dues setmanes de proves</strong> amb amics i tu mateix. Res públic fins llavors.</li>
-<li><strong>Entrada lliure</strong>; codi només per als enllaços de blogs, mitjans i comunitats.</li>
+<li><strong>Entrada lliure</strong>; cada enllaç amb <code>?ref=&lt;lloc&gt;</code>.</li>
 <li><strong>Stripe encara no està configurat</strong>: els textos diuen &quot;gratis durant la beta&quot;, mai &quot;14 dies gratis&quot; ni preus.</li>
 <li><strong>No surts a càmera</strong>: els vídeos són gravacions de pantalla amb titulars, com el teaser.</li>
 <li><strong>3–4 hores a la setmana.</strong> El calendari està fet amb aquest pressupost.</li>
@@ -159,9 +159,9 @@
 <td>4 h aquella setmana, més respondre el dia mateix</td>
 </tr>
 </tbody></table>
-<p><strong>El dia a dia</strong> és a la pestanya &quot;Publicar&quot; del pla de negoci al hub (<code>~/Code/hub</code>, mAI Fitness). Hi ha cada publicació amb un dia orientatiu, el vídeo que s&#39;hi ha de pujar i el text amb l&#39;enllaç i el codi del canal, i una casella per marcar-la. Els dies no són obligatoris: un matí entre setmana i ser-hi per contestar. En resum (19/10/2026, el llançament s&#39;avança a aquesta setmana):</p>
+<p><strong>El dia a dia</strong> és a la pestanya &quot;Publicar&quot; del pla de negoci al hub (<code>~/Code/hub</code>, mAI Fitness). Hi ha cada publicació amb un dia orientatiu, el vídeo que s&#39;hi ha de pujar i el text amb l&#39;enllaç del canal (<code>?ref=</code>), i una casella per marcar-la. Els dies no són obligatoris: un matí entre setmana i ser-hi per contestar. En resum (19/10/2026, el llançament s&#39;avança a aquesta setmana):</p>
 <ul>
-<li><strong>Dilluns 19/10 (preparar):</strong> els codis d&#39;invitació per canal, enviar-la a BetaList (té llista d&#39;espera) i 4–5 captures.</li>
+<li><strong>Dilluns 19/10 (preparar):</strong> enviar-la a BetaList (té llista d&#39;espera) i 4–5 captures.</li>
 <li><strong>Aquesta setmana, el llançament:</strong><ul>
 <li>dt 20/10 abans de dinar: LinkedIn en anglès (<code>mai-fitness-en-vertical.mp4</code>) i X en català (<code>mai-fitness-ca-vertical.mp4</code>);</li>
 <li>dc 21/10 a les 15:00: Show HN a Hacker News;</li>
@@ -281,7 +281,7 @@
 </tr>
 </tbody></table>
 <h2>Textos preparats</h2>
-<p>Adapta&#39;ls a la teva veu. En blogs, mitjans i comunitats, l&#39;enllaç porta el codi d&#39;aquell lloc: <code>https://&lt;domini&gt;/register?invite=[CODI]</code>.</p>
+<p>Adapta&#39;ls a la teva veu. L&#39;enllaç porta el nom del lloc: <code>https://&lt;domini&gt;/?ref=&lt;lloc&gt;</code>.</p>
 <p><strong>WhatsApp a un amic (ca)</strong></p>
 <blockquote>
 <p>Ei! He fet una app per portar l&#39;entreno i el menjar en un sol pla, amb un coach que l&#39;ajusta. Estic buscant gent que la provi unes setmanes i em digui què no li agrada. T&#39;hi apuntes? Entres per aquí: <code>https://&lt;domini&gt;/register</code>. Tot el que em diguis, encara que sigui &quot;això és un pal&quot;, em va bé.</p>
@@ -316,7 +316,7 @@
 </blockquote>
 <h2>Com mesurar</h2>
 <ul>
-<li><strong>Per canal:</strong> Admin → Beta → Invite codes, columna &quot;Used&quot; de cada codi (només els llocs on l&#39;enllaç porta codi).</li>
+<li><strong>Per canal:</strong> Admin → Beta → &quot;Where people come from&quot; (registres i activats per <code>?ref=</code>).</li>
 <li><strong>Qualitat:</strong> Admin → Beta → Cohorts (activació, D1/D7/D30, NPS).</li>
 <li><strong>Què diuen:</strong> Admin → Beta → Feedback, amb el que arribi per fora entrat a mà.</li>
 <li>Un canal que porta gent que no s&#39;activa no val la pena repetir-lo, per molts registres que doni.</li>
