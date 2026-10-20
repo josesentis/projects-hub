@@ -84,7 +84,7 @@
       "id": "figma",
       "name": "AI Slides to Figma",
       "kind": "Plugin de Figma",
-      "status": "Llest per publicar a la Community",
+      "status": "Pendent de la botiga a Lemon Squeezy",
       "tagline": "Converteix les presentacions HTML fetes amb IA en slides editables de Figma Slides o Figma Design.",
       "color": "#c2410c",
       "repo": "../ai-slides-to-figma",
@@ -93,7 +93,9 @@
         { "src": "img/cover.png", "alt": "Portada de la Community" },
         { "src": "img/gallery.png", "alt": "Imatge de la galeria" }
       ],
-      "pages": [],
+      "pages": [
+        { "href": "tasques.html", "tag": "Tasques", "title": "Per publicar i cobrar", "text": "Lemon Squeezy, compra de prova, publicar a la Community i anunciar-lo, amb els passos de cada cosa.", "big": true }
+      ],
       "docs": [
         { "slug": "listing", "file": "store/listing.md", "title": "Fitxa de la Community", "group": "Llançament" },
         { "slug": "readme", "file": "README.md", "title": "Com funciona el plugin", "group": "Tècnic" }

@@ -1,0 +1,149 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><script src="../assets/store.js" data-ns="figma-tasques"></script><script src="../assets/hub-bar.js"></script>
+<title>Tasques AI Slides to Figma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow column — add box, open items grouped by area, done items folded at the bottom. */
+:root {
+  --bg: #f6f3ee; --surface: #fffdf9; --ink: #26201b; --body: #4a423b; --muted: #8a8076; --line: #e8e1d7;
+  --accent: #d4573a; --accent-soft: #fbe6df; --done: #5f8a6b;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --text: "Instrument Sans", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1a1714; --surface: #24201c; --ink: #f2ece4; --body: #d2c9be; --muted: #9a8f83; --line: #37312b;
+  --accent: #ee8466; --accent-soft: #3a261f; --done: #8fbf9b; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1a1714; --surface: #24201c; --ink: #f2ece4; --body: #d2c9be; --muted: #9a8f83; --line: #37312b;
+  --accent: #ee8466; --accent-soft: #3a261f; --done: #8fbf9b; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--body); font: 16px/1.45 var(--text); }
+.wrap { max-width: 640px; margin: 0 auto; padding-inline: 16px; padding-block: 32px 96px; display: flex; flex-direction: column; gap: 22px }
+h1 { font: 800 clamp(1.8rem, 6vw, 2.4rem)/1.05 var(--display); color: var(--ink); margin: 0; letter-spacing: -0.02em }
+.sub { color: var(--muted); margin: 6px 0 0; font-size: 15px }
+.progress { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--muted) }
+.bar { flex: 1; height: 6px; border-radius: 99px; background: var(--line); overflow: hidden }
+.bar i { display: block; height: 100%; background: var(--done); border-radius: 99px; transition: width .3s }
+form.add { display: flex; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 6px }
+form.add input { flex: 1; min-width: 0; border: 0; background: transparent; font: 16px var(--text); color: var(--ink); padding: 10px }
+form.add input:focus { outline: none }
+form.add button { border: 0; background: var(--accent); color: #fff; font: 600 15px var(--text); border-radius: 10px; padding: 0 16px; cursor: pointer }
+.area h2 { font: 700 13px/1 var(--text); text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin: 0 0 8px 4px }
+ul { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden }
+li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 12px 12px 14px; border-top: 1px solid var(--line) }
+li:first-child { border-top: 0 }
+li .box { flex: none; width: 24px; height: 24px; margin-top: 1px; border-radius: 7px; border: 2px solid var(--line); background: transparent; cursor: pointer; display: grid; place-items: center; transition: background .15s, border-color .15s }
+li .box:hover { border-color: var(--accent) }
+li .box svg { opacity: 0 }
+li.done .box { background: var(--done); border-color: var(--done) }
+li.done .box svg { opacity: 1 }
+li .txt { flex: 1; min-width: 0 }
+li .t { color: var(--ink); font-weight: 500 }
+li .h { display: block; font-size: 13.5px; color: var(--muted); margin-top: 2px }
+li .who { display: inline-block; font: 600 11px/1 var(--text); text-transform: uppercase; letter-spacing: .05em; color: var(--accent); background: var(--accent-soft); border-radius: 99px; padding: 4px 7px; margin-right: 8px; vertical-align: 2px }
+ol.steps { margin: 8px 0 0; padding-left: 20px; font-size: 14px; color: var(--body); background: none; border: 0; border-radius: 0; overflow: visible; list-style: decimal }
+ol.steps li { display: list-item; padding: 2px 0; border: 0 }
+code { font-size: .9em }
+li.done .t { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; font-weight: 400 }
+li .del { flex: none; border: 0; background: transparent; color: var(--muted); font-size: 18px; line-height: 1; padding: 2px 4px; cursor: pointer; opacity: .5 }
+li .del:hover { opacity: 1; color: var(--accent) }
+details.donebox summary { cursor: pointer; font: 600 14px var(--text); color: var(--muted); padding: 4px; list-style: none }
+details.donebox summary::-webkit-details-marker { display: none }
+details.donebox[open] summary { margin-bottom: 8px }
+.status { font-size: 13px; color: var(--muted); min-height: 1em }
+.empty { padding: 18px; text-align: center; color: var(--muted); font-size: 14px }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+@keyframes pop { 0% { transform: scale(.85) } 60% { transform: scale(1.12) } 100% { transform: scale(1) } }
+li.just .box { animation: pop .3s ease }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Tasques</h1>
+    <p class="sub">El que falta per publicar AI Slides to Figma i començar a cobrar, per ordre. Marca cada tasca quan la tinguis feta: baixa a "Fet". Les de Claude, demana-les en una sessió a la carpeta <code>~/Code/ai-slides-to-figma</code>.</p>
+  </header>
+  <div class="progress"><span id="count">—</span><div class="bar"><i id="bar" style="width:0%"></i></div></div>
+  <form class="add" id="add">
+    <label for="newTodo" style="position:absolute;left:-9999px">Nova tasca</label>
+    <input id="newTodo" placeholder="Afegir una tasca…" maxlength="200" autocomplete="off">
+    <button type="submit">Afegir</button>
+  </form>
+  <p class="status" id="status" aria-live="polite"></p>
+  <div id="open"></div>
+  <details class="donebox" id="doneBox"><summary id="doneSum">Fet (0)</summary><ul id="doneList"></ul></details>
+</div>
+
+<script>
+(() => {
+  const AREAS = ['Figma', 'Lemon Squeezy', 'Plugin', 'Publicar', 'Després del llançament', 'Altres']
+  const $ = id => document.getElementById(id)
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+  const tick = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
+  let items = [], db = null, just = null
+
+  function li(it) {
+    return `<li class="${it.done ? 'done' : ''} ${just === it.id ? 'just' : ''}" data-id="${esc(it.id)}">
+      <button class="box" type="button" data-act="toggle" aria-pressed="${!!it.done}" aria-label="${it.done ? 'Desmarcar' : 'Marcar com a fet'}: ${esc(it.text)}">${tick}</button>
+      <span class="txt"><span class="t">${it.who ? `<span class="who">${esc(it.who)}</span>` : ''}${esc(it.text)}</span>${it.how ? `<span class="h">${esc(it.how)}</span>` : ''}${Array.isArray(it.steps) && it.steps.length && !it.done ? `<ol class="steps">${it.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : ''}</span>
+      <button class="del" type="button" data-act="del" aria-label="Esborrar: ${esc(it.text)}">×</button>
+    </li>`
+  }
+
+  function render() {
+    const open = items.filter(i => !i.done).sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    const done = items.filter(i => i.done).sort((a, b) => String(b.doneAt || '').localeCompare(String(a.doneAt || '')))
+    const groups = AREAS.map(a => [a, open.filter(i => (i.area || 'Altres') === a)]).filter(([, l]) => l.length)
+    const extra = open.filter(i => !AREAS.includes(i.area || 'Altres'))
+    if (extra.length) groups.push(['Altres', extra])
+    $('open').innerHTML = groups.length
+      ? groups.map(([a, l]) => `<section class="area"><h2>${esc(a)}</h2><ul>${l.map(li).join('')}</ul></section>`).join('<div style="height:16px"></div>')
+      : `<ul><li class="empty" style="border:0">${items.length ? 'Tot fet. 🎉' : 'Carregant…'}</li></ul>`
+    $('doneList').innerHTML = done.map(li).join('') || '<li class="empty" style="border:0">Encara res.</li>'
+    $('doneSum').textContent = `Fet (${done.length})`
+    $('count').textContent = `${done.length} de ${items.length}`
+    $('bar').style.width = items.length ? `${Math.round(done.length / items.length * 100)}%` : '0%'
+    just = null
+  }
+
+  async function write(id, patch) {
+    if (!db) { $('status').textContent = 'Aquí no es pot desar.'; return }
+    try { await db.doc('todos/' + id).update(patch); $('status').textContent = '' }
+    catch { $('status').textContent = "No s'ha pogut desar. Torna-ho a provar." }
+  }
+
+  document.body.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b) return
+    const id = b.closest('li')?.dataset.id; const it = items.find(x => x.id === id); if (!it) return
+    if (b.dataset.act === 'toggle') {
+      it.done = !it.done; it.doneAt = it.done ? new Date().toISOString() : null; just = id; render()
+      write(id, { done: it.done, doneAt: it.doneAt })
+    }
+    if (b.dataset.act === 'del') {
+      items = items.filter(x => x.id !== id); render()
+      if (db) db.doc('todos/' + id).delete().catch(() => { $('status').textContent = "No s'ha pogut esborrar." })
+    }
+  })
+
+  $('add').addEventListener('submit', async e => {
+    e.preventDefault()
+    const text = $('newTodo').value.trim(); if (!text) return
+    if (!db) { $('status').textContent = 'Aquí no es pot desar.'; return }
+    $('newTodo').value = ''
+    try { await db.collection('todos').add({ text, area: 'Altres', done: false, order: Date.now() }) }
+    catch (err) { $('status').textContent = err?.code === 'quota_exceeded' ? 'No hi caben més: esborra les fetes.' : "No s'ha pogut afegir." }
+  })
+
+  render()
+  ;(async () => {
+    try { db = await window.claude?.use?.('db') } catch { db = null }
+    if (!db) { $('status').textContent = 'La llista només es desa oberta a Claude.'; $('open').innerHTML = ''; return }
+    db.collection('todos').limit(500).onSnapshot(snap => {
+      items = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      render()
+    }, () => { $('status').textContent = "No s'ha pogut carregar la llista." })
+  })()
+})()
+</script>
+
+</body></html>

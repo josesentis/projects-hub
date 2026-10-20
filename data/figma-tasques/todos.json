@@ -1,0 +1,150 @@
+{
+ "t01": {
+  "area": "Figma",
+  "who": "Tu",
+  "text": "Demanar a Figma una persona per l'aprovació com a venedor (opcional)",
+  "how": "El bot de suport va dir que no aproven venedors nous, però la pàgina oficial només ho diu dels fitxers, no dels plugins. Si t'aproven, Figma cobraria directament i no caldria Lemon Squeezy.",
+  "steps": [
+   "Contesta al xat de suport de Figma: «This is about a plugin, not a file. The help article says the pause applies to paid files, and Figma staff have said plugin sellers are still being approved. Can I speak with a human agent to request seller approval for my plugin?»",
+   "Si t'aproven: et sortirà la pestanya Metrics al teu perfil de Community → Set up Stripe",
+   "Digues a Claude que torni a posar els pagaments de Figma (ja estaven fets, commit dd9ea59)",
+   "Si diuen que no, segueix amb Lemon Squeezy"
+  ],
+  "done": false,
+  "order": 1
+ },
+ "t02": {
+  "area": "Lemon Squeezy",
+  "who": "Tu",
+  "text": "Crear el compte i la botiga",
+  "how": "Uns 30 minuts. L'activació de la botiga la revisen ells i pot trigar d'un a pocs dies.",
+  "steps": [
+   "Registra't a lemonsqueezy.com",
+   "Crea la botiga (nom: el teu o el de l'estudi)",
+   "Completa la verificació d'identitat i posa el compte bancari per als cobraments",
+   "Espera el correu que diu que la botiga està activa"
+  ],
+  "done": false,
+  "order": 2
+ },
+ "t03": {
+  "area": "Lemon Squeezy",
+  "who": "Tu",
+  "text": "Crear el producte «AI Slides to Figma – Full version»",
+  "how": "Pagament únic de 12 $, amb claus de llicència.",
+  "steps": [
+   "Products → New product",
+   "Nom: AI Slides to Figma – Full version",
+   "Preu: 12 $, pagament únic (Single payment), no subscripció",
+   "Descripció curta: «Import every slide of your AI presentations into Figma. One-time payment.»",
+   "Activa Generate license keys",
+   "Activation limit: 3 (ordinadors per clau)",
+   "License length: sense caducitat (Unlimited)",
+   "Publica el producte"
+  ],
+  "done": false,
+  "order": 3
+ },
+ "t04": {
+  "area": "Lemon Squeezy",
+  "who": "Tu",
+  "text": "Passar a Claude les tres dades de la botiga",
+  "how": "Sense aquestes dades el plugin no pot mostrar el botó de compra ni comprovar que la clau és del teu producte.",
+  "steps": [
+   "Enllaç de compra: producte → Share → copia el checkout URL",
+   "Store ID: Settings → Stores (el número de la botiga)",
+   "Product ID: obre el producte, és el número de la URL",
+   "Obre una sessió de Claude a ~/Code/ai-slides-to-figma i enganxa-li les tres dades"
+  ],
+  "done": false,
+  "order": 4
+ },
+ "t05": {
+  "area": "Plugin",
+  "who": "Claude",
+  "text": "Posar les dades de Lemon Squeezy al plugin i recompilar",
+  "how": "Claude omple SHOP a src/ui/license.ts, executa npm run build i les proves (node test/payments.mjs).",
+  "steps": [
+   "Demana-ho a Claude amb les tres dades de la tasca anterior",
+   "Recarrega el plugin a Figma (Plugins → Development → AI Slides to Figma)"
+  ],
+  "done": false,
+  "order": 5
+ },
+ "t06": {
+  "area": "Plugin",
+  "who": "Tu",
+  "text": "Provar una compra de prova a Figma",
+  "how": "Lemon Squeezy té un mode de prova (Test mode) que no cobra de veritat.",
+  "steps": [
+   "A Lemon Squeezy, activa Test mode i fes una compra amb la targeta 4242 4242 4242 4242 (qualsevol data futura i CVC)",
+   "Obre el plugin a Figma amb una presentació de més de 3 slides: el botó ha de dir «Importa 3 de N slides (gratis)»",
+   "Prem «Aconsegueix la versió completa»: s'ha d'obrir la pàgina de compra",
+   "Enganxa la clau del correu de prova i prem Activa: ha de dir «Gràcies! Versió completa activada.»",
+   "Importa: han de sortir totes les slides",
+   "A Lemon Squeezy, reemborsa la compra de prova, tanca i torna a obrir el plugin: ha de tornar a la versió gratuïta",
+   "Si la clau de prova diu «no és vàlida», digues-ho a Claude: el producte de prova pot tenir un altre ID",
+   "Desactiva Test mode quan acabis"
+  ],
+  "done": false,
+  "order": 6
+ },
+ "t07": {
+  "area": "Publicar",
+  "who": "Tu",
+  "text": "Publicar el plugin gratis a la Community",
+  "how": "Gratis a Figma; la versió completa es cobra a Lemon Squeezy. Tot el text és a store/listing.md (el tens a Documents d'aquesta pàgina).",
+  "steps": [
+   "Figma Desktop → obre un fitxer → Plugins → Manage plugins → AI Slides to Figma → ⋯ → Publish",
+   "Comprova que el plugin és a Drafts (el teu espai), no dins d'un equip",
+   "Icona: store/icon.png · Thumbnail: store/cover.png · Galeria: store/gallery.png",
+   "Tagline i descripció: copia-les de la Fitxa de la Community",
+   "Category: Import & export (o Design tools)",
+   "Preu: Free",
+   "Preguntes de dades: no desa dades, no hi ha autenticació, no fa peticions a serveis teus",
+   "Si pregunta per serveis de tercers: Sí, només Lemon Squeezy per comprovar la clau de llicència",
+   "Contacte de suport: el correu que vulguis fer servir per als clients",
+   "Envia'l a revisió"
+  ],
+  "done": false,
+  "order": 7
+ },
+ "t08": {
+  "area": "Publicar",
+  "who": "Tu",
+  "text": "Esperar la revisió de Figma",
+  "how": "Sol trigar uns dies. Si et demanen canvis, copia el missatge a Claude.",
+  "steps": [
+   "Mira el correu de Figma",
+   "Si l'aproven, prova d'instal·lar-lo des de la Community com un usuari qualsevol"
+  ],
+  "done": false,
+  "order": 8
+ },
+ "t09": {
+  "area": "Després del llançament",
+  "who": "Tu",
+  "text": "Anunciar-lo",
+  "how": "La portada (store/cover.png) ja és un abans/després que funciona com a imatge per a xarxes.",
+  "steps": [
+   "Post a LinkedIn i X amb la imatge de portada i l'enllaç de la Community",
+   "Demana a Claude els textos dels posts si els vols",
+   "Més endavant: Product Hunt"
+  ],
+  "done": false,
+  "order": 9
+ },
+ "t10": {
+  "area": "Després del llançament",
+  "who": "Tu",
+  "text": "Mirar les primeres vendes i el que diu la gent",
+  "how": "Els comentaris de la Community i els correus de suport diran què falla.",
+  "steps": [
+   "Lemon Squeezy → Orders: vendes",
+   "Figma Community → el plugin: instal·lacions i comentaris",
+   "Envia a Claude els HTML que no s'importin bé"
+  ],
+  "done": false,
+  "order": 10
+ }
+}
