@@ -5,7 +5,7 @@ import { readDocs, repoFile } from '../../lib/blobs.mjs'
 import { handle } from '../../lib/calendar.mjs'
 
 export default async req => {
-  const r = await handle(new URL(req.url), { token: process.env.CAL_TOKEN, readDocs, readFile: repoFile })
+  const r = await handle(new URL(req.url), { token: (process.env.CAL_TOKEN || '').trim(), readDocs, readFile: repoFile })
   if (!r) return new Response('Not found', { status: 404 })
   return new Response(r.body, { status: r.status, headers: { 'Content-Type': r.type, 'Cache-Control': 'no-store' } })
 }
