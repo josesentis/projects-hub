@@ -18,6 +18,7 @@
         { "href": "negoci.html#documents", "tag": "Documents", "title": "Documents", "text": "Llançament, beta, roadmap i TODOs, i la documentació tècnica." },
         { "href": "proves.html", "tag": "Proves", "title": "Proves pendents", "text": "El que s'ha de provar a mà, per àrees." },
         { "href": "receptari.html", "tag": "Menjar", "title": "Receptari base", "text": "La revisió dels plats del llibre: sí, no o diferent." },
+        { "href": "plats-nous.html", "tag": "Menjar", "title": "Plats nous", "text": "Les tandes de plats per fer créixer el llibre: primer, 30 asiàtics. Sí, no o diferent." },
         { "href": "negoci.html#guies", "tag": "Guies", "title": "Com es fa cada cosa", "text": "Publicar versions, variables de Netlify, anuncis, revisions dels serveis i presentar l’app a X i LinkedIn." },
         { "href": "negoci.html#estudi", "tag": "Estudi", "title": "Estudi de mercat i preus", "text": "Com cobrar sense perdre diners amb la IA." },
         { "href": "negoci.html#docs", "tag": "Producte", "title": "Com funciona l'app", "text": "Les pantalles, els conceptes, els plans i els models d'IA, sense tecnicismes." }

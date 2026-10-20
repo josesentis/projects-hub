@@ -1,0 +1,232 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body><script src="../assets/store.js" data-ns="mai-plats-nous"></script><script src="../assets/hub-bar.js"></script>
+<title>Plats nous mAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap">
+<style>
+/* Layout: one narrow column of dish rows grouped by course, sticky tally bar on top. */
+:root {
+  --bg: #f6f5ef; --surface: #ffffff; --ink: #23251f; --muted: #6c6f63; --line: #e3e2d8;
+  --yes: #3f7a4c; --yes-bg: #e4efe2; --no: #a5452f; --no-bg: #f6e4de; --alt: #8a6a12; --alt-bg: #f4ecd2;
+  --accent: #2f4f3a;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "DM Sans", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #171814; --surface: #20221d; --ink: #ecebe3; --muted: #a2a497; --line: #33362e;
+  --yes: #8cc596; --yes-bg: #24352a; --no: #e99a86; --no-bg: #3d2620; --alt: #e2c46c; --alt-bg: #3a321b; --accent: #a9cdb2; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #171814; --surface: #20221d; --ink: #ecebe3; --muted: #a2a497; --line: #33362e;
+  --yes: #8cc596; --yes-bg: #24352a; --no: #e99a86; --no-bg: #3d2620; --alt: #e2c46c; --alt-bg: #3a321b; --accent: #a9cdb2; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 15px/1.45 var(--body); }
+.wrap { max-width: 720px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 80px; }
+h1 { font: 800 clamp(1.9rem, 6vw, 2.6rem)/1.05 var(--display); letter-spacing: -0.02em; margin: 0 0 10px; text-wrap: balance }
+.lede { color: var(--muted); margin: 0 0 20px; max-width: 60ch }
+.lede b { color: var(--ink); font-weight: 600 }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px }
+.chip { font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; font-variant-numeric: tabular-nums; background: var(--surface); border: 1px solid var(--line); color: var(--muted) }
+.chip.y { color: var(--yes); background: var(--yes-bg); border-color: transparent }
+.chip.n { color: var(--no); background: var(--no-bg); border-color: transparent }
+.chip.a { color: var(--alt); background: var(--alt-bg); border-color: transparent }
+.status { margin-left: auto; font-size: 12px; color: var(--muted) }
+.filter { display: flex; gap: 6px; flex-wrap: wrap; width: 100% }
+.filter button { font: 500 13px var(--body); border: 1px solid var(--line); background: transparent; color: var(--muted); padding: 5px 11px; border-radius: 999px; cursor: pointer }
+.filter button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink) }
+section { margin-top: 26px }
+h2 { font: 700 1.15rem/1.2 var(--display); margin: 0 0 2px; letter-spacing: -0.01em }
+.sub { color: var(--muted); font-size: 13px; margin: 0 0 8px }
+ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px }
+li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 4px 10px; align-items: center; transition: border-color .15s }
+li[data-v="yes"] { border-color: color-mix(in srgb, var(--yes) 45%, var(--line)) }
+li[data-v="no"] { border-color: color-mix(in srgb, var(--no) 45%, var(--line)); }
+li[data-v="no"] .name { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px }
+li[data-v="alt"] { border-color: color-mix(in srgb, var(--alt) 45%, var(--line)) }
+.name { font-weight: 600; min-width: 0 }
+.desc { grid-column: 1; color: var(--muted); font-size: 13px; min-width: 0 }
+.tag { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; color: var(--muted); margin-left: 6px }
+.votes { grid-row: 1 / span 2; grid-column: 2; display: flex; gap: 4px }
+.votes button { width: 40px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: 600 13px var(--body); cursor: pointer; transition: background .12s, color .12s, transform .08s }
+.votes button:active { transform: scale(.94) }
+.votes button[aria-pressed="true"].y { background: var(--yes); color: var(--surface); border-color: var(--yes) }
+.votes button[aria-pressed="true"].n { background: var(--no); color: var(--surface); border-color: var(--no) }
+.votes button[aria-pressed="true"].a { background: var(--alt); color: var(--surface); border-color: var(--alt) }
+.note { grid-column: 1 / -1; width: 100%; font: 14px var(--body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin-top: 4px }
+button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.own { margin-top: 36px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px }
+.own textarea { width: 100%; min-height: 120px; font: 15px/1.45 var(--body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px }
+.own .row { display: flex; gap: 10px; align-items: center; margin-top: 10px }
+.own button { font: 600 14px var(--body); background: var(--accent); color: var(--bg); border: 0; border-radius: 10px; padding: 9px 16px; cursor: pointer }
+.saved { font-size: 13px; color: var(--muted) }
+.offline { display: none; margin: 0 0 12px; font-size: 13px; color: var(--alt); background: var(--alt-bg); padding: 8px 12px; border-radius: 10px }
+@media (max-width: 460px) { .votes button { width: 36px } li { padding: 10px } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+
+<div class="wrap">
+  <h1>Plats nous per al llibre</h1>
+  <p class="lede">El llibre creix per tandes, i cada persona tria a l'app quines cuines i tipus de plat vol: qui digui que no a l'asiàtic no en veurà cap. Aquesta és la primera tanda: <b>30 plats asiàtics</b> fets a casa per a una persona, amb ingredients de supermercat. Marca'ls: <b>Sí</b> entra al llibre per a tothom, <b>No</b> no entra, <b>≈</b> entra amb canvis (explica quins). Pensa si és un plat que algú pot fer un dimarts a casa, no només si t'agrada a tu. Els grams no importen: l'app els ajusta. Es desa sol.</p>
+  <p class="offline" id="offline">No puc desar aquí: les marques només es veuran en aquest dispositiu. Digues-m'ho al xat.</p>
+
+  <div class="bar">
+    <span class="chip y" id="cy">0 sí</span>
+    <span class="chip a" id="ca">0 diferent</span>
+    <span class="chip n" id="cn">0 no</span>
+    <span class="chip" id="cr">0 per marcar</span>
+    <span class="status" id="status" aria-live="polite"></span>
+    <div class="filter" role="group" aria-label="Filtre">
+      <button type="button" data-f="all" aria-pressed="true">Tots</button>
+      <button type="button" data-f="todo" aria-pressed="false">Per marcar</button>
+      <button type="button" data-f="yes" aria-pressed="false">Sí</button>
+      <button type="button" data-f="alt" aria-pressed="false">Diferent</button>
+      <button type="button" data-f="no" aria-pressed="false">No</button>
+    </div>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="own">
+    <h2>Plats asiàtics que hi posaries i no hi són</h2>
+    <p class="sub">Escriu-los com ho diries: "arròs fregit amb pollastre com el del xinès", "curri japonès amb patata". Un per línia. Quan tanquem la tanda, et proposaré la següent (bowls, mexicana, àrab…).</p>
+    <label for="own" class="sub" style="position:absolute;left:-9999px">Plats que hi falten</label>
+    <textarea id="own" placeholder="Un plat per línia…"></textarea>
+    <div class="row"><button type="button" id="saveOwn">Desar</button><span class="saved" id="ownSaved"></span></div>
+  </div>
+</div>
+
+<script>
+// Tanda 1 (2026-10-20): asiàtics. [id, nom, què porta · a quin àpat]
+const G = [
+ ['japonesa','Japonesa','Arròs, soja i poca cosa més.',[
+  ['n1-teriyaki-pollastre','Pollastre teriyaki amb arròs i bròquil','Cuixa de pollastre, soja, mel, gingebre · dinar o sopar'],
+  ['n1-salmo-teriyaki','Salmó teriyaki amb arròs i edamame','Salmó a la paella amb soja i mel · dinar o sopar'],
+  ['n1-gyudon','Gyudon: bol d\'arròs amb vedella i ceba','Tires de vedella i ceba cuites amb soja, ou a sobre · dinar'],
+  ['n1-oyakodon','Oyakodon: arròs amb pollastre i ou','Pollastre i ceba quallats amb ou sobre l\'arròs · dinar'],
+  ['n1-yaki-udon','Udon saltat amb gambes i verdures','Fideus udon, gambes, col, pastanaga, soja · dinar'],
+  ['n1-bol-tonyina','Bol de tonyina amb arròs, alvocat i cogombre','Tonyina fresca o de llauna, sèsam, soja · dinar o sopar'],
+  ['n1-curri-japones','Curri japonès de pollastre amb patata i pastanaga','Suau i espès, amb arròs · dinar'],
+  ['n1-katsu-pollastre','Pollastre katsu a la fregidora d\'aire amb arròs i col','Pit arrebossat amb panko, sense fregir · dinar']]],
+ ['xinesa','Xinesa','Saltats al wok o a la paella, en 15 minuts.',[
+  ['n1-pollastre-anacards','Pollastre amb anacards i arròs','Pit de pollastre, pebrot, ceba, soja, anacards · dinar'],
+  ['n1-vedella-broquil','Vedella amb bròquil i arròs','Tires de vedella, bròquil, all, gingebre, salsa d\'ostres · dinar o sopar'],
+  ['n1-arros-fregit-gambes','Arròs fregit amb ou i gambes','Arròs del dia abans, pèsols, pastanaga, ceba tendra · dinar'],
+  ['n1-fideus-pollastre','Fideus saltats amb pollastre i verdures','Fideus de blat, pollastre, col, brots de soja · dinar'],
+  ['n1-mapo-tofu','Tofu mapo amb arròs','Tofu, una mica de carn picada, salsa picant suau · dinar'],
+  ['n1-mongetes-carn','Mongeta tendra saltada amb carn picada','Amb all i soja; amb arròs o sola · dinar o sopar']]],
+ ['coreana','Coreana','Picant suau (gochujang) i kimchi.',[
+  ['n1-bibimbap','Bibimbap','Arròs, vedella picada, ou ferrat, espinacs, pastanaga, gochujang · dinar o sopar'],
+  ['n1-bulgogi','Bulgogi de vedella amb arròs','Vedella marinada amb soja, poma i all · dinar'],
+  ['n1-kimchi-arros','Arròs fregit amb kimchi i ou','Ràpid, amb el kimchi de bot · dinar']]],
+ ['tailandesa','Tailandesa','Coco, lima, alfàbrega.',[
+  ['n1-curri-verd','Curri verd de pollastre amb arròs','Pasta de curri verd, llet de coco light, carbassó · dinar'],
+  ['n1-curri-vermell-gambes','Curri vermell de gambes amb arròs','Pasta de curri vermell, llet de coco light, pebrot · dinar'],
+  ['n1-amanida-vedella','Amanida tailandesa de vedella','Vedella a la planxa, enciam, cogombre, menta, lima · dinar o sopar'],
+  ['n1-pad-kra-pao','Pollastre amb alfàbrega i ou ferrat','Pollastre picat saltat, alfàbrega, arròs · dinar'],
+  ['n1-tom-kha','Sopa tom kha de pollastre','Brou, llet de coco light, xampinyons, lima · sopar']]],
+ ['vietnamita','Vietnamita','Fresc, amb herbes i fideus d\'arròs.',[
+  ['n1-bun-pollastre','Bun: bol de fideus d\'arròs amb pollastre i amanida','Pollastre a la planxa, enciam, pastanaga, menta, cacauets · dinar o sopar'],
+  ['n1-rotllets-gambes','Rotllets d\'estiu de gambes','Paper d\'arròs, gambes, fideus, enciam, salsa de cacauet · dinar o sopar'],
+  ['n1-pho','Pho ràpid de vedella','Brou, fideus d\'arròs, vedella a làmines, brots de soja · dinar o sopar']]],
+ ['india','Índia','Curris suaus, de cullera.',[
+  ['n1-dal','Dal de llenties vermelles amb arròs basmati','Llenties vermelles, tomàquet, curri, espinacs · dinar'],
+  ['n1-tikka','Pollastre tikka al forn amb arròs i amanida','Marinat amb iogurt i espècies · dinar'],
+  ['n1-chana-masala','Cigrons al curri (chana masala) amb arròs','Cigrons cuits, tomàquet, ceba, espècies · dinar'],
+  ['n1-salmo-curri','Salmó al curri amb coco i arròs','Salmó a daus, llet de coco light, espinacs · dinar'],
+  ['n1-pollastre-korma','Pollastre korma suau amb arròs','Iogurt, ametlla mòlta, espècies dolces · dinar']]],
+
+]
+
+const votes = {}          // id -> {v, note}
+let filter = 'all'
+let db = null
+const $ = id => document.getElementById(id)
+
+function counts() {
+  const all = G.flatMap(g => g[3].map(d => d[0]))
+  const c = { yes: 0, no: 0, alt: 0 }
+  for (const id of all) if (votes[id]?.v) c[votes[id].v]++
+  $('cy').textContent = `${c.yes} sí`; $('ca').textContent = `${c.alt} diferent`; $('cn').textContent = `${c.no} no`
+  $('cr').textContent = `${all.length - c.yes - c.no - c.alt} per marcar`
+}
+
+function render() {
+  const out = []
+  for (const [key, title, sub, dishes] of G) {
+    const shown = dishes.filter(([id]) => {
+      const v = votes[id]?.v
+      return filter === 'all' || (filter === 'todo' ? !v : v === filter)
+    })
+    if (!shown.length) continue
+    out.push(`<section aria-labelledby="h-${key}"><h2 id="h-${key}">${title}</h2>${sub ? `<p class="sub">${sub}</p>` : ''}<ul>`)
+    for (const [id, name, desc] of shown) {
+      const v = votes[id]?.v || ''
+      const note = votes[id]?.note || ''
+      out.push(`<li data-id="${id}" data-v="${v}">
+        <span class="name">${name}</span>
+        <span class="votes" role="group" aria-label="${name}">
+          <button type="button" class="y" data-v="yes" aria-pressed="${v === 'yes'}" title="Sí, el menjaria">Sí</button>
+          <button type="button" class="a" data-v="alt" aria-pressed="${v === 'alt'}" title="El faig diferent">≈</button>
+          <button type="button" class="n" data-v="no" aria-pressed="${v === 'no'}" title="No el vull">No</button>
+        </span>
+        ${desc ? `<span class="desc">${desc}</span>` : '<span class="desc"></span>'}
+        ${v === 'alt' || v === 'no' ? `<input class="note" id="note-${id}" aria-label="Nota per a ${name}" placeholder="${v === 'alt' ? 'Com el fas tu?' : 'Per què? (opcional)'}" value="${note.replace(/"/g, '&quot;')}">` : ''}
+      </li>`)
+    }
+    out.push('</ul></section>')
+  }
+  $('list').innerHTML = out.join('') || '<p class="sub">No hi ha cap plat amb aquest filtre.</p>'
+  counts()
+}
+
+let statusTimer
+function status(msg) { $('status').textContent = msg; clearTimeout(statusTimer); statusTimer = setTimeout(() => { $('status').textContent = '' }, 1800) }
+
+async function save(id) {
+  if (!db) return
+  try { await db.doc(`votes/${id}`).set({ ...votes[id], at: new Date().toISOString() }); status('Desat') }
+  catch (e) { status('No s\'ha pogut desar') }
+}
+
+$('list').addEventListener('click', e => {
+  const b = e.target.closest('.votes button'); if (!b) return
+  const id = b.closest('li').dataset.id
+  const v = b.dataset.v
+  const cur = votes[id]?.v
+  votes[id] = { v: cur === v ? null : v, note: votes[id]?.note || '' }
+  render()
+  if (votes[id].v === 'alt') document.getElementById(`note-${id}`)?.focus()
+  save(id)
+})
+const noteTimers = {}
+$('list').addEventListener('input', e => {
+  if (!e.target.classList.contains('note')) return
+  const id = e.target.closest('li').dataset.id
+  votes[id] = { ...votes[id], note: e.target.value }
+  clearTimeout(noteTimers[id]); noteTimers[id] = setTimeout(() => save(id), 700)
+})
+document.querySelector('.filter').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return
+  filter = b.dataset.f
+  document.querySelectorAll('.filter button').forEach(x => x.setAttribute('aria-pressed', String(x === b)))
+  render()
+})
+$('saveOwn').addEventListener('click', async () => {
+  if (!db) { $('ownSaved').textContent = 'No es pot desar aquí'; return }
+  try { await db.doc('own/list').set({ text: $('own').value, at: new Date().toISOString() }); $('ownSaved').textContent = 'Desat' }
+  catch { $('ownSaved').textContent = 'No s\'ha pogut desar' }
+})
+
+render()
+;(async () => {
+  db = await window.claude?.use?.('db').catch(() => null) ?? null
+  if (!db) { $('offline').style.display = 'block'; return }
+  try {
+    const snap = await db.collection('votes').limit(500).get()
+    for (const d of snap.docs) { const x = d.data(); votes[d.id] = { v: x.v ?? null, note: x.note ?? '' } }
+    const own = await db.doc('own/list').get()
+    if (own.exists) $('own').value = own.data().text || ''
+    render()
+  } catch { status('No s\'han pogut carregar les marques') }
+})()
+</script>
+
+</body></html>
