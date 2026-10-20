@@ -1,11 +1,12 @@
 // The pages were Claude artifacts and keep their data through `claude.use('db')`.
-// This file gives them the same small API, backed by api/store.php (Apache) or
-// server.mjs (local): one JSON file per page and collection in data/.
+// This file gives them the same small API, backed by api/store (a Netlify
+// function on Netlify Blobs, or server.mjs locally): one set of documents per
+// page and collection.
 // Use: <script src="assets/store.js" data-ns="negoci"></script>
 (() => {
   const me = document.currentScript
   const NS = me.dataset.ns
-  const API = new URL('api/store.php', me.src.replace(/assets\/store\.js.*$/, '')).href
+  const API = new URL('api/store', me.src.replace(/assets\/store\.js.*$/, '')).href
   const POLL_MS = 5000
 
   const cache = {}                 // collection -> {id: doc}

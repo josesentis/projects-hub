@@ -8,32 +8,30 @@ Tot el que estic llançant, en un sol web amb contrasenya. Cada projecte té la 
 
 Què hi ha de cada projecte ho diu `hub.config.json`: les pàgines, els documents que es copien del seu repo i el color. Per afegir un projecte nou, s'hi afegeix una entrada i `npm run build`.
 
-El que es marca (tasques, posts publicats, proves, vots del receptari) es desa a `data/` i ho veu tothom qui entra amb la contrasenya.
+El que es marca (tasques, posts publicats, proves, vots del receptari) es desa per a tothom qui entra amb la contrasenya.
 
 ## En local
 
 ```bash
 npm install
-npm run password      # usuari i contrasenya → .htpasswd
 npm run build         # copia els documents dels repos i fa les pàgines
 npm start             # http://localhost:4321
 ```
 
+- En local no hi ha contrasenya, i el que marques es desa a `data/` (no a Netlify).
 - Per obrir-lo des del mòbil a la mateixa wifi: `HOST=0.0.0.0 npm start` i entra a `http://<ip-de-l'ordinador>:4321`.
-- Els repos es busquen al costat del hub (`../mAI_fitness`, `../outfit-of-the-day`, `../ai-slides-to-figma`). Quan canviïs un document en un repo, `npm run build`.
+- Els repos es busquen al costat del hub (`../mAI_fitness`, `../outfit-of-the-day`, `../ai-slides-to-figma`). Quan canviïs un document en un repo, `npm run build` i fes commit del resultat: Netlify no fa el build, perquè allà no hi ha els repos.
 - Tests: `npm test`.
 
-## Publicat (Apache amb PHP)
+## Publicat (Netlify)
 
-1. Puja la carpeta sencera al servidor. La carpeta `public/` és l'arrel del web. `data/` i `.htpasswd` han de quedar al costat, fora de `public/`.
-2. A `public/.htaccess`, posa a `AuthUserFile` la ruta absoluta del `.htpasswd` al servidor.
-3. `data/` ha de ser escrivible per PHP (`chmod -R 775 data`, o el que demani el teu hosting).
-4. Si el hosting només et deixa una carpeta, posa `data/` dins de `public/`. El seu `.htaccess` la tanca, però llavors defineix `HUB_DATA` (`SetEnv HUB_DATA /ruta/a/public/data` a `.htaccess`).
+La configuració és a `netlify.toml`: publica `public/` tal com és al repo, sense build, i hi afegeix la funció `netlify/functions/store.mjs` a `/api/store`.
 
-`public/api/store.php` desa les dades a Apache. `server.mjs` fa el mateix en local. La contrasenya és la mateixa als dos llocs (format `$apr1$`, el de `htpasswd -m`).
+- **Contrasenya:** la de Netlify (Site configuration → Access & security → Visitor access → Password protection).
+- **Dades:** es desen a Netlify Blobs (store `hub`, una entrada `<pàgina>/<col·lecció>` per a cada una). Una col·lecció que encara no s'ha tocat a Netlify comença amb el que hi ha a `data/` al repo; a partir del primer canvi, mana el que hi ha a Blobs i `data/` ja no es llegeix.
 
 ## Com està fet
 
-- Les pàgines són les dels artifacts, sense canvis de contingut. `assets/store.js` els dona la mateixa API de dades que tenien a Claude (`claude.use('db')`), però sobre `api/store.php`. Comprova si hi ha canvis cada 5 s.
+- Les pàgines són les dels artifacts, sense canvis de contingut. `assets/store.js` els dona la mateixa API de dades que tenien a Claude (`claude.use('db')`), però sobre `api/store` (la funció de Netlify, o `server.mjs` en local; les regles són a `lib/store.mjs`). Comprova si hi ha canvis cada 5 s.
 - Els prototips (`*.dc.html`) es dibuixen amb `assets/dc-lite.js`, un motor petit per a les plantilles `{{…}}`, `<sc-for>` i `<sc-if>` del canvas de disseny.
 - Les pàgines de projecte i la portada les genera `scripts/build.mjs` a partir de `hub.config.json`; no s'editen a mà.

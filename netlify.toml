@@ -1,0 +1,21 @@
+# The pages in public/ are already built (npm run build needs the project repos
+# next to the hub, so it runs locally and the result is committed). Netlify only
+# publishes them and runs the store function. The password is Netlify's site
+# protection.
+[build]
+  publish = "public"
+
+[functions]
+  directory = "netlify/functions"
+  # What was saved before Netlify: each collection starts from here.
+  included_files = ["data/**"]
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Cache-Control = "no-cache"
