@@ -68,6 +68,8 @@ DROP TABLE IF EXISTS routines, routine_sessions, exercises, workout_logs, ai_con
 <p>Ads stay <strong>off in production</strong> (<code>ADS_ENABLED</code> unset). Serving them in the EU needs a Google-certified CMP (IAB TCF 2.2) with Consent Mode v2; the current <code>CookieBanner</code> is not certified. Before turning <code>ADS_ENABLED=true</code>: add a certified CMP, wire Consent Mode v2, and update the cookie policy. Paid plans and the trial never show ads (<code>lib/billing/entitlements.ts</code>).</p>
 <h2>Backlog</h2>
 <ul>
+<li><p><strong>Future cleanup: drop <code>users.weekly_credits</code></strong> (v1 leftover, no code uses it). Destructive: remove it from <code>lib/db/schema.ts</code> and add a <code>destructive: true</code> migration; it blocks deploys until applied by hand (<code>npm run db:dry-run</code>, then <code>npm run db:apply -- --production</code>), so do it with the owner, outside a launch week. Keep the <code>onboarding_*</code> columns: onboarding stays.</p>
+</li>
 <li><p><strong>Social networks (later, not for the launch):</strong> Instagram Reels, TikTok and YouTube Shorts with the teaser videos (<code>scripts/teaser/</code>). The launch (2026-11) is for people to try the app if they want, not a campaign: LinkedIn, X, Hacker News, Reddit, BetaList, Menéame and directories (<code>ai/LAUNCH.md</code>).</p>
 </li>
 <li><p><strong>Coach budget per plan</strong>: <code>lib/coach/run.ts</code> should refuse a turn past <code>entitlements.coach.messagesPerMonth</code> (count <code>coach_message</code> events this month, or tokens via the existing monthly check) and the client should open <code>components/billing/LimitSheet.tsx</code>. Clamp usage levels to the plan (<code>clampLevels</code>) when a subscription ends.</p>
