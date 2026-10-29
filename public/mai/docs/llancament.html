@@ -31,6 +31,7 @@
 </tr>
 </tbody></table>
 <p>No es van fer: Show HN (21/10), la segona tanda de X i LinkedIn (27–28/10) ni Menéame. Indie Hackers no es va poder fer perquè el post demana números i no n&#39;hi havia.</p>
+<p><strong>El que diu la base de dades</strong> (consultada el 29/10, només recomptes): una alta arribada des de LinkedIn la setmana del 19/10, amb el correu verificat, i una altra la setmana del 12/10 sense enllaç. De Reddit, cap. Mira a Admin → Users si l&#39;alta de LinkedIn és algú de fora o una prova teva.</p>
 <p><strong>Què en traiem:</strong></p>
 <ul>
 <li><strong>Si ni els amics s&#39;hi registren, el problema és abans de l&#39;app</strong>: què se&#39;ls demana (&quot;prova-la unes setmanes i digues-me què falla&quot; és feina, no un benefici), la landing o el registre. Canviar de canal no ho arreglarà.</li>
@@ -156,7 +157,7 @@
 <ul>
 <li><input checked="" disabled="" type="checkbox"> Dues setmanes de proves amb amics (fase 1). Cap registre: es repeteix al novembre en persona.</li>
 <li><input disabled="" type="checkbox"> Saber per què ningú s&#39;hi registra: resposta dels amics, el registre provat com si fossis nou, estadístiques de cada post.</li>
-<li><input disabled="" type="checkbox"> L&#39;app compta visites per <code>?ref=</code> i qui obre el registre (ho fa Claude quan ho demanis).</li>
+<li><input checked="" disabled="" type="checkbox"> L&#39;app compta visites per <code>?ref=</code> i qui obre el registre (des del 29/10/2026; abans no es comptaven).</li>
 <li><input disabled="" type="checkbox"> 5 persones que la fan servir dues setmanes.</li>
 <li><input disabled="" type="checkbox"> Domini propi comprat i funcionant (abans de tornar a publicar: una adreça <code>.netlify.app</code> fa pensar en un projecte a mig fer).</li>
 <li><input disabled="" type="checkbox"> Revisió legal feta.</li>
@@ -372,7 +373,12 @@
 </blockquote>
 <h2>Com mesurar</h2>
 <ul>
-<li><strong>Per canal:</strong> Admin → Beta → &quot;Where people come from&quot; (registres i activats per <code>?ref=</code>).</li>
+<li><strong>Per canal:</strong> Admin → Beta → &quot;Where people come from&quot;: per a cada <code>?ref=</code>, visites a la landing, formularis de registre oberts, registres i activats. Les visites es compten des del 29/10/2026.<ul>
+<li>Moltes visites i pocs formularis oberts: la landing no convenç.</li>
+<li>Formularis oberts i cap registre: el registre falla o fa mandra.</li>
+<li>Cap visita: el post no fa clicar.</li>
+</ul>
+</li>
 <li><strong>Qualitat:</strong> Admin → Beta → Cohorts (activació, D1/D7/D30, NPS).</li>
 <li><strong>Què diuen:</strong> Admin → Beta → Feedback, amb el que arribi per fora entrat a mà.</li>
 <li>Un canal que porta gent que no s&#39;activa no val la pena repetir-lo, per molts registres que doni.</li>
@@ -410,9 +416,9 @@
 <td>—</td>
 <td></td>
 <td></td>
+<td>1</td>
 <td>0</td>
-<td>0</td>
-<td>Vídeo vertical</td>
+<td>Vídeo vertical; comprovar si és de fora</td>
 </tr>
 <tr>
 <td>20/10</td>
