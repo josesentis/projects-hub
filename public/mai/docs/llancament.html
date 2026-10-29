@@ -1,9 +1,46 @@
 <h1>Llançament: on enviar mAI Fitness i quan</h1>
-<p>Document de treball per donar a conèixer l&#39;app. Escrit el 10/10/2026. Les normes de cada comunitat canvien: <strong>llegeix-les abans de publicar</strong>, sobretot a Reddit; aquí no s&#39;han verificat una per una.</p>
+<p>Document de treball per donar a conèixer l&#39;app. Escrit el 10/10/2026, replanificat el 29/10/2026. Les normes de cada comunitat canvien: <strong>llegeix-les abans de publicar</strong>, sobretot a Reddit; aquí no s&#39;han verificat una per una.</p>
+<h2>Què ha passat fins ara (29/10/2026)</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Què</th>
+<th>Registres</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>12–19 oct</td>
+<td>Missatges un a un a amics, amb l&#39;enllaç</td>
+<td>0</td>
+</tr>
+<tr>
+<td>20 oct</td>
+<td>LinkedIn (anglès) i X (català), amb el vídeo</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22 oct</td>
+<td>Reddit: r/SideProject</td>
+<td>0</td>
+</tr>
+<tr>
+<td>26 oct</td>
+<td>Reddit: r/alphaandbetausers</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>No es van fer: Show HN (21/10), la segona tanda de X i LinkedIn (27–28/10) ni Menéame. Indie Hackers no es va poder fer perquè el post demana números i no n&#39;hi havia.</p>
+<p><strong>Què en traiem:</strong></p>
+<ul>
+<li><strong>Si ni els amics s&#39;hi registren, el problema és abans de l&#39;app</strong>: què se&#39;ls demana (&quot;prova-la unes setmanes i digues-me què falla&quot; és feina, no un benefici), la landing o el registre. Canviar de canal no ho arreglarà.</li>
+<li><strong>No sabem on es perd la gent.</strong> L&#39;app compta registres per <code>?ref=</code>, però no visites: no sabem si ningú va clicar o si van clicar i van marxar. Cal mirar les estadístiques de cada xarxa i que l&#39;app compti visites i qui obre el registre.</li>
+<li><strong>Els canals d&#39;un sol tret estan intactes</strong> (Hacker News, Menéame, Product Hunt, premsa). Bé: no es gasten fins que 5 persones la facin servir.</li>
+</ul>
 <h2>La idea en quatre línies</h2>
 <ol>
 <li>Hi ha canals que es poden fer servir cada setmana (xarxes, comunitats, amics) i canals d&#39;<strong>un sol tret</strong> (Product Hunt, Hacker News, premsa). Els d&#39;un sol tret no es gasten fins que l&#39;app retingui la gent.</li>
-<li>Ara l&#39;objectiu no és &quot;fer-se viral&quot;: és aconseguir 40 testers bons (pla de <code>ai/BETA.md</code>) i saber per què es queden o marxen.</li>
+<li>Ara l&#39;objectiu no és &quot;fer-se viral&quot; ni tenir 40 testers: és tenir <strong>5 persones que la facin servir dues setmanes</strong>, començant-la amb tu al costat, i saber per què els altres no hi entren. Després 15, i després els 40 de <code>ai/BETA.md</code>.</li>
 <li>L&#39;entrada és <strong>lliure</strong>. Cada enllaç porta <code>?ref=</code> i el nom del lloc (<code>maifitness.netlify.app/?ref=linkedin</code>): Admin → Beta → &quot;Where people come from&quot; diu quanta gent s&#39;ha registrat i activat des de cada lloc. Els codis d&#39;invitació queden per als amics i testers (grup i preu fundador).</li>
 <li>Tot el feedback que arribi per fora (WhatsApp, comentaris, DMs) s&#39;entra a Admin → Beta → &quot;Add feedback&quot;.</li>
 </ol>
@@ -17,6 +54,10 @@
 </tr>
 </thead>
 <tbody><tr>
+<td>Tornar a publicar (desembre)</td>
+<td>5 persones que han registrat sessions dues setmanes, i saber per què els amics no s&#39;hi registraven</td>
+</tr>
+<tr>
 <td>Fase 2 (comunitats)</td>
 <td>Entrar la rutina i la dieta no fa fora la gent: activació ≥ 60 % entre els primers testers</td>
 </tr>
@@ -68,7 +109,8 @@
 </tbody></table>
 <h2>Decisions preses (10/10/2026)</h2>
 <ul>
-<li><strong>Primer, dues setmanes de proves</strong> amb amics i tu mateix. Res públic fins llavors.</li>
+<li><strong>Primer, dues setmanes de proves</strong> amb amics i tu mateix. Res públic fins llavors. <em>(Fet; cap amic s&#39;hi va registrar.)</em></li>
+<li><strong>29/10: zero registres dels primers posts.</strong> El novembre és en persona; es torna a publicar al desembre només si 5 persones la fan servir.</li>
 <li><strong>Entrada lliure</strong>; cada enllaç amb <code>?ref=&lt;lloc&gt;</code>.</li>
 <li><strong>Stripe encara no està configurat</strong>: els textos diuen &quot;gratis durant la beta&quot;, mai &quot;14 dies gratis&quot; ni preus.</li>
 <li><strong>No surts a càmera</strong>: els vídeos són gravacions de pantalla amb titulars, com el teaser.</li>
@@ -112,13 +154,18 @@
 <p>Quan es compri: apuntar-lo a Netlify, canviar la URL del final dels teasers (<code>scripts/teaser/compose.html</code>) i els enllaços d&#39;aquest document.</p>
 <h2>Abans de publicar res</h2>
 <ul>
-<li><input disabled="" type="checkbox"> Dues setmanes de proves amb amics (fase 1) i els errors greus arreglats.</li>
-<li><input disabled="" type="checkbox"> Domini propi comprat i funcionant.</li>
+<li><input checked="" disabled="" type="checkbox"> Dues setmanes de proves amb amics (fase 1). Cap registre: es repeteix al novembre en persona.</li>
+<li><input disabled="" type="checkbox"> Saber per què ningú s&#39;hi registra: resposta dels amics, el registre provat com si fossis nou, estadístiques de cada post.</li>
+<li><input disabled="" type="checkbox"> L&#39;app compta visites per <code>?ref=</code> i qui obre el registre (ho fa Claude quan ho demanis).</li>
+<li><input disabled="" type="checkbox"> 5 persones que la fan servir dues setmanes.</li>
+<li><input disabled="" type="checkbox"> Domini propi comprat i funcionant (abans de tornar a publicar: una adreça <code>.netlify.app</code> fa pensar en un projecte a mig fer).</li>
+<li><input disabled="" type="checkbox"> Revisió legal feta.</li>
 <li><input checked="" disabled="" type="checkbox"> Teasers a l&#39;escriptori (refets el 16 d&#39;octubre amb la sessió nova, canviar exercici i plat amb canvis; carpeta <code>mai-fitness-videos-2026-10-16</code>): català, castellà i anglès, vertical (1080×1920) i horitzontal (1920×1080). Com refer-los: <code>scripts/teaser/README.md</code>.</li>
-<li><input disabled="" type="checkbox"> 4–5 captures de pantalla netes (Avui, Registre, Coach, Menjar, Progrés).</li>
+<li><input checked="" disabled="" type="checkbox"> 4–5 captures de pantalla netes (Avui, Registre, Coach, Menjar, Progrés).</li>
 <li><input disabled="" type="checkbox"> Un correu de contacte que no sigui el personal.</li>
 </ul>
 <h2>Calendari (3–4 h per setmana)</h2>
+<p>Replanificat el 29/10/2026. Les dates es mouen si no es compleix la condició de cada tram.</p>
 <table>
 <thead>
 <tr>
@@ -129,62 +176,71 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>12–19 oct</td>
-<td>1 · Proves amb amics</td>
-<td>Fer-la servir tu cada dia; 5–10 amics, un a un (missatge de sota); entrar tot el que diguin a Admin → Beta → &quot;Add feedback&quot;</td>
-<td>1 h demanar i recollir, la resta arreglar</td>
+<td>12–26 oct</td>
+<td>Fet</td>
+<td>Amics un a un; LinkedIn, X i dos posts a Reddit. <strong>0 registres</strong></td>
+<td>—</td>
 </tr>
 <tr>
-<td>19 oct</td>
-<td>Preparar</td>
-<td>Captures (es llança amb maifitness.netlify.app)</td>
-<td>2 h</td>
+<td>30 oct – 8 nov</td>
+<td>Entendre per què</td>
+<td>Preguntar als amics què els va frenar; registrar-te com si fossis nou des d&#39;un altre mòbil; mirar impressions i clics de cada post</td>
+<td>2–3 h</td>
 </tr>
 <tr>
-<td>20 oct – 1 nov</td>
-<td>2 · Donar-la a conèixer</td>
-<td>LinkedIn (anglès) i X (català), i els llocs on la gent busca coses noves: Hacker News, Reddit, Menéame, Indie Hackers. És un llançament perquè la gent la provi si vol, no una campanya: res d&#39;Instagram, TikTok ni YouTube de moment</td>
+<td>9–29 nov</td>
+<td>1 de nou · en persona</td>
+<td>Asseure&#39;t amb 5 persones mentre la comencen (el seu mòbil, la seva rutina, 15 min); seguiment una setmana després; un entrenador o gimnàs conegut amb accés complet; comprar el domini; arreglar el que encalli</td>
 <td>3–4 h</td>
 </tr>
 <tr>
-<td>2–15 nov</td>
-<td>3 · Directoris</td>
-<td>3–4 altes per setmana als directoris de la taula; primer correu a mitjans catalans</td>
+<td>1–20 des</td>
+<td>2 · Tornar a publicar</td>
+<td><strong>Només si 5 persones la fan servir dues setmanes.</strong> Show HN, la segona tanda de LinkedIn i X, Menéame, Indie Hackers (la història de &quot;zero registres i què he canviat&quot;)</td>
+<td>3–4 h</td>
+</tr>
+<tr>
+<td>5–13 gen</td>
+<td>3 · Directoris i premsa catalana</td>
+<td>Any nou, el millor moment per al fitness: directoris (5 i 12/1) i correu als mitjans catalans (13/1)</td>
 <td>3 h</td>
 </tr>
 <tr>
-<td>12–18 gen</td>
+<td>9–10 feb</td>
 <td>4 · Product Hunt</td>
-<td>Product Hunt un dimarts, dimecres o dijous; correu als mitjans de tecnologia</td>
-<td>4 h aquella setmana, més respondre el dia mateix</td>
+<td>Product Hunt un dimarts; correu a Genbeta i Xataka l&#39;endemà. Només amb D30 ≥ 15 %, NPS ≥ 30 i pagaments en marxa</td>
+<td>4 h aquella setmana</td>
 </tr>
 </tbody></table>
-<p><strong>El dia a dia</strong> és a la pestanya &quot;Publicar&quot; del pla de negoci al hub (<code>~/Code/hub</code>, mAI Fitness). Hi ha cada publicació amb un dia orientatiu, el vídeo que s&#39;hi ha de pujar i el text amb l&#39;enllaç del canal (<code>?ref=</code>), i una casella per marcar-la. Els dies no són obligatoris: un matí entre setmana i ser-hi per contestar. En resum (19/10/2026, el llançament s&#39;avança a aquesta setmana):</p>
+<p><strong>El dia a dia</strong> és a la pestanya &quot;Publicar&quot; del pla de negoci al hub (<code>~/Code/projects-hub</code>, mAI Fitness), que també surt al calendari de Google. En resum:</p>
 <ul>
-<li><strong>Dilluns 19/10 (preparar):</strong> 4–5 captures.</li>
-<li><strong>Aquesta setmana, el llançament:</strong><ul>
-<li>dt 20/10 abans de dinar: LinkedIn en anglès (<code>mai-fitness-en-vertical.mp4</code>) i X en català (<code>mai-fitness-ca-vertical.mp4</code>);</li>
-<li>dc 21/10 a les 15:00: Show HN a Hacker News;</li>
-<li>dj 22/10: r/SideProject, amb <code>mai-fitness-en-horitzontal.mp4</code>;</li>
-<li>dv 23/10: Menéame, en castellà.</li>
+<li><strong>Ara (30/10 – 8/11):</strong><ul>
+<li>dv 30/10: WhatsApp a cada amic que no hi va entrar, una sola pregunta: què t&#39;ha frenat? (text al hub);</li>
+<li>ds 31/10: registrar-te com si fossis nou, en una finestra privada i amb l&#39;enllaç d&#39;un post; mirar que el correu de verificació arribi i no caigui al correu brossa;</li>
+<li>dl 2/11: impressions i clics de cada post, apuntats a la taula &quot;Registre&quot; de sota.</li>
 </ul>
 </li>
-<li><strong>La setmana vinent</strong> (la història de «el que fas pel teu compte també compta»):<ul>
-<li>dl 26/10: r/alphaandbetausers;</li>
-<li>dt 27/10: X en català;</li>
-<li>dc 28/10: LinkedIn en anglès;</li>
-<li>dj 29/10: Indie Hackers;</li>
-<li>dg 1/11: mirar quin canal porta gent activa.</li>
+<li><strong>Novembre, en persona:</strong><ul>
+<li>dl 9/11: 5 persones, una a una, mentre la comencen;</li>
+<li>dl 16/11: qui l&#39;ha tornat a obrir; a qui no, què li ha fallat;</li>
+<li>dc 18/11: un entrenador o gimnàs conegut;</li>
+<li>dl 23/11: comprar el domini;</li>
+<li>dg 29/11: decidir si es torna a publicar al desembre.</li>
 </ul>
 </li>
-<li><strong>Directoris:</strong> 2/11 i 9/11. <strong>Premsa catalana:</strong> 11/11.</li>
-<li><strong>Gener</strong> (només si es compleixen les condicions):<ul>
-<li>dt 12/1 a les 9:01: Product Hunt;</li>
-<li>dc 13/1: correu a Genbeta i Xataka.</li>
+<li><strong>Desembre</strong> (si es compleix la condició):<ul>
+<li>dt 1/12 a les 15:00: Show HN;</li>
+<li>dc 2/12: LinkedIn en anglès (la història de «el que fas pel teu compte també compta»);</li>
+<li>dj 3/12: X en català, la mateixa història;</li>
+<li>dc 9/12: Menéame;</li>
+<li>dt 15/12: Indie Hackers, amb números;</li>
+<li>dg 20/12: mirar quin canal porta gent que es queda.</li>
 </ul>
 </li>
+<li><strong>Gener:</strong> directoris dt 5/1 i dt 12/1; premsa catalana dc 13/1.</li>
+<li><strong>Febrer</strong> (només si es compleixen les condicions): dt 9/2 a les 9:01 Product Hunt; dc 10/2 Genbeta i Xataka.</li>
 </ul>
-<p>La fase 4 va al gener expressament: és el millor mes de l&#39;any per a una app de fitness (propòsits d&#39;any nou) i dona temps a complir les condicions i a tenir Stripe en marxa. Les dates es mouen si les condicions de cada fase no es compleixen.</p>
+<p>Product Hunt passa del gener al febrer: al gener no hi hauria D30 de ningú. Si el novembre no surt bé, tot el que és públic es mou un mes més (Product Hunt, al març).</p>
 <h2>Canals</h2>
 <h3>Es poden repetir</h3>
 <table>
@@ -329,18 +385,66 @@
 <th>Canal</th>
 <th>Enllaç</th>
 <th>Codi</th>
+<th>Vistes</th>
+<th>Clics</th>
 <th>Registres</th>
 <th>Activats</th>
 <th>Notes</th>
 </tr>
 </thead>
 <tbody><tr>
+<td>12–19/10</td>
+<td>Amics (WhatsApp)</td>
+<td><code>/register</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>0</td>
+<td>0</td>
+<td>Demanat un a un</td>
+</tr>
+<tr>
+<td>20/10</td>
+<td>LinkedIn (en)</td>
+<td><code>?ref=linkedin</code></td>
+<td>—</td>
 <td></td>
 <td></td>
+<td>0</td>
+<td>0</td>
+<td>Vídeo vertical</td>
+</tr>
+<tr>
+<td>20/10</td>
+<td>X (ca)</td>
+<td><code>?ref=x</code></td>
+<td>—</td>
 <td></td>
 <td></td>
+<td>0</td>
+<td>0</td>
+<td>Vídeo vertical</td>
+</tr>
+<tr>
+<td>22/10</td>
+<td>r/SideProject</td>
+<td><code>?ref=reddit</code></td>
+<td>—</td>
 <td></td>
 <td></td>
+<td>0</td>
+<td>0</td>
+<td>Vídeo horitzontal</td>
+</tr>
+<tr>
+<td>26/10</td>
+<td>r/alphaandbetausers</td>
+<td><code>?ref=reddit</code></td>
+<td>—</td>
+<td></td>
+<td></td>
+<td>0</td>
+<td>0</td>
 <td></td>
 </tr>
 </tbody></table>

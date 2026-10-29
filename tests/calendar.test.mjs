@@ -14,7 +14,7 @@ const io = { readDocs: async (ns, c) => docs[`${ns}/${c}`] || {}, readFile: asyn
 test('the publishing plan is read from the page, quotes and all', () => {
   const posts = planPosts(html)
   const hn = posts.find(p => p.id === 'w2-hn')
-  assert.deepEqual([hn.date, hn.time, hn.ch, hn.title], ['2026-10-21', '15:00', 'hn', 'Show HN a Hacker News'])
+  assert.deepEqual([hn.date, hn.time, hn.ch, hn.title], ['2026-12-01', '15:00', 'hn', 'Show HN a Hacker News'])
   assert.equal(posts.find(p => p.id === 'w3-x-ca').title, "X en català: una història petita de l'app")
   assert.match(posts.find(p => p.id === 'd2').title, /^Directoris \(2\): There's/)
   assert.ok(posts.length >= 15)
@@ -38,7 +38,7 @@ test('Madrid hours, summer and winter', () => {
 test('the .ics: escaped, folded at 75 bytes, all-day tasks', async () => {
   const out = ics(await events(io), 'https://hub.example/', new Date('2026-10-20T10:00:00Z'))
   assert.ok(out.startsWith('BEGIN:VCALENDAR\r\n') && out.endsWith('END:VCALENDAR\r\n'))
-  assert.match(out, /DTSTART:20261021T130000Z\r\nDTEND:20261021T133000Z/)
+  assert.match(out, /DTSTART:20261201T140000Z\r\nDTEND:20261201T143000Z/)
   assert.match(out, /DTSTART;VALUE=DATE:20261024\r\nDTEND;VALUE=DATE:20261025/)
   assert.match(out, /Per què\\, amb\\; comes/)
   for (const line of out.split('\r\n')) assert.ok(new TextEncoder().encode(line).length <= 75, line)

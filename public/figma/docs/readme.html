@@ -1,12 +1,12 @@
 <h1>AI Slides → Figma</h1>
 <p>Plugin de Figma que importa presentacions HTML fetes amb IA (Claude, ChatGPT, Gemini, reveal.js, Marp…) i les converteix en slides <strong>editables</strong>: text real, vectors, imatges i capes amb nom.</p>
-<p>Funciona a <strong>Figma Slides</strong> (crea una slide per pàgina, escalada a 1920×1080) i a <strong>Figma Design</strong> (crea un frame per slide dins d&#39;una secció).</p>
+<p>Funciona a <strong>Figma Slides</strong> (crea una slide per pàgina, escalada a 1920×1080) i a <strong>Figma Design</strong> (crea un frame per slide dins d&#39;una secció). A Design els frames es creen a <strong>2×</strong> la mida CSS; la versió completa també permet <strong>3×</strong> i <strong>4×</strong>.</p>
 <h2>Preu</h2>
 <p>La versió gratuïta importa les 3 primeres slides de cada presentació. La versió completa és un pagament únic (12 $) a <strong>Lemon Squeezy</strong>, que envia una clau de llicència per correu. Figma no accepta venedors nous, així que el cobrament no passa per Figma.</p>
 <ul>
 <li><code>src/ui/license.ts</code>: enllaç de compra i IDs de la botiga i el producte (<code>SHOP</code>). Amb els IDs a 0, s&#39;accepta qualsevol clau (només per provar).</li>
 <li>El panell activa la clau (una activació per ordinador) i la torna a comprovar cada vegada que s&#39;obre. Si s&#39;ha retornat o desactivat, el plugin torna a la versió gratuïta. Sense connexió, continua funcionant.</li>
-<li>La clau es desa amb <code>figma.clientStorage</code>. El límit el controla <code>src/main.ts</code> (<code>FREE</code>), no només el panell.</li>
+<li>La clau es desa amb <code>figma.clientStorage</code>. El límit el controla <code>src/main.ts</code> (<code>FREE</code> i <code>SCALES</code>), no només el panell.</li>
 </ul>
 <h2>Provar-lo a Figma (5 minuts)</h2>
 <ol>
@@ -19,7 +19,7 @@
 <p>Fitxers per provar: <code>test/fixtures/</code> (presentació amb Tailwind, una de ChatGPT, una de reveal.js, una de React, un zip amb imatges i CSS propis i un zip amb un HTML per slide).</p>
 <h2>Què fa, pas a pas</h2>
 <ol>
-<li><strong>Llegeix el fitxer</strong> (<code>src/ui/ui.ts</code>): un <code>.html</code> sol o un <code>.zip</code>. Si el zip té un <code>index.html</code>, fa servir aquest; si no, importa tots els HTML per ordre (cas de les eines que exporten una slide per fitxer).</li>
+<li><strong>Llegeix el fitxer</strong> (<code>src/ui/ui.ts</code>): un <code>.html</code> sol o un <code>.zip</code>. Si el zip té un <code>index.html</code>, fa servir aquest; si no, importa per ordre tots els HTML de la carpeta menys profunda que en tingui (cas de les eines que exporten una slide per fitxer). Els HTML de subcarpetes més endins s&#39;ignoren: solen ser fonts o còpies de la mateixa presentació.</li>
 <li><strong>El prepara</strong> (<code>src/ui/prepare.ts</code>): incrusta CSS, imatges i fonts del zip; substitueix Tailwind i Lucide pels que porta el plugin (funciona sense connexió), i afegeix una política de seguretat estricta.</li>
 <li><strong>El pinta en un iframe aïllat</strong> amb el <em>probe</em> (<code>src/probe/</code>), que:<ul>
 <li>detecta les slides (reveal.js, Marp, classes <code>.slide</code>/<code>.page</code>, seccions repetides de la mateixa mida o, si és una web normal, la talla en trossos);</li>
